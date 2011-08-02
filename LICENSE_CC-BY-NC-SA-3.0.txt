@@ -1,0 +1,8 @@
+Contra is released under a Creative Commons Attribution-Noncommercial-Share Alike 3.0 License, which
+allows you to copy, distribute, transmit, alter, transform, and build upon this work but not use it
+for commercial purposes, providing that you attribute me, photofroggy (froggywillneverdie@msn.com)
+for its creation.
+
+You can view the license in full at the following URL:
+
+	http://creativecommons.org/licenses/by-nc-sa/3.0/

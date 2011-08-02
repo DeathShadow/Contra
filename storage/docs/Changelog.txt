@@ -1,0 +1,82 @@
+
+	Welcome to Contra's changelog!
+	This is just to document the changes
+	made in each release.
+
+	Contra 4 Public - 2nd September 2009
+    
+        * Removed ANSI colour code related functions and constants.
+        * Changed the extension system slightly.
+        ** Updated all modules to work with the changes made.
+        * Cleaned up the core a little.
+    
+	Contra 3 Public - 10th November 2008
+		
+		* cURL is no longer needed!!!
+		** A better fix for the login process has been applied.
+		** Contra now stores your bot's authtoken!
+		*** This is to reduce the need to use SSL, making restarts quicker.
+		* The core has been brushed up.
+		* Fixed a few bugs in the core.
+		* Removed the filter on error reporting.
+		** Contra has no known errors!
+		* Added better switch management for modules and commands.
+		* Added a welcome module!
+		* Added a responses module!
+		* Improved the Games module slightly.
+		* A copy of the changelog is now included with the bot.
+		* Changed the events system to store event data in a more logical manner.
+		* Removed the need to create events before hooking methods to them.
+	
+	Contra 2.5 Patched - 28th October 2008
+	
+		* Fixed some bugs with commands.
+		* Fixed .cmd files for windows users.
+		* Fixed a bug which meant you couldn't have spaces in the pathname in phpbin.
+		* Changed the output of some commands.
+		* The bot now remembers whether a module has been turned on or off.
+		* Added command "clrswitches".
+		** This clears the saved module statuses.
+		* Updated usage of dAmnPHP.
+		* Now detects connection timeouts.
+		* Patched to work around deviantART's login update.
+		** YOU MUST HAVE cURL ENABLED FOR THIS VERSION!
+
+	Contra 2 Public - fix - 19th August 2008
+
+		* This is a very small bug fix! Download this version!
+		* Fixed case sensitivity in ping command.
+		* Fixed commands list.
+		* Fixed Config script repetition.
+
+	Contra 2 Public - 19th August 2008
+
+		* Reworked dAmn processing to reduce memory usage.
+		* Found a simple way to launch shell scripts properly on OS X thanks to electricnet.
+		* Tweaked the launch scripts to make them work better.
+		* Fixed and added commands.
+		* Added an AI module.
+		* Tidied up the code a bit.
+		* Added a debug mode.
+		* Shell scripts now take ~/phpbin into account.
+		* Updated documentation included with the bot.
+
+	Contra 1 Public - 29th July 2008
+
+		* Fixed some bugs.
+		* Done more dAmn processing.
+		* Fixed some more bugs.
+		* Finished all of the core commands.
+		* And fixed more bugs.
+		* Added some form of documentation.
+		* Added shell scripts and cmd files.
+
+	Contra 1 (Amphino++) Preview - 22nd July 2008
+
+		* Finished dAmn processing.
+		* Finished CLI.
+		* Finished most of the core.
+
+	Contra 0 (Amphino++) - 15th July 2008
+	
+		* Started making Contra.

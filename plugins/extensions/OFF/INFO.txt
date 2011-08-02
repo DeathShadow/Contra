@@ -1,0 +1,10 @@
+Hello there!
+
+Drop modules in this folder when you
+don't want them to be loaded.
+
+When you want them to be loaded, simply
+put the file back into the extensions
+folder.
+
+	-	photofroggy

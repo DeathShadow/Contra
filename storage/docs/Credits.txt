@@ -1,0 +1,48 @@
+
+Contra was created by me, photofroggy. I personally think some credit
+is appropriate as there are people who have been a great help in the
+creation of Contra. These are those people, in no particular order.
+
+- Electricnet
+	"Elec" has helped by testing Contra on Apple computers, and
+	providing valuable feedback on Contra, and at one point he had
+	to remind me that Contra was meant to be user friendly. It should
+	also be noted that the original structure of Contra's dAmn
+	processing was based on his PHP bot, which was used as a reference.
+	Thanks for all the fish!
+	
+- Hakumiogin
+	This guy provided inspiration for the events system currently being
+	used in Contra's module system. It is awesome and quite flexible. It
+	should be noted, however, that the event system being developed in
+	dbpc is looking to be incredibly flexible.
+	
+- ManjyomeThunder
+	"Manjy" Has provides inspiration for ideas, directly and indirectly. He
+	is my arch nemesis. He constantly makes good progress with his bots,
+	supposedly competing against me, and he does a bloody good job of it!
+	If it weren't for him it is likely that I might be going about things
+	in an even more lazy manner.
+	
+- Infinity0
+	Infinity0 is mainly insulting. If I ever talk to him, he is likely to
+	throw an insult in my direction. These insults sometimes have something
+	constructive attached to them, which is helpful. He also helped me move
+	over to streams from using sockets, and provided working shell scripts
+	for *nix systems. Like Elec, he has also kepted me in check, he prodded
+	me about code repetition, something which should always be avoided at all
+	costs! Again, thanks for the help.
+	
+- Plaguethenet
+	Plaguethenet is one of those strange people who turns up at random moments
+	and then hibernates for any given length of time. When he is active, however,
+	he provides very useful advice and ideas. His work with languages using the
+	.NET framework is also an inspiration of sorts, as I wouldn't usually touch
+	them myself.
+	
+- #Botdom
+	This is for all the users of #Botdom. Without #Botdom I would never have
+	gotten into bot development, I doubt I would even know PHP if it werent't
+	for this place. #Botdom really is awesome!
+	
+If you ever get the chance, go give these people some love!

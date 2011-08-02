@@ -1,0 +1,55 @@
+
+Just some extra information about the bot for you.
+
+-- EXTRA DOCUMENTATION --
+
+	More documentation for Contra can be
+	found at Botdom's documentation wiki.
+	The documents are located here:
+	
+		http://www.botdom.com/documentation/Contra
+
+
+-- TRIVIA --
+Just some stuff that might be vaguely interesting.
+
+	* Work was started on Contra on 15th July 2008
+	after I finally decided that Amphino was a messy,
+	inefficient piece of rubbish.
+	
+	* The console output actually has colours, even
+	for Windows users! If you have Windows, download
+	Cygwin and use that to run your .cmd files.
+	
+	* More time has been spent on getting .command files
+	to work as expected on OS X than on any other feature
+	in Contra.
+	
+	Ok that was a lie, but lots of time has been spent on
+	it, and it's taken three developers to get it simplified
+	enough to be awesome.
+	
+	* Contra actually shares some code with Amphino. Most
+	of this shared code can be found in function_lib.php
+	in the core folder.
+	
+	* Concerning dAmn events: I don't know what arguments
+	are given to my events system, by my dAmn processing
+	stuff, for most dAmn events. It does, however, work
+	without problems. Just don't ask me if you need to know
+	what the arguments are for a certain event.
+	
+	* Contra is friendly to developers too! The module
+	system featured in Contra is also designed to be
+	easy to use (in programming terms)!
+	
+	* I love feedback! No, really. Give me feedback on Contra,
+	I'd love to know what you have to say about it. Head over
+	to the discussion page of Contra's artical on the Botdom
+	wiki to give feedback!
+	
+	* Contra had a stable preview release within a week. The
+	next week, the first public release was... released. I'd
+	call that quick if you asked me.
+	
+	Quick compared to Futurism anyway...
