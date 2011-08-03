@@ -28,7 +28,6 @@ class dAmn_commands extends extension {
 	protected $whois_chan;
 
 	function init() {
-		$this->addCmd('chat', 'c_chat');
 		$this->addCmd('join', 'c_joinpart', 99);
 		$this->addCmd('part', 'c_joinpart', 99);
 		$this->addCmd('say', 'c_say', 99);
@@ -49,7 +48,6 @@ class dAmn_commands extends extension {
 
 		$this->addCmd('dsay', 'c_dsay', 99); // Lolololololololol.
 
-		$this->cmdHelp('chat', 'Make your bot open a private chat.');
 		$this->cmdHelp('join', 'Make your bot join dAmn channels.');
 		$this->cmdHelp('part', 'Make your bot leave dAmn channels.');
 		$this->cmdHelp('say', 'Make your bot say something.');
@@ -81,17 +79,6 @@ class dAmn_commands extends extension {
 		$this->hook('e_whois', 'whois');
 	}
 
-	function c_chat($ns, $from, $message, $target) {
-                $bot=strtolower($this->Bot->username);
-		$paa=$this->dAmn->format_chat('@'.$bot, $from);
-		if(args($message,1,true)) {
-			$moo=strtolower(args($message,1,true));
-			$paa=$this->dAmn->format_chat('@'.$bot, $moo);
-			$this->dAmn->say($ns, 'Opened pchat with :dev'.$moo.':');
-		}
-                else $this->dAmn->say($ns, 'Opened pchat with :dev'.$from.':');
-		$this->dAmn->join($paa);
-	}
 	function c_joinpart($ns, $from, $message, $target) {
 		$func = (strtolower(args($message, 0))=='join'?'join':'part');
 		$chans = explode(' ', ($target==$ns?'':$target.' ').args($message,1,true));
