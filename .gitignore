@@ -1,15 +1,7 @@
 .*
 !.gitignore
 *~
-
-# KDE
 .directory
-
-# Windows image file caches
-Thumbs.db
-
-# Folder config file
-Desktop.ini
 
 # Contra
 storage/logs
