@@ -23,7 +23,7 @@ class Bot {
 		'status' => '',
 		'release' => 'public',
 		'author' => 'photofroggy',
-		'bdsversion' => '0.2',
+		'bdsversion' => '0.3',
 	);
 	public $username;
 	protected $_password;
