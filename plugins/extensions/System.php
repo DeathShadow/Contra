@@ -428,7 +428,8 @@ class System_commands extends extension {
 			}
 		}else{
 			$sb = "";
-			$this->dAmn->say($ns, "<abbr title=\"{$from}\"></abbr> You must specify the name of a bot you wish to get information for. List of Registered Bots is currently disabled.<br /><sup>[There are ".count($this->botdata)." bots registered in database.]</sup>", TRUE);
+			$sb .= "[<b>:dev" . implode( array_keys( $this->botdata ), ":</b>], [<b>:dev" ) . ":</b>]";
+			$this->dAmn->say( $ns, "<abbr title=\"{$from}\"> </abbr> You must specify the name of a bot you wish to get information for.<br><sub><sub>Currently known bots: {$sb}</sub></sub>" );
 		}
 	}
 	function BDSBotCheck($ns, $sender, $payload) {
