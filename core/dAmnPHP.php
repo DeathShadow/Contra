@@ -453,6 +453,8 @@ function sort_dAmn_packet($packet) {
 			$data['event'] = 'recv_'.$sub['cmd'];
 			switch($sub['cmd']) {
 				case 'msg':
+					$sub['body'] = preg_replace('/^([^\s:]*)<abbr title="([^\s:]*)"><\/abbr>: /','$2 ($1): ',$sub['body']);
+					$sub['body'] = preg_replace('/'.str_replace(': ','',$trigger).' \(([^\s:]*)\)/i',str_replace(': ','',$trigger),$sub['body']);
 				case 'action':
 					$data['p'][1] = $sub['args']['from'];
 					$data['p'][2] = $sub['body'];
