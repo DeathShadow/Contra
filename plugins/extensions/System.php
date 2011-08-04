@@ -89,8 +89,11 @@ class System_commands extends extension {
 		$this->hook('e_botKickTimer', 'botKickTimer');
 		$this->hook('e_banned', 'recv_privchg');
 		$this->hook('bdsmain', 'recv_msg');
+		$this->hook('pchatbds', 'recv_msg');
 		$this->hook('codsmain', 'recv_msg');
 		$this->hook('load_switches', 'startup');
+
+		$this->load_botdata();
 
 		$this->trigc1 = strtolower($this->Bot->username.': trigcheck');
 		$this->trigc2 = strtolower($this->Bot->username.': trigger');
@@ -617,8 +620,20 @@ class System_commands extends extension {
 					$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(trim(str_replace(' ', '', $this->Bot->trigger)).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
 					break;
 					case 'DIRECT':
-					if(stristr($command[3], $this->Bot->username))
+					if(stristr($command[3], $this->Bot->username)) {
+						$num = 0;
+						foreach($this->dAmn->chat['chat:DataShare']['member'] as $member => $memberz) {
+							if($memberz['pc'] == 'PoliceBot' && $memberz['con'])
+							$satan[$member] = array(true);
+						}
+						unset($satan[$this->Bot->username]);
+						$num = count($satan);
+						if($num > 0) {
+							$whore = array_rand($satan, 1);
+							$this->dAmn->npmsg('chat:DataShare', "BDS:SYNC:REQUEST:{$whore}", TRUE);
+						}
 						$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(trim(str_replace(' ', '', $this->Bot->trigger)).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
+					}
 					break;
 					case 'REQUEST':
 						$user = $command[3];
@@ -699,6 +714,175 @@ class System_commands extends extension {
 							ksort($this->botdata, SORT_STRING);
 							$this->save_botdata();
 						}
+					break;
+				}
+				break;
+				case 'SYNC':
+				switch($command[2]) {
+					case 'REQUEST':
+						$info = explode(',', $message);
+						$info2 = explode(':', $info[0]);
+						$user = strtolower($info2[3]);
+						$death = implode(array_keys($this->botdata));
+						$hash = md5(strtolower(trim($death)));
+						$count = count($this->botdata);
+						if($user == strtolower($this->Bot->username) && $this->dAmn->chat[$ns]['member'][$from]['pc'] == 'PoliceBot')
+							$this->dAmn->npmsg($ns, "BDS:SYNC:RESPONSE:{$from},{$hash},{$count}", TRUE);
+					break;
+					case 'RESPONSE':
+						$info = explode(',', $message);
+						$info2 = explode(':', $info[0]);
+						$user = strtolower($info2[3]);
+						$death = implode(array_keys($this->botdata));
+						$hash = md5(strtolower(trim($death)));
+						$count = count($this->botdata);
+						if($this->dAmn->chat[$ns]['member'][$from]['pc'] == 'PoliceBot') {
+							if($user == strtolower($this->Bot->username) && $info[1] != $hash && $info[2] > $count) $this->dAmn->npmsg($ns, "BDS:LINK:REQUEST:{$from}", TRUE);
+							if($user == strtolower($this->Bot->username) && $info[1] != $hash && $info[2] < $count) $this->dAmn->npmsg($ns, "BDS:BOTCHECK:DIRECT:{$from}", TRUE);
+							elseif($user == strtolower($this->Bot->username) && $info[1] == $hash && $info[2] == $count) $this->dAmn->npmsg($ns, "BDS:SYNC:OKAY:{$from}", TRUE);
+						}
+					break;
+					case 'OKAY':
+						return;
+					break;
+				}
+				break;
+				case 'LINK':
+				switch($command[2]) {
+					case 'REQUEST':
+						$info = explode(',', $message);
+						$info2 = explode(':', $info[0]);
+						$user = strtolower($info2[3]);
+						if($user == strtolower($this->Bot->username) && $this->dAmn->chat[$ns]['member'][$from]['pc'] == 'PoliceBot' && $from != $this->Bot->username) {
+							$bot=$this->Bot->username;
+							$paa=$this->dAmn->format_chat('@'.$bot, $from);
+							$this->dAmn->join($paa);
+							$this->dAmn->npmsg($ns, "BDS:LINK:ACCEPT:{$from}", TRUE);
+						}elseif($user == strtolower($this->Bot->username) && $this->dAmn->chat[$ns]['member'][$from]['pc'] != 'PoliceBot')
+							$this->dAmn->npmsg($ns, "BDS:LINK:REJECT:{$from}", TRUE);
+					break;
+					case 'ACCEPT':
+						$info = explode(',', $message);
+						$info2 = explode(':', $info[0]);
+						$user = strtolower($info2[3]);
+						if($user == strtolower($this->Bot->username) && $this->dAmn->chat[$ns]['member'][$from]['pc'] == 'PoliceBot' && $from != $this->Bot->username) {
+							$bot=$this->Bot->username;
+							$paa=$this->dAmn->format_chat('@'.$bot, $from);
+							$this->dAmn->join($paa);
+							sleep(1);
+							$this->dAmn->npmsg($paa, 'BDS:SYNC:BEGIN');
+						}
+					break;
+					case 'REJECT':
+						$info = explode(',', $message);
+						$info2 = explode(':', $info[0]);
+						$user = strtolower($info2[3]);
+						if($user == strtolower($this->Bot->username) && $from != $this->Bot->username) {
+							$bot=$this->Bot->username;
+							$paa=$this->dAmn->format_chat('@'.$bot, $from);
+							$this->dAmn->part($paa);
+						}
+					break;
+				}
+				break;
+			}
+		}
+	}
+	function pchatbds($ns, $from, $message) {
+		if(strstr($ns, 'pchat:') && substr($message, 0, 4) == 'BDS:' && $from != $this->Bot->username) {
+			$command = explode(':', $message, 4);
+			switch($command[1]) {
+				case 'SYNC':
+				switch($command[2]) {
+					case 'BEGIN':
+						$bot=$this->Bot->username;
+						usleep(2000);
+						$paa=$this->dAmn->format_chat('@'.$bot, $from);
+						foreach($this->botdata as $bot => $botz) {
+							$i = count($bot);
+							while($i > 0) {
+								if(empty($botz['bannedBy']))
+									$this->dAmn->npmsg($paa, "BDS:SYNC:INFO:{$botz['actualname']},{$botz['owner']},{$botz['bottype']},{$botz['version']}/{$botz['bdsversion']},{$botz['lastupdate']},{$botz['trigger']}");
+								if(!empty($botz['bannedBy']))
+									$this->dAmn->npmsg($paa, "BDS:SYNC:BADBOT:{$botz['actualname']},{$botz['owner']},{$botz['bottype']},{$botz['version']},{$botz['status']},{$botz['bannedBy']},{$botz['lastupdate']},{$botz['trigger']}");
+								$i--;
+								flush();
+								usleep(2000);
+							}
+						}
+						$this->dAmn->npmsg($paa, 'BDS:SYNC:FINISHED');
+						$this->dAmn->part($paa);
+					break;
+					case 'INFO':
+						if($from != $this->Bot->username) {
+							$info = explode(',', $message);
+							$info2 = explode(':', $info[0]);
+							$user = strtolower($info2[3]);
+							$userz = strtolower($user);
+							$botowner = $info[1];
+							$bottype = $info[2];
+							$version = explode('/', $info[3]);
+							$lastupdate = $info[4];
+							$trigger = $info[5];
+
+							$this->botdata[$userz] = array(
+								'requestedBy'	=> $from,
+								'owner'		=> $botowner,
+								'trigger'	=> $trigger,
+								'bottype'	=> $bottype,
+								'version'	=> $version[0],
+								'bdsversion'	=> $version[1],
+								'actualname'	=> $user,
+								'bot'		=> true,
+								'lasthash'	=> 'Updated by a police bot.',
+								'lastupdate'	=> intval($lastupdate),
+							);
+							ksort($this->botdata, SORT_STRING);
+							$this->save_botdata();
+						}
+					break;
+					case 'BADBOT':
+						if($from != $this->Bot->username) {
+							$info = explode(',', $message);
+							$info2 = explode(':', $info[0]);
+							$user = $info2[3];
+							$userz = strtolower($user);
+							$bottype = $info[2];
+							$version = $info[3];
+							$status = $info[4];
+							$botowner = $info[1];
+							$bannedby = $info[5];
+							$lastupdate = $info[6];
+							$trigger = $info[7];
+
+							$this->botdata[$userz] = array(
+								'bannedBy'	=> $bannedby,
+								'owner'		=> $botowner,
+								'trigger'	=> $trigger,
+								'bottype'	=> $bottype,
+								'version'	=> $version,
+								'status'	=> $status,
+								'actualname'	=> $user,
+								'bot'		=> true,
+								'lastupdate'	=> intval($lastupdate),
+							);
+							ksort($this->botdata, SORT_STRING);
+							$this->save_botdata();
+						}
+					break;
+					case 'FINISHED':
+						$bot=$this->Bot->username;
+						$paa=$this->dAmn->format_chat('@'.$bot, $from);
+						$this->dAmn->part($paa);
+					break;
+				}
+				break;
+				case 'LINK':
+				switch($command[2]) {
+					case 'CLOSE':
+						$bot=$this->Bot->username;
+						$paa=$this->dAmn->format_chat('@'.$bot, $from);
+						$this->dAmn->part($paa);
 					break;
 				}
 				break;
