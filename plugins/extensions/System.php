@@ -568,7 +568,7 @@ class System_commands extends extension {
 	}
 	function bds_join($ns, $from, $validclient, $message) {
 		if(strtolower($ns) == 'chat:datashare') {
-			if($this->dAmn->chat[$ns]['member'][$this->Bot->username]['pc'] == 'PoliceBot')
+			if($this->dAmn->chat[$ns]['member'][$this->Bot->username]['pc'] == 'PoliceBot') {
 				if($this->dAmn->chat[$ns]['member'][$from]['pc'] == 'Bots' || $this->dAmn->chat[$ns]['member'][$from]['pc'] == 'Clients') {
 					$fromz = strtolower($from);
 					if(!$this->is_bot($fromz) && $validclient == false)
@@ -577,6 +577,7 @@ class System_commands extends extension {
 				}
 				if($this->dAmn->chat[$ns]['member'][$from]['pc'] == 'Bots' || $this->dAmn->chat[$ns]['member'][$from]['pc'] == 'Clients' || $this->dAmn->chat[$ns]['member'][$from]['pc'] == 'PoliceBot')
 					$this->dAmn->npmsg($ns, "BDS:BOTCHECK:DIRECT:{$from}", true);
+			}
 		}
 	}
 	function e_botKickTimer($from) {
