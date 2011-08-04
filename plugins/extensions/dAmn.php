@@ -73,7 +73,6 @@ class dAmn_commands extends extension {
 
 		$this->hook('e_ping', 'recv_msg');
 		$this->hook('e_provider', 'join');
-		$this->hook('e_pchatbds', 'recv_msg');
 		$this->hook('e_kicked', 'kicked');
 		$this->hook('e_respond', 'recv_msg');
 		$this->hook('e_whois', 'whois');
@@ -294,107 +293,6 @@ class dAmn_commands extends extension {
 	function c_disconnects($ns, $from, $message, $target) {
 		$this->dAmn->say($ns, $from.': I have been disconnected '
 		.$this->dAmn->disconnects.' '.($this->dAmn->disconnects==1?'time':'times').'.');
-	}
-
-	function e_pchatbds($ns, $from, $message) {
-		if(strstr($ns, 'pchat:') && substr($message, 0, 4) == 'BDS:' && $from != $this->Bot->username) {
-			$command = explode(':', $message, 4);
-			switch($command[1]) {
-				case 'SYNC':
-				switch($command[2]) {
-					case 'BEGIN':
-						$bot=$this->Bot->username;
-						$paa=$this->dAmn->format_chat('@'.$bot, $from);
-						foreach($this->botdata as $bot => $botz) {
-							$i = count($bot);
-							while($i > 0) {
-								if(empty($botz['bannedBy']))
-									$this->dAmn->npmsg($paa, "BDS:SYNC:INFO:{$botz['actualname']},{$botz['owner']},{$botz['bottype']},{$botz['version']}/{$botz['bdsversion']},{$botz['lastupdate']},{$botz['trigger']}");
-								if(!empty($botz['bannedBy']))
-									$this->dAmn->npmsg($paa, "BDS:SYNC:BADBOT:{$botz['actualname']},{$botz['owner']},{$botz['bottype']},{$botz['version']},{$botz['status']},{$botz['bannedBy']},{$botz['lastupdate']},{$botz['trigger']}");
-								$i--;
-								flush();
-								usleep(2000);
-							}
-						}
-						$this->dAmn->npmsg($paa, 'BDS:SYNC:FINISHED');
-						$this->dAmn->part($paa);
-					break;
-					case 'INFO':
-						if($from != $this->Bot->username) {
-							$info = explode(',', $message);
-							$info2 = explode(':', $info[0]);
-							$user = strtolower($info2[3]);
-							$userz = strtolower($user);
-							$botowner = $info[1];
-							$bottype = $info[2];
-							$version = explode('/', $info[3]);
-							$lastupdate = $info[4];
-							$trigger = $info[5];
-
-							$this->botdata[$userz] = array(
-								'requestedBy'	=> $from,
-								'owner'		=> $botowner,
-								'trigger'	=> $trigger,
-								'bottype'	=> $bottype,
-								'version'	=> $version[0],
-								'bdsversion'	=> $version[1],
-								'actualname'	=> $user,
-								'bot'		=> true,
-								'lasthash'	=> 'Updated by a police bot.',
-								'lastupdate'	=> intval($lastupdate),
-							);
-							ksort($this->botdata, SORT_STRING);
-							$this->save_botdata();
-						}
-					break;
-					case 'BADBOT':
-						if($from != $this->Bot->username) {
-							$info = explode(',', $message);
-							$info2 = explode(':', $info[0]);
-							$user = $info2[3];
-							$userz = strtolower($user);
-							$bottype = $info[2];
-							$version = $info[3];
-							$status = $info[4];
-							$botowner = $info[1];
-							$bannedby = $info[5];
-							$lastupdate = $info[6];
-							$trigger = $info[7];
-
-							$this->botdata[$userz] = array(
-								'bannedBy'	=> $bannedby,
-								'owner'		=> $botowner,
-								'trigger'	=> $trigger,
-								'bottype'	=> $bottype,
-								'version'	=> $version,
-								'status'	=> $status,
-								'actualname'	=> $user,
-								'bot'		=> true,
-								'lastupdate'	=> intval($lastupdate),
-							);
-							ksort($this->botdata, SORT_STRING);
-							$this->save_botdata();
-						}
-					break;
-					case 'FINISHED':
-						$bot=$this->Bot->username;
-						$paa=$this->dAmn->format_chat('@'.$bot, $from);
-						$this->dAmn->part($paa);
-					break;
-				}
-				break;
-				case 'LINK':
-				switch($command[2]) {
-					case 'CLOSE':
-						$bot=$this->Bot->username;
-						$paa=$this->dAmn->format_chat('@'.$bot, $from);
-						$this->dAmn->part($paa);
-					break;
-				}
-				break;
-			}
-		}
 	}
 
 	function c_dsay($ns, $from, $message, $target) {
