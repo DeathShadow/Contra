@@ -500,7 +500,7 @@ class System_commands extends extension {
 		if(!$this->verify($data, $from)) return;
 		// ADD SAVING SHIT UP HERE
 
-		$strig = str_replace(' ', '', trim(htmlspecialchars_decode($data[5])));
+		$strig = trim(htmlspecialchars_decode($data[5]));
 
 		$user = $from;
 		$fromz = strtolower($from);
