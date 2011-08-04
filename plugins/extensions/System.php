@@ -617,17 +617,6 @@ class System_commands extends extension {
 					break;
 					case 'DIRECT':
 					if(stristr($command[3], $this->Bot->username))
-						$num = 0;
-						foreach($this->dAmn->chat['chat:DataShare']['member'] as $member => $memberz) {
-							if($memberz['pc'] == 'PoliceBot' && $memberz['con'])
-							$satan[$member] = array(true);
-						}
-						unset($satan[$this->Bot->username]);
-						$num = count($satan);
-						if($num > 0) {
-							$whore = array_rand($satan, 1);
-							$this->dAmn->npmsg('chat:DataShare', "BDS:SYNC:REQUEST:{$whore}", TRUE);
-						}
 						$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(trim(str_replace(' ', '', $this->Bot->trigger)).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
 					break;
 					case 'REQUEST':
