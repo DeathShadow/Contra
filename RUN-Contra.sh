@@ -27,7 +27,9 @@ else
 
 	while [[ $rr = 1 || $rr = 2  ]]; do
 
-		phpbin=$(tail -n1 "./phpbin")
+		if [ ! -e "$phpbin" ]; then
+			phpbin=$(tail -n1 "./phpbin")
+		fi
 
 		if [ $rr = 1 ]; then
 			echo "==============================================================================="
