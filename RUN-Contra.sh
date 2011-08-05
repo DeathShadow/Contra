@@ -11,7 +11,7 @@ else cd "$(dirname "${BASH_SOURCE[0]}")"; fi
 phpbin=$(tail -n1 "./phpbin")
 
 if [ ! -e "$phpbin" ]; then
-	echo "warning: php binary given in ~/phpbin doesn't exist, searching for one."
+	echo "warning: php binary given in ./phpbin doesn't exist, searching for one."
 	phpbin="$(which php)"
 fi
 
