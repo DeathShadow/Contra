@@ -32,6 +32,18 @@
 	*       on the socket then false is returned.
 	*/
 
+	// Before anything happens, we need to make sure OpenSSL is loaded. If not, kill the program!
+	if(!extension_loaded('OpenSSL')) {
+		echo '>> WARNING: You don\'t have OpenSSL loaded!',chr(10);
+		echo '>> Enable OpenSSL before running this application!',chr(10),'>> ';
+		for($i = 0;$i < 3; ++$i) {
+			sleep(1);
+			echo '.';
+		}
+		echo chr(10);
+		sleep(1);
+		exit();
+	}
 	// This is just a constant...
 	define('LBR', chr(10)); // LineBReak
 

@@ -38,13 +38,6 @@
 	// Include the core files!
 	inc_files('./core');
 
-	// Make sure openssl and socket extension is loaded. Also make sure php.ini has been constructed!
-	if(!extension_loaded('openssl') && !extension_loaded('socket') || !ini_get('date.timezone')){
-		build_ini();
-		echo '** Please restart.'.chr(10);
-		exit();
-	}
-
 	// Make sure we have a config file!
 	if(!file_exists('./storage/config.cf')) {
 		echo '> You don\'t have a config file! Creating a new one...', chr(10);

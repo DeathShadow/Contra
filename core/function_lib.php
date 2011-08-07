@@ -58,14 +58,9 @@
 			echo '>> Debug - run the bot in debug mode.'.chr(10);
 			echo '>> Config - edit the bot config.'.chr(10);
 			echo '>> Exit - Exit the program.'.chr(10);
-			echo '>> PHP - Builds the php.ini file.'.chr(10);
-			$select = trim(fgets(STDIN));
+			$select = cmd_get_args(0,array('bot'=>'bot','config'=>'config','exit'=>'exit','debug'=>'debug'));
 		} else { $select = str_replace('--','',$opt); }
 		switch(strtolower(trim($select))) {
-			case 'php':
-				if(!defined('RESTARTABLE')) define('RESTARTABLE', true);
-				build_ini();
-				break;
 			case 'bot':
 			case 'debug':
 				define('DEBUG', (strtolower(trim($select)) == 'debug' ? true : false));
@@ -187,111 +182,6 @@
 	chmod('./storage'			, 0755);
 	chmod('./storage/logs'		, 0755);
 	chmod('./storage/bat'		, 0755);
-
-	function build_ini(){
-		//  set the path, if it isn't already.
-		echo '** Please enter the path to your php folder where your php.ini is stored. If it is C:/php/ then you can leave it blank.',chr(10);
-		$path = trim(fgets(STDIN));
-		if(PHP_OS == 'WINNT')
-			if(empty($path)) $path = '/php/';
-
-		// copy the php.ini-production file
-		if(!file_exists($path.'php.ini')){
-			echo '** Creating the php.ini file...',chr(10);
-			$file = file_get_contents($path.'php.ini-production');
-
-			// create the php.ini file
-			$handle = fopen($path.'php.ini', 'w+');
-
-			// now write what we copied to php.ini
-			fwrite($handle, $file);
-
-			// we don't need to write anything else, so lets close that file
-			fclose($handle);
-			echo 'The php.ini file has been created!', chr(10);
-		} else echo '** php.ini already exists!',chr(10);
-
-		if(PHP_OS == 'WINNT'){
-			echo 'Setting extension path...', chr(10);
-			$ext = set_ext_dir($path);
-			if($ext) echo '** Extension path set!', chr(10);
-			else echo '** Extension path could not be set! :c', chr(10);
-
-			// first is the openssl extension
-			echo '** Loading openssl..',chr(10);
-			if(!extension_loaded('openssl')){
-				load_ext('openssl',  $path);
-				echo '** Openssl has been loaded!', chr(10);
-			} else echo '** Openssl is already loaded!', chr(10);
-
-			// then its the sockets extension
-			echo '** Loading sockets...',chr(10);
-			if(!extension_loaded('sockets')){
-				load_ext('sockets', $path);
-				echo 'sockets has been loaded!', chr(10);
-			} else echo '** Sockets is already loaded!',chr(10);
-		}
-
-		//setting timezone
-		echo '** Do you live in the New York timezone? yes/no (if you leave it blank, or type anything other than yes,its an assumed no)',chr(10);
-		$ans = trim(fgets(STDIN));
-		if($ans == strtolower('yes')){
-			echo '** the php.ini file has been constructed!',chr(10);
-			timezone("America/New_York", $path);
-		} else {
-			echo '** Please enter your timezone, or press enter if you wish to leave it as is. Example: America/New_York',chr(10);
-			$tz = trim(fgets(STDIN));
-			if(empty($tz))
-				echo '** the php.ini file has been constructed!',chr(10);
-			else {
-				timezone($tz, $path);
-				echo 'the php.ini file has been constructed!',chr(10);
-			}
-		}
-	}
-
-	function load_ext($ext, $path){
-		if(empty($path)) $path = '/php/';
-		if(!extension_loaded($ext)){
-			$file = file_get_contents($path.'php.ini');
-			$file = str_replace(';extension=php_'.$ext.'.dll', 'extension=php_'.$ext.'.dll', $file);
-			file_put_contents($path.'php.ini', $file);
-		}
-	}
-	function timezone($tz, $path){
-		if(empty($path)) $path = '/php/';
-		if(empty($tz)) $tz = "America/New_York";
-		$file = file_get_contents($path.'php.ini');
-		$look = strpos($file, ';date.timezone');
-		$look2 = strpos($file, 'date.timezone');
-		if($look !== FALSE){
-			$file = str_replace(';date.timezone =', 'date.timezone = "'.$tz.'"', $file);
-			file_put_contents($path.'php.ini', $file);
-		}
-		if(preg_match('/date.timezone = "(.*)"/', $file) && $look2 !== FALSE) {
-			$file = preg_replace('/date.timezone = "(.*)"/', 'date.timezone = "'.$tz.'"', $file);
-			file_put_contents($path.'php.ini', $file);
-		}
-	}
-	function set_ext_dir($path){
-		if(empty($path)) $path = '/php/';
-		$file = file_get_contents($path.'php.ini');
-		if(PHP_OS == 'WINNT'){
-			$look = strpos($file, '; extension_dir = "ext"');
-			if($look !== FALSE){
-				$file = str_replace('; extension_dir = "ext"', 'extension_dir = "ext"', $file);
-				file_put_contents($path.'php.ini', $file);
-				return true;
-			} else return false;
-		} else {
-			$look = strpos($file, '; extension_dir = "./"');
-			if($look !== FALSE){
-				$file = str_replace('; extension_dir = "./"', 'extension_dir = "./"', $file);
-				file_put_contents($path.'php.ini', $file);
-				return true;
-			} else return false;
-		}
-	}
 
 	/*
 	*	BOTDOM SPROCKET TITLE CODE
