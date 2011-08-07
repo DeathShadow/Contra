@@ -44,6 +44,21 @@
 		sleep(1);
 		exit();
 	}
+	// Also make sure date.timezone is set. If not, kill the program.
+	if(!ini_get('date.timezone')) {
+		echo '>> WARNING: You didn\'t setup php properly.',chr(10);
+		if(PHP_OS == 'WIN32' || PHP_OS == 'WINNT' || PHP_OS == 'Windows')
+			echo '>> Read the Install PHP guide @ http://botdom.com/documentation/Install_PHP_on_Windows',chr(10),'>> ';
+		if(PHP_OS == 'Linux')
+			echo '>> Read the Install PHP guide @ http://botdom.com/documentation/Install_PHP_on_Linux',chr(10),'>> ';
+		for($i = 0;$i < 3; ++$i) {
+			sleep(1);
+			echo '.';
+		}
+		echo chr(10);
+		sleep(1);
+		exit();
+	}
 	// This is just a constant...
 	define('LBR', chr(10)); // LineBReak
 
