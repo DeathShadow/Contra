@@ -338,7 +338,9 @@ class dAmn_lib extends extension {
 				$log = ' ** privilege class '.$p[3]
 				.' has been removed by '.$p[2].' -- '.$p[4].' members were affected';
 				break;
-			case 'recv_admin_show': break;
+			case 'recv_admin_show':
+				$this->dAmn->get($p[0],'members');
+				break;
 			case 'recv_admin_privclass':
 				$save = $d->deform_chat($p[0],$this->Bot->username); $usen=false;
 				$log = ' ** admin '.$p[1].' failed, error: '.$p[2];

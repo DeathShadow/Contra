@@ -506,8 +506,9 @@ function sort_dAmn_packet($packet) {
 							$data['p'][3] = $sub['args']['name'];
 							$data['p'][4] = $sub['args']['n'];
 							break;
-						case 'show': $data['p'][2] = $sub['body'];
-						break;
+						case 'show':
+							$data['p'][2] = $sub['body'];
+							break;
 						case 'privclass':
 							$data['p'][2] = $sub['args']['e'];
 							if($sub['body']!==Null)
