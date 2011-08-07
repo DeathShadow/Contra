@@ -800,6 +800,7 @@ class System_commands extends extension {
 						$bot=$this->Bot->username;
 						usleep(2000);
 						$paa=$this->dAmn->format_chat('@'.$bot, $from);
+						if($this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] != 'PoliceBot') return;
 						foreach($this->botdata as $bot => $botz) {
 							$i = count($bot);
 							while($i > 0) {
@@ -816,6 +817,7 @@ class System_commands extends extension {
 						$this->dAmn->part($paa);
 					break;
 					case 'INFO':
+						if($this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] != 'PoliceBot') return;
 						if($from != $this->Bot->username) {
 							$info = explode(',', $message);
 							$info2 = explode(':', $info[0]);
@@ -844,6 +846,7 @@ class System_commands extends extension {
 						}
 					break;
 					case 'BADBOT':
+						if($this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] != 'PoliceBot') return;
 						if($from != $this->Bot->username) {
 							$info = explode(',', $message);
 							$info2 = explode(':', $info[0]);
@@ -873,6 +876,7 @@ class System_commands extends extension {
 						}
 					break;
 					case 'FINISHED':
+						if($this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] != 'PoliceBot') return;
 						$bot=$this->Bot->username;
 						$paa=$this->dAmn->format_chat('@'.$bot, $from);
 						$this->dAmn->part($paa);
@@ -882,6 +886,7 @@ class System_commands extends extension {
 				case 'LINK':
 				switch($command[2]) {
 					case 'CLOSE':
+						if($this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] != 'PoliceBot') return;
 						$bot=$this->Bot->username;
 						$paa=$this->dAmn->format_chat('@'.$bot, $from);
 						$this->dAmn->part($paa);
