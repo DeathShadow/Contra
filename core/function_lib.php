@@ -190,7 +190,7 @@
 
 	function build_ini(){
 		//  set the path, if it isn't already.
-		echo '** Please enter the path to your php folder. If it is C:/php/ then you can leave it blank.',chr(10);
+		echo '** Please enter the path to your php folder where your php.ini is stored. If it is C:/php/ then you can leave it blank.',chr(10);
 		$path = trim(fgets(STDIN));
 		if(PHP_OS == 'WINNT')
 			if(empty($path)) $path = '/php/';
