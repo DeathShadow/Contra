@@ -432,6 +432,7 @@ class System_commands extends extension {
 		}else{
 			$sb = "";
 			$sb .= "[<b>:dev" . implode( array_keys( $this->botdata ), ":</b>], [<b>:dev" ) . ":</b>]";
+			$this->dAmn->send("pong\n\0");
 			$this->dAmn->say( $ns, "<abbr title=\"{$from}\"> </abbr> You must specify the name of a bot you wish to get information for.<br><sub><sub>Currently known bots: {$sb}</sub></sub>" );
 		}
 	}
