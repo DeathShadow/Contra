@@ -340,6 +340,8 @@ class dAmn_lib extends extension {
 				break;
 			case 'recv_admin_show':
 				$this->dAmn->get($p[0],'members');
+				$save = $d->deform_chat($p[0],$this->Bot->username); $usen=false;
+				$GLOBALS['crap'] = $p[2];
 				break;
 			case 'recv_admin_privclass':
 				$save = $d->deform_chat($p[0],$this->Bot->username); $usen=false;
