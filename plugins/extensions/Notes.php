@@ -58,7 +58,7 @@ class notes_module extends extension {
 
 		switch(strtolower($com1)) {
 			case 'send':
-				$dAmn->say($ns, $f.'The correct command is '.$this->Bot->trigger.'note username message.');
+				$dAmn->say($ns, $f.'The correct command is: '.$this->Bot->trigger.'note username message.');
 				break;
 			case 'list':
 			case 'read':
