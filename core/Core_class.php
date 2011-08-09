@@ -58,6 +58,14 @@ class Bot {
 		$this->start = time();
 		// System information string.
 		$this->sysString = php_uname('s').' '.php_uname('r').' '.php_uname('v');
+
+		if(strstr($this->sysString, '6.1')) $this->sysString = 'Windows 7';
+		elseif(strstr($this->sysString, '6.0')) $this->sysString = 'Windows Vista';
+		elseif(strstr($this->sysString, '5.2')) $this->sysString = 'Windows 2003';
+		elseif(strstr($this->sysString, '5.1')) $this->sysString = 'Windows XP';
+		elseif(strstr($this->sysString, '5.0')) $this->sysString = 'Windows 2000';
+		elseif(strstr($this->sysString, '4.9')) $this->sysString = 'Windows ME';
+
 		// Get a new console interface.
 		$this->Console = new Console();
 		// Tell the console the session code for logging purposes.
