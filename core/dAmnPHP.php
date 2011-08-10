@@ -35,7 +35,10 @@
 	// Before anything happens, we need to make sure OpenSSL is loaded. If not, kill the program!
 	if(!extension_loaded('OpenSSL')) {
 		echo '>> WARNING: You don\'t have OpenSSL loaded!',chr(10);
-		echo '>> Enable OpenSSL before running this application!',chr(10),'>> ';
+		if(PHP_OS == 'WIN32' || PHP_OS == 'WINNT' || PHP_OS == 'Windows')
+			echo '>> Read the Install PHP guide @ http://botdom.com/documentation/Install_PHP_on_Windows',chr(10),'>> ';
+		if(PHP_OS == 'Linux')
+			echo '>> Read the Install PHP guide @ http://botdom.com/documentation/Install_PHP_on_Linux',chr(10),'>> ';
 		for($i = 0;$i < 3; ++$i) {
 			sleep(1);
 			echo '.';
@@ -242,16 +245,16 @@ class dAmnPHP {
 			$headers .= "POST $url HTTP/1.1\r\n";
 		else $headers .= "GET $url HTTP/1.1\r\n";
 		$headers .= "Host: $host\r\n";
-		$headers .= "User-Agent: ".$this->Agent."\r\n";
+		$headers .= 'User-Agent: '.$this->Agent."\r\n";
 		$headers .= "Referer: $referer\r\n";
 		if ($cookies != array())
-			$headers .= "Cookie: ".implode("; ", $cookies)."\r\n";
+			$headers .= 'Cookie: '.implode("; ", $cookies)."\r\n";
 		$headers .= "Connection: close\r\n";
 		$headers .= "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*\/*;q=0.8\r\n";
 		$headers .= "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\n";
 		$headers .= "Content-Type: application/x-www-form-urlencoded\r\n";
 		if (isset($post))
-			$headers .= "Content-Length: ".strlen($post)."\r\n\r\n$post";
+			$headers .= 'Content-Length: '.strlen($post)."\r\n\r\n$post";
 		else $headers .= "\r\n";
 		$response = '';
 		fputs($socket, $headers);

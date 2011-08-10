@@ -228,7 +228,7 @@ class dAmn_lib extends extension {
 			--$this->dAmn->chat[$ns]['member'][$user]['con'];
 			if($this->dAmn->chat[$ns]['member'][$user]['con']===0)
 				unset($this->dAmn->chat[$ns]['member'][$user]);
-			uksort($this->dAmn->chat[$ns]['member'], "strnatcasecmp");
+			uksort($this->dAmn->chat[$ns]['member'], 'strnatcasecmp');
 		}
 	}
 
@@ -246,7 +246,7 @@ class dAmn_lib extends extension {
 				'pc' => $data['args']['pc'],
 			);
 		}
-		uksort($this->dAmn->chat[$ns]['member'], "strnatcasecmp");
+		uksort($this->dAmn->chat[$ns]['member'], 'strnatcasecmp');
 	}
 	function process($packet) {
 		if(strlen($packet) == 0) return;
@@ -389,7 +389,7 @@ class dAmn_lib extends extension {
 	}
 
 	function log($chan, $text, $time) {
-		if($chan != "#DataShare") {
+		if($chan != '#DataShare') {
 		$fold = date('M-Y', $time);
 		$file = date('d-m-y', $time).'.txt';
 		$text = $this->Console->Clock($time).$text;
