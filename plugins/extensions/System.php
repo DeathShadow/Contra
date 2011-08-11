@@ -811,11 +811,16 @@ class System_commands extends extension {
 							foreach($this->botdata as $bot => $botz) {
 								$i = count($bot);
 								while($i > 0) {
-									if(empty($botz['bannedBy']))
+									if(empty($botz['bannedBy'])) {
 										$this->dAmn->npmsg($paa, "BDS:SYNC:INFO:{$botz['actualname']},{$botz['owner']},{$botz['bottype']},{$botz['version']}/{$botz['bdsversion']},{$botz['lastupdate']},{$botz['trigger']}");
-									if(!empty($botz['bannedBy']))
+										usleep(1);
+										$this->dAmn->send("pong\n\0");
+									}
+									if(!empty($botz['bannedBy'])) {
 										$this->dAmn->npmsg($paa, "BDS:SYNC:BADBOT:{$botz['actualname']},{$botz['owner']},{$botz['bottype']},{$botz['version']},{$botz['status']},{$botz['bannedBy']},{$botz['lastupdate']},{$botz['trigger']}");
-									$this->dAmn->send("pong\n\0");
+										usleep(1);
+										$this->dAmn->send("pong\n\0");
+									}
 									$i--;
 									flush();
 									usleep(2000);
