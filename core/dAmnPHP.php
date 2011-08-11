@@ -36,11 +36,11 @@
 	if(!extension_loaded('OpenSSL')) {
 		echo '>> WARNING: You don\'t have OpenSSL loaded!',chr(10);
 		if(PHP_OS == 'WIN32' || PHP_OS == 'WINNT' || PHP_OS == 'Windows')
-			echo '>> Read the Install PHP guide @ http://botdom.com/documentation/Install_PHP_on_Windows',chr(10),'>> ';
+			echo '>> Re-read the Install PHP guide @ http://botdom.com/documentation/Install_PHP_on_Windows',chr(10),'>> ';
 		if(PHP_OS == 'Linux')
-			echo '>> Read the Install PHP guide @ http://botdom.com/documentation/Install_PHP_on_Linux',chr(10),'>> ';
+			echo '>> Re-read the Install PHP guide @ http://botdom.com/documentation/Install_PHP_on_Linux',chr(10),'>> ';
 		if(PHP_OS == 'Darwin')
-			echo '>> Read the Install PHP guide @ http://botdom.com/documentation/Install_PHP_on_Mac_OS_X',chr(10),'>> ';
+			echo '>> Re-read the Install PHP guide @ http://botdom.com/documentation/Install_PHP_on_Mac_OS_X',chr(10),'>> ';
 		for($i = 0;$i < 3; ++$i) {
 			sleep(1);
 			echo '.';
@@ -53,11 +53,11 @@
 	if(!ini_get('date.timezone')) {
 		echo '>> WARNING: You didn\'t setup php properly.',chr(10);
 		if(PHP_OS == 'WIN32' || PHP_OS == 'WINNT' || PHP_OS == 'Windows')
-			echo '>> Read the Install PHP guide @ http://botdom.com/documentation/Install_PHP_on_Windows',chr(10),'>> ';
+			echo '>> Re-read the Install PHP guide @ http://botdom.com/documentation/Install_PHP_on_Windows',chr(10),'>> ';
 		if(PHP_OS == 'Linux')
-			echo '>> Read the Install PHP guide @ http://botdom.com/documentation/Install_PHP_on_Linux',chr(10),'>> ';
+			echo '>> Re-read the Install PHP guide @ http://botdom.com/documentation/Install_PHP_on_Linux',chr(10),'>> ';
 		if(PHP_OS == 'Darwin')
-			echo '>> Read the Install PHP guide @ http://botdom.com/documentation/Install_PHP_on_Mac_OS_X',chr(10),'>> ';
+			echo '>> Re-read the Install PHP guide @ http://botdom.com/documentation/Install_PHP_on_Mac_OS_X',chr(10),'>> ';
 		for($i = 0;$i < 3; ++$i) {
 			sleep(1);
 			echo '.';
