@@ -22,7 +22,6 @@ Bugtracker: https://github.com/DeathShadow/Contra/issues
 ====================================================================
 When reporting bugs, don't forget to:
 - Search bugs before the bugs to avoid posting the same bug.
-- Include the git rev and your OS version. (Avoid using words like
-latest version, etc. The git version of Contra will always be changing.)
-- Use the latest git rev. Chances is that the bug is probably fixed in
+- Include the git rev and your OS version.
+- Use the latest stable. Chances is that the bug is probably fixed in
 the latest version.
