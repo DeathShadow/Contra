@@ -63,8 +63,6 @@ class Responses extends extension {
 					$this->rooms[] = $target;
 					break;
 				}
-				if($key === false)
-					break $say.= 'Responses are not disabled in '.$this->dAmn->deform_chat($target, $this->Bot->username).'.';
 				unset($this->rooms[$key]);
 				$say.= 'Responses enabled for '.$this->dAmn->deform_chat($target, $this->Bot->username).'!';
 				break;
