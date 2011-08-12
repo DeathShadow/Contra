@@ -4,7 +4,7 @@
 	*	Notes module version 3.
 	*	Made for Contra v3.
 	*	Created by photofroggy.
-	*	
+	*
 	*	Released under a Creative Commons Attribution-Noncommercial-Share Alike 3.0 License, which allows you to copy, distribute, transmit, alter, transform,
 	*	and build upon this work but not use it for commercial purposes, providing that you attribute me, photofroggy (froggywillneverdie@msn.com) for its creation.
 	*/
@@ -15,7 +15,7 @@ class notes_module extends extension {
 	public $about = 'This is a bot notes module for Contra!';
 	public $status = true;
 	public $author = 'photofroggy';
-	
+
 	protected $receivers = array();
 	protected $notes = array();
 
@@ -29,7 +29,7 @@ class notes_module extends extension {
 				.$this->Bot->trigger.'note read [id]<br/>'
 				.$this->Bot->trigger.'note clear [id]<br/></sup>'
 		);
-		
+
 		$this->hook('notes_check', 'recv_join');
 		$this->hook('notes_check', 'recv_msg');
 		$this->loadnotes();
@@ -55,8 +55,11 @@ class notes_module extends extension {
 		$note = args($message, 2, true);
 		$trig = str_replace('&','&amp;',$this->Bot->trigger);
 		$user = $this->user; $f = $from.': ';
-		
+
 		switch(strtolower($com1)) {
+			case 'send':
+				$dAmn->say($ns, $f.'The correct command is: '.$this->Bot->trigger.'note username message.');
+				break;
 			case 'list':
 			case 'read':
 				$call = strtolower($com1)=='list'?'getList':'getNote';
@@ -115,7 +118,7 @@ class notes_module extends extension {
 				break;
 		}
 	}
-	
+
 	protected function getList($user) {
 		$notes = $this->check($user);
 		if($notes!==false) $this->clearRecvs($user);
@@ -125,7 +128,7 @@ class notes_module extends extension {
 		foreach($this->notes[$user] as $id => $data) $list.= '#'.$id.', ';
 		return $head.rtrim($list,', ').'<br/><sup>Use '.$this->Bot->trigger.'note read [id] to read a note.</sup>';
 	}
-	
+
 	protected function getNote($user, $id) {
 		if(!isset($this->notes[$user])) return $user.': You don\'t have any notes.';
 		$id = (substr($id,0,1)==='#'?substr($id,1):$id);
@@ -135,7 +138,7 @@ class notes_module extends extension {
 		return '<br/><b>To:</b> '.$user.'<b>; From:</b> '.$note['from'].'<b>; Date received</b>: '.gmdate('r', $note['ts']).'<b>;'.
 		'<br/>Message:</b> '.$note['content'];
 	}
-	
+
 	protected function delNote($user, $id, $ns) {
 		if(!isset($this->notes[$user])) return $user.': You don\'t have any notes.';
 		$id = (substr($id,0,1)==='#'?substr($id,1):$id);
@@ -145,7 +148,7 @@ class notes_module extends extension {
 		$this->Write('notes', $this->notes);
 		return $user.': Deleted note #'.$id.'.';
 	}
-	
+
 	protected function loadnotes() {
 		$notes = $this->Read('notes');
 		$this->notes = ($notes === false ? array() : $notes);
@@ -209,10 +212,10 @@ class notes_module extends extension {
 		if($i==0) $string = $admin.': No notes are stored on this bot.';
 		return $string;
 	}
-	
+
 	protected function adminClr($admin, $dev) {
 		if(isset($this->notes[strtolower($dev)])) {
-			
+
 			unset($this->notes[strtolower($dev)]);
 			if(isset($this->receivers[strtolower($dev)])) unset($this->receivers[strtolower($dev)]);
 			if(empty($this->notes)) $this->Unlink('notes');
@@ -227,7 +230,7 @@ class notes_module extends extension {
 		} else $say = $admin.': '.$dev.' does not have any notes...';
 		return $say;
 	}
-	
+
 	protected function checkmsg($from, $ns) {
 		$dAmn = $this->dAmn;
 		$notes = $this->check($from);
@@ -238,7 +241,7 @@ class notes_module extends extension {
 			$this->clearRecvs($from);
 		}
 	}
-	
+
 	protected function clearRecvs($user) {
 		unset($this->receivers[strtolower($user)]);
 		if(empty($this->receivers)) $this->Unlink('receive');

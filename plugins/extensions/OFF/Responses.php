@@ -4,10 +4,10 @@
 	*	Responses module version 1!!!
 	*	Made for Contra v3.
 	*	Created by photofroggy.
-	*	
+	*
 	*	Released under a Creative Commons Attribution-Noncommercial-Share Alike 3.0 License, which allows you to copy, distribute, transmit, alter, transform,
 	*	and build upon this work but not use it for commercial purposes, providing that you attribute me, photofroggy (froggywillneverdie@msn.com) for its creation.
-	*	
+	*
 	*	Responses! This really is pointless,
 	*	but people always seem to want this...
 	*/
@@ -18,16 +18,16 @@ class Responses extends extension {
 	public $about = 'This is a bot response module for Contra!';
 	public $status = true;
 	public $author = 'photofroggy';
-	
+
 	private $response = array();
 	private $rooms = array();
-	
+
 	function init() {
 		$ar = array('responses', 'response', 're');
 		$this->addCmd($ar, 'c_response', 75);
-		
+
 		$this->cmdHelp($ar, 'Use this command to manage your bot\'s responses.');
-		
+
 		$this->load_data();
 	}
 
@@ -63,8 +63,6 @@ class Responses extends extension {
 					$this->rooms[] = $target;
 					break;
 				}
-				if($key === false)
-					break $say.= 'Responses are not disabled in '.$this->dAmn->deform_chat($target, $this->Bot->username).'.';
 				unset($this->rooms[$key]);
 				$say.= 'Responses enabled for '.$this->dAmn->deform_chat($target, $this->Bot->username).'!';
 				break;
@@ -135,7 +133,7 @@ class Responses extends extension {
 		$this->save_data();
 		$this->dAmn->say($ns, $say);
 	}
-	
+
 	function help_msg($cmd, $pre, $full = true) {
 		$say = $cmd.' has the following commands:<br/><sup>';
 		if($full) {
@@ -150,17 +148,17 @@ class Responses extends extension {
 		$say.= '<b>'.$pre.' clear all</b> - Deletes all data stored in the module.<br/></sup>';
 		return $say.'<i>Optional parameter "channel" always defaults to the channel you are in.</i>';
 	}
-	
+
 	function e_respond($ns, $from, $message) {
 		if(array_search($ns, $this->rooms) !== false) return;
                 if($ns == "chat:Botdom") return;
-		$trig = args($message, 0);
+		$trig = args($message, 0, true);
                 if($from != $this->Bot->username && isset($this->response[$trig])) {
 			$re = $this->response[$trig];
 			$this->respond($ns, $from, args($message, 1, true), $re);
 		}
 	}
-	
+
 	function respond($ns, $from, $args, $msg) {
 		$msg = str_replace('{from}', $from, $msg);
 		$msg = str_replace('{channel}', $this->dAmn->deform_chat($ns, $this->Bot->username), $msg);
@@ -169,7 +167,7 @@ class Responses extends extension {
 		$msg = str_replace('{args|from}', (empty($args) ? $from : $args), $msg);
 		$this->dAmn->say($ns, $msg);
 	}
-	
+
 	function load_data() {
 		$this->response = $this->Read('rdata', 2);
 		$this->response = $this->response === false ? array() : $this->response;
@@ -178,7 +176,7 @@ class Responses extends extension {
 		if(!empty($this->response)) $this->hook('e_respond', 'recv_msg');
 		else $this->unhook('e_respond', 'recv_msg');
 	}
-	
+
 	function save_data() {
 		if(empty($this->response)) $this->Unlink('rdata');
 		else $this->Write('rdata', $this->response, 2);
