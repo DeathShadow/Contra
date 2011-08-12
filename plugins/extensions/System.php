@@ -197,8 +197,8 @@ class System_commands extends extension {
 							if($this->user->hasCmd($from,$cmd) || $all) {
 								if($cmd != 'mod' && $cmd != 'mods' && $cmd != 'aj' && $cmd != 'e' && $cmd != 'cmd' && $cmd != 'cmds') {
 									$off = (($cmda['s']===false||$this->Bot->mod[$cmda['m']]->status===false)?true:false);
-									$cmds.= '<abbr title="Privs: '.$cmda['p'].';">'.($off?'<i><code>':'').$cmd.
-									($off?'</code></i>':'').'</abbr>, ';
+									$cmds.= ($off?'<i><code>':'').$cmd.
+									($off?'</code></i>':'').', ';
 								}
 							}
 						}
