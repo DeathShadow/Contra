@@ -823,7 +823,6 @@ class System_commands extends extension {
 										@flush();
 									}
 									$i--;
-									flush();
 									usleep(2000);
 								}
 							}
