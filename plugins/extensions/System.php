@@ -814,13 +814,13 @@ class System_commands extends extension {
 								while($i > 0) {
 									if(empty($botz['bannedBy'])) {
 										$this->dAmn->npmsg($paa, "BDS:SYNC:INFO:{$botz['actualname']},{$botz['owner']},{$botz['bottype']},{$botz['version']}/{$botz['bdsversion']},{$botz['lastupdate']},{$botz['trigger']}");
-										usleep(1);
 										$this->dAmn->send("pong\n\0");
+										@flush();
 									}
 									if(!empty($botz['bannedBy'])) {
 										$this->dAmn->npmsg($paa, "BDS:SYNC:BADBOT:{$botz['actualname']},{$botz['owner']},{$botz['bottype']},{$botz['version']},{$botz['status']},{$botz['bannedBy']},{$botz['lastupdate']},{$botz['trigger']}");
-										usleep(1);
 										$this->dAmn->send("pong\n\0");
+										@flush();
 									}
 									$i--;
 									flush();
