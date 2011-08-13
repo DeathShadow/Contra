@@ -803,7 +803,7 @@ class System_commands extends extension {
 				case 'SYNC':
 				switch($command[2]) {
 					case 'BEGIN':
-						$bot=strtolower($this->Bot->username);
+						$bot=$this->Bot->username;
 						$paa=$this->dAmn->format_chat('@'.$bot, $from);
 						if($this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] != 'PoliceBot') return;
 						elseif($from != $this->Bot->username) {
@@ -812,16 +812,17 @@ class System_commands extends extension {
 								while($i > 0) {
 									if(empty($botz['bannedBy'])) {
 										$this->dAmn->npmsg($paa, "BDS:SYNC:INFO:{$botz['actualname']},{$botz['owner']},{$botz['bottype']},{$botz['version']}/{$botz['bdsversion']},{$botz['lastupdate']},{$botz['trigger']}");
-										$this->dAmn->send("pong\n\0");
+										$this->dAmn->send("pong\n");
 										@flush();
 									}
 									if(!empty($botz['bannedBy'])) {
 										$this->dAmn->npmsg($paa, "BDS:SYNC:BADBOT:{$botz['actualname']},{$botz['owner']},{$botz['bottype']},{$botz['version']},{$botz['status']},{$botz['bannedBy']},{$botz['lastupdate']},{$botz['trigger']}");
-										$this->dAmn->send("pong\n\0");
+										$this->dAmn->send("pong\n");
 										@flush();
 									}
 									$i--;
-									usleep(2000);
+									@flush();
+									usleep(5000);
 								}
 							}
 							$this->dAmn->npmsg($paa, 'BDS:SYNC:FINISHED');
