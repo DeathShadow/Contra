@@ -400,9 +400,10 @@ class System_commands extends extension {
 		$ownerz = args($message, 2);
 		$this->botdata = array_change_key_case($this->botdata, CASE_LOWER);
 		if($param !== '') {
-			if(!array_key_exists($param, $this->botdata))
-				$this->dAmn->say($ns, "Sorry, {$from}, I don't have any data on <b>{$param}</b>.");
-			elseif(array_key_exists($param, $this->botdata) && empty($this->botdata[$param]['bannedBy'])) {
+			if(!array_key_exists($param, $this->botdata)) {
+				$this->dAmn->say($ns, "Sorry, {$from}, I don't have any data on <b>{$param}</b>. Sending request for botinfo, check back again.");
+				$this->dAmn->npmsg('chat:DataShare', "BDS:BOTCHECK:REQUEST:{$param}", TRUE);
+			}elseif(array_key_exists($param, $this->botdata) && empty($this->botdata[$param]['bannedBy'])) {
 				$work = $this->botdata[$param];
 				$ass = explode(';', $work['owner']);
 				foreach($ass as $poo => $pooz) {
