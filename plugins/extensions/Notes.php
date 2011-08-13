@@ -123,7 +123,7 @@ class notes_module extends extension {
 		$notes = $this->check($user);
 		if($notes!==false) $this->clearRecvs($user);
 		$new = ($notes===false?'':'('.$notes.' new)');
-		if(!isset($this->notes[$user])) return $user.': You don\'t have any notes.';
+		if(empty($this->notes[$user][0])) return $user.': You don\'t have any notes.';
 		$head = $user.': Your notes <code>'.$new.'</code><br/>'; $list = '';
 		foreach($this->notes[$user] as $id => $data) $list.= '#'.$id.', ';
 		return $head.rtrim($list,', ').'<br/><sup>Use '.$this->Bot->trigger.'note read [id] to read a note.</sup>';
@@ -142,7 +142,7 @@ class notes_module extends extension {
 	protected function delNote($user, $id, $ns) {
 		if(!isset($this->notes[$user])) return $user.': You don\'t have any notes.';
 		$id = (substr($id,0,1)==='#'?substr($id,1):$id);
-		if(empty($id)) return $user.': You must provide a note ID number.';
+		if($id=='') return $user.': You must provide a note ID number.';
 		if(!isset($this->notes[$user][$id])) return $user.': Note #'.$id.' not found.';
 		$this->notes[$user] = array_del_key($this->notes[$user], $id);
 		$this->Write('notes', $this->notes);
