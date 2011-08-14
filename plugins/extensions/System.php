@@ -541,7 +541,7 @@ class System_commands extends extension {
 		}
 
 		$versions = explode('/', $data[3]);
-		$strig = str_replace(' ', '', trim($data[5]));
+		$strig = str_replace(' ', '', $data[5]);
 
 		// Now, we have to recreate the hash
 		$sig = md5(strtolower($strig.$data[0].$from));
