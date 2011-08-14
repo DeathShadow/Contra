@@ -106,9 +106,11 @@ class System_commands extends extension {
 		$cmd = args($message, 0);
 		if(strtolower($cmd)!='about') $part = $cmd;
 		switch(strtolower($part)) {
-			case 'system': $about = '/npmsg '.$from.': Running PHP '.PHP_VERSION.' on '.$this->Bot->sysString.'.';
+			case 'system':
+				$about = '/npmsg '.$from.': Running PHP '.PHP_VERSION.' on '.$this->Bot->sysString.'.';
 				break;
-			case 'uptime': $about = '<abbr title="'.$from.'"></abbr>Uptime: '.time_length(time()-$this->Bot->start).'.';
+			case 'uptime':
+				$about = '<abbr title="'.$from.'"></abbr>Uptime: '.time_length(time()-$this->Bot->start).'.';
 				break;
                         case 'pcuptime':
 				if(PHP_OS == 'Linux')
