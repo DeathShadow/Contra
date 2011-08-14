@@ -110,8 +110,10 @@ class System_commands extends extension {
 				break;
 			case 'uptime': $about = '<abbr title="'.$from.'"></abbr>Uptime: '.time_length(time()-$this->Bot->start).'.';
 				break;
-                        case 'pcuptime': $about = '<abbr title="'.$from.'"></abbr>'.`uptime`;
-                                break;
+                        case 'pcuptime':
+				if(PHP_OS == 'Linux')
+					$about = '<abbr title="'.$from.'"></abbr>'.`uptime`;
+				break;
 			case 'about':
 			case '':
 			default:
