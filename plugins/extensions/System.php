@@ -548,7 +548,7 @@ class System_commands extends extension {
 		}
 
 		// Hash check passed.
-		$validbot = true;
+		unset($this->botKickTimers[strtolower($from)]);
 		return true;
 	}
 	function verifyclient($data, $from) {
@@ -568,26 +568,22 @@ class System_commands extends extension {
 		}
 
 		// Hash check passed.
-		$validclient = true;
+		unset($this->botKickTimers[strtolower($from)]);
 		return true;
 	}
-	function bds_join($ns, $from, $validclient, $message) {
+	function bds_join($ns, $from, $message) {
 		if(strtolower($ns) == 'chat:datashare') {
 			if($this->dAmn->chat[$ns]['member'][$this->Bot->username]['pc'] == 'PoliceBot') {
-				if($this->dAmn->chat[$ns]['member'][$from]['pc'] == 'Bots' || $this->dAmn->chat[$ns]['member'][$from]['pc'] == 'Clients') {
-					$fromz = strtolower($from);
-					if(!$this->is_bot($fromz) && $validclient == false)
-						// Timed ban
-						$this->botKickTimers[$from] = $this->Timer->addEvt($this->name, 30, $from, 'botKickTimer', false);
-				}
+				if($this->dAmn->chat[$ns]['member'][$from]['pc'] == 'Bots' || $this->dAmn->chat[$ns]['member'][$from]['pc'] == 'Clients')
+					$this->botKickTimers[strtolower($from)] = $this->Timer->addEvt($this->name, 30, strtolower($from), 'botKickTimer', false);
 				if($this->dAmn->chat[$ns]['member'][$from]['pc'] == 'Bots' || $this->dAmn->chat[$ns]['member'][$from]['pc'] == 'Clients' || $this->dAmn->chat[$ns]['member'][$from]['pc'] == 'PoliceBot')
 					$this->dAmn->npmsg($ns, "BDS:BOTCHECK:DIRECT:{$from}", true);
 			}
 		}
 	}
-	function e_botKickTimer($from) {
-		unset($this->botKickTimers[$from]);
-		if($from == $this->Bot->username) return;
+	function e_botKickTimer($who) {
+		if(empty($this->botKickTimers[$who])) return;
+		if($who == $this->Bot->username) return;
 		$this->dAmn->kick('chat:datashare', $from, 'No response to or invaild BDS:BOTCHECK. If you are not a bot, please do not join this room. Thanks.');
 		echo "{$from} hasn't responded after 30 seconds.  Kickin'.\n";
 	}
