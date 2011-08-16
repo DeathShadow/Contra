@@ -56,8 +56,14 @@ goto loop
 :stopped
 echo ===============================================================================
 echo ** Contra has stopped.
-sleep 60
-goto continue
+goto confirm
+:confirm
+set /p input=** Would you like to reboot? [y/n]
+if %input%==y goto continue
+if %input%==Y goto continue
+if %input%==n goto stop
+if %input%==N goto stop
+goto confirm
 
 :continue
 echo ===============================================================================
