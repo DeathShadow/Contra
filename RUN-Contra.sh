@@ -51,15 +51,9 @@ else
 				echo "** Contra has stopped."
 				ss=0
 				while [ $ss = 0 ]; do
-					echo -n "** Would you like to reboot? [y|n] "
-					read REPLY
-					if [ -z "$REPLY" ]; then input=y;
-					else input="$REPLY"; fi
-					if [[ "$input" = "y" || "$input" = "Y" ]]; then
-						rr=1
-						ss=1
-					fi
-					if [[ "$input" = "n" || "$input" = "N" ]]; then ss=1; fi
+					sleep(60)
+					rr=1
+					ss=1
 				done
 			fi
 		fi
