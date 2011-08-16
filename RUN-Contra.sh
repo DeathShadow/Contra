@@ -51,7 +51,7 @@ else
 				echo "** Contra has stopped."
 				ss=0
 				while [ $ss = 0 ]; do
-					sleep(60)
+					sleep 60
 					rr=1
 					ss=1
 				done

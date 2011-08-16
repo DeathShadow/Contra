@@ -56,7 +56,7 @@ goto loop
 :stopped
 echo ===============================================================================
 echo ** Contra has stopped.
-sleep(60)
+sleep 60
 goto continue
 
 :continue
