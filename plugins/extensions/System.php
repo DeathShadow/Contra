@@ -446,7 +446,6 @@ class System_commands extends extension {
 		if(count($splitted) !== 6) return;
 		$store = $this->store($splitted, $sender);
 		if($store) {
-			echo "Got bot information from {$sender}\n";
 			if($this->dAmn->chat[$ns]['member'][$this->Bot->username]['pc'] == 'PoliceBot') {
 				if(array_key_exists(strtolower($sender), $this->botBanTimers)) {
 					$this->Timer->delEvent($this->botBanTimers[$sender]);
@@ -461,7 +460,6 @@ class System_commands extends extension {
 		$splitted = explode(',', $payload, 4);
 		if(count($splitted) != 4) return;
 		if($this->verifyclient($splitted, $sender)) {
-			echo "Got client information from {$sender}\n";
 			if($this->dAmn->chat[$ns]['member'][$this->Bot->username]['pc'] == 'PoliceBot') {
 				if(array_key_exists(strtolower($sender), $this->botBanTimers)) {
 					$this->Timer->delEvent($this->botBanTimers[$sender]);
