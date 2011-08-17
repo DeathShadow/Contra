@@ -456,7 +456,6 @@ class System_commands extends extension {
 		}else return;
 	}
 	function BDSClientCheck($ns, $sender, $payload) {
-		echo "Got client info from {$sender}; checking to see if it's valid.\n";
 		$splitted = explode(',', $payload, 4);
 		if(count($splitted) != 4) return;
 		if($this->verifyclient($splitted, $sender)) {
@@ -524,8 +523,6 @@ class System_commands extends extension {
 		return true;
 	}
 	function verify($data, $from) {
-		echo implode($data, ',') . "\n";
-
 		if(count($data) < 6) return false;
 
 		$versions = explode('/', $data[3]);
@@ -541,8 +538,6 @@ class System_commands extends extension {
 		return true;
 	}
 	function verifyclient($data, $from) {
-		echo implode($data, ',') . "\n";
-
 		if(count($data) < 4) return false;
 
 		// Now, we have to recreate the hash
