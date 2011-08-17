@@ -499,7 +499,7 @@ class System_commands extends extension {
 		if(!$this->verify($data, $from)) return;
 		// ADD SAVING SHIT UP HERE
 
-		$strig = trim(htmlspecialchars_decode($data[5]));
+		$strig = trim(htmlspecialchars_decode($data[5], ENT_NOQUOTES));
 
 		$user = $from;
 		$fromz = strtolower($from);
@@ -526,7 +526,7 @@ class System_commands extends extension {
 		if(count($data) < 6) return false;
 
 		$versions = explode('/', $data[3]);
-		$strig = str_replace(' ', '', $data[5]);
+		$strig = str_replace(' ', '', htmlspecialchars_decode($data[5], ENT_NOQUOTES));
 
 		// Now, we have to recreate the hash
 		$sig = md5(strtolower($strig.$data[0].$from));
