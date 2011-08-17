@@ -442,12 +442,8 @@ class System_commands extends extension {
 		}
 	}
 	function BDSBotCheck($ns, $sender, $payload) {
-		echo "Got botcheck info from {$sender}; checking to see if it's valid.\n";
 		$splitted = explode(',', $payload, 6);
-		if(count($splitted) !== 6) {
-			echo "Warning: Malformed BDS Botcheck Response from {$sender}\n";
-			return;
-		}
+		if(count($splitted) !== 6) return;
 		$store = $this->store($splitted, $sender);
 		if($store) {
 			echo "Got bot information from {$sender}\n";
@@ -458,15 +454,12 @@ class System_commands extends extension {
 				}elseif($this->dAmn->chat[$ns]['member'][$sender]['pc'] == 'Clients')
 					$this->dAmn->promote($ns, $sender, 'Bots');
 			}
-		}else echo "Bot information from {$sender} failed MD5 check\n";
+		}else return;
 	}
 	function BDSClientCheck($ns, $sender, $payload) {
 		echo "Got client info from {$sender}; checking to see if it's valid.\n";
 		$splitted = explode(',', $payload, 4);
-		if(count($splitted) != 4) {
-			echo "Warning: Malformed BDS Client Response from {$sender}\n";
-			return;
-		}
+		if(count($splitted) != 4) return;
 		if($this->verifyclient($splitted, $sender)) {
 			echo "Got client information from {$sender}\n";
 			if($this->dAmn->chat[$ns]['member'][$this->Bot->username]['pc'] == 'PoliceBot') {
@@ -476,7 +469,7 @@ class System_commands extends extension {
 				}elseif($this->dAmn->chat[$ns]['member'][$sender]['pc'] == 'Bots')
 					$this->dAmn->promote($ns, $sender, 'Clients');
 			}
-		}else echo "Client information from {$sender} failed MD5 check\n";
+		}else return;
 	}
 	function bds_recv($ns, $from, $message) {
 		if(strtolower($ns) == 'chat:datashare') {
@@ -535,10 +528,7 @@ class System_commands extends extension {
 	function verify($data, $from) {
 		echo implode($data, ',') . "\n";
 
-		if(count($data) < 6) {
-			echo "Botcheck data invalid: not enough parameters.\n";
-			return false;
-		}
+		if(count($data) < 6) return false;
 
 		$versions = explode('/', $data[3]);
 		$strig = str_replace(' ', '', $data[5]);
@@ -546,10 +536,7 @@ class System_commands extends extension {
 		// Now, we have to recreate the hash
 		$sig = md5(strtolower($strig.$data[0].$from));
 
-		if($sig !== $data[4]) {
-			echo "Signature is: {$data[4]}\nShould Be: {$sig}\n";
-			return false;
-		}
+		if($sig !== $data[4]) return false;
 
 		// Hash check passed.
 		unset($this->botKickTimers[strtolower($from)]);
@@ -558,18 +545,12 @@ class System_commands extends extension {
 	function verifyclient($data, $from) {
 		echo implode($data, ',') . "\n";
 
-		if(count($data) < 4) {
-			echo "Client Botcheck data invalid: not enough parameters.\n";
-			return false;
-		}
+		if(count($data) < 4) return false;
 
 		// Now, we have to recreate the hash
 		$sig = md5(strtolower($data[1].$data[2].$from.$data[0]));
 
-		if($sig !== $data[3]) {
-			echo "Signature is: {$data[3]}\nShould Be: {$sig}\n";
-			return false;
-		}
+		if($sig !== $data[3]) return false;
 
 		// Hash check passed.
 		unset($this->botKickTimers[strtolower($from)]);
