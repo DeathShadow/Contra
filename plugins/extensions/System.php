@@ -735,20 +735,22 @@ class System_commands extends extension {
 						$info = explode(',', $message);
 						$info2 = explode(':', $info[0]);
 						$user = strtolower($info2[3]);
-						if($user == strtolower($this->Bot->username) && $this->dAmn->chat[$ns]['member'][$from]['pc'] == 'PoliceBot' && $from != $this->Bot->username) {
-							$bot=$this->Bot->username;
-							$paa=$this->dAmn->format_chat('@'.$bot, $from);
-							$this->dAmn->join($paa);
-							$this->dAmn->npmsg($ns, "BDS:LINK:ACCEPT:{$from}", TRUE);
-						}elseif($user == strtolower($this->Bot->username) && $this->dAmn->chat[$ns]['member'][$from]['pc'] != 'PoliceBot')
-							$this->dAmn->npmsg($ns, "BDS:LINK:REJECT:{$from}", TRUE);
+						if($user == strtolower($this->Bot->username) && $from != $this->Bot->username) {
+							if($this->dAmn->chat[$ns]['member'][$from]['pc'] == 'PoliceBot') {
+								$bot=strtolower($this->Bot->username);
+								$paa=$this->dAmn->format_chat('@'.$bot, $from);
+								$this->dAmn->join($paa);
+								$this->dAmn->npmsg($ns, "BDS:LINK:ACCEPT:{$from}", TRUE);
+							}elseif($this->dAmn->chat[$ns]['member'][$from]['pc'] != 'PoliceBot')
+								$this->dAmn->npmsg($ns, "BDS:LINK:REJECT:{$from}", TRUE);
+						}
 					break;
 					case 'ACCEPT':
 						$info = explode(',', $message);
 						$info2 = explode(':', $info[0]);
 						$user = strtolower($info2[3]);
 						if($user == strtolower($this->Bot->username) && $this->dAmn->chat[$ns]['member'][$from]['pc'] == 'PoliceBot' && $from != $this->Bot->username) {
-							$bot=$this->Bot->username;
+							$bot=strtolower($this->Bot->username);
 							$paa=$this->dAmn->format_chat('@'.$bot, $from);
 							$this->dAmn->join($paa);
 							sleep(1);
@@ -760,7 +762,7 @@ class System_commands extends extension {
 						$info2 = explode(':', $info[0]);
 						$user = strtolower($info2[3]);
 						if($user == strtolower($this->Bot->username) && $from != $this->Bot->username) {
-							$bot=$this->Bot->username;
+							$bot=strtolower($this->Bot->username);
 							$paa=$this->dAmn->format_chat('@'.$bot, $from);
 							$this->dAmn->part($paa);
 						}
