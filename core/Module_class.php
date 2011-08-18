@@ -2,10 +2,10 @@
 
 	/*
 	*	Extension class for Contra. By photofroggy.
-	*	
+	*
 	*	Released under a Creative Commons Attribution-Noncommercial-Share Alike 3.0 License, which allows you to copy, distribute, transmit, alter, transform,
 	*	and build upon this work but not use it for commercial purposes, providing that you attribute me, photofroggy (froggywillneverdie@msn.com) for its creation.
-	*	
+	*
 	*	This is essentially the module API
 	*	for Contra. It is made in an effort
 	*	to make developing modules as simple
@@ -27,7 +27,7 @@ class extension {
 	public $dAmn = Null;
 	public $Timer = Null;
 	public $user = Null;
-	
+
 	// Module properties!
 	public $name = Null;
 	public $type = EXT_CUSTOM; // Loldefault.
@@ -38,7 +38,7 @@ class extension {
 	public $loading = Null;
 	public $evts = array();
 	public $cmds = array();
-	
+
 	final function __construct($Bot) {
 		// The core itself.
 		$this->Bot = $Bot;
@@ -59,7 +59,7 @@ class extension {
 		// Unset the loading because we're not loading now...
 		unset($this->loading);
 	}
-	
+
 	function init() {}
 	final function hook($meth, $event) {
 		if(!method_exists($this, $meth)) return;
@@ -67,7 +67,7 @@ class extension {
 		if(isset($this->loading)) $this->evts[$event][] = $meth;
 		return $hook;
 	}
-	
+
 	final function unhook($meth, $event) { return $this->Bot->Events->unhook($this->name, $meth, $event); }
 	final function addCmd($cmd, $meth, $p = 25, $s = true) {
 		if(is_array($cmd)) {
@@ -78,7 +78,7 @@ class extension {
 		$this->Bot->Events->add_command($this->name, $cmd, $meth, $p, $s);
 		if(isset($this->loading)) $this->cmds[] = $cmd;
 	}
-	
+
 	final function cmdHelp($cmd, $str) {
 		if(is_array($cmd)) {
 			foreach($cmd as $id => $scmd) { $this->cmdHelp($scmd, $str); }
@@ -86,7 +86,7 @@ class extension {
 		}
 		$this->Bot->Events->cmdHelp($this->name, $cmd, $str);
 	}
-	
+
 	final function switchCmd($cmd, $s = true) { return $this->Bot->Events->switchCmd($cmd, $s); }
 	final function load() {
 		global $INC_FILE, $INC_DIR;
@@ -108,13 +108,14 @@ class extension {
 		if(!empty($this->evts)) foreach($this->evts as $event => $meths)
 				foreach($meths as $meth) $this->unhook($event);
 		if(!empty($this->cmds)) foreach($this->cmds as $cmd)
-				$this->Bot->Events->delCmd($this->name, $cmd); 
+				$this->Bot->Events->delCmd($this->name, $cmd);
 	}
 	// The methods below are ugly fuckers :D
 	final protected function Read($file, $format = 0) {
 		if(!is_dir('./storage')) mkdir('./storage', 0755);
 		if(!is_dir('./storage/mod')) mkdir('./storage/mod', 0755);
 		if(!is_dir('./storage/mod/'.$this->name)) mkdir('./storage/mod/'.$this->name, 0755);
+		$file = strtolower($file);
 		if(!file_exists('./storage/mod/'.$this->name.'/'.$file.'.bsv')) return false;
 		switch($format) {
 			case 2: return include './storage/mod/'.$this->name.'/'.$file.'.bsv';
@@ -126,11 +127,12 @@ class extension {
 				break;
 		}
 	}
-	
+
 	final protected function Write($file, $data, $format = 0) {
 		if(!is_dir('./storage')) mkdir('./storage', 0755);
 		if(!is_dir('./storage/mod')) mkdir('./storage/mod', 0755);
 		if(!is_dir('./storage/mod/'.$this->name)) mkdir('./storage/mod/'.$this->name, 0755);
+		$file = strtolower($file);
 		switch($format) {
 			case 2: save_config('./storage/mod/'.$this->name.'/'.$file.'.bsv', $data);
 				break;
@@ -141,11 +143,12 @@ class extension {
 				break;
 		}
 	}
-	
+
 	final protected function Unlink($file) {
 		if(!is_dir('./storage')) mkdir('./storage', 0755);
 		if(!is_dir('./storage/mod')) mkdir('./storage/mod', 0755);
 		if(!is_dir('./storage/mod/'.$this->name)) mkdir('./storage/mod/'.$this->name, 0755);
+		$file = strtolower($file);
 		if(!file_exists('./storage/mod/'.$this->name.'/'.$file.'.bsv')) return;
 		unlink('./storage/mod/'.$this->name.'/'.$file.'.bsv');
 	}
