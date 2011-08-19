@@ -33,7 +33,7 @@ pause
 goto stop
 
 :loop
-if exist "storage\bat\quit.bcd" ( 
+if exist "storage\bat\quit.bcd" (
 	del storage\bat\quit.bcd
 	goto stop
 )
@@ -58,7 +58,7 @@ echo ===========================================================================
 echo ** Contra has stopped.
 goto confirm
 :confirm
-set /p input=** Would you like to reboot? [y/n] 
+set /p input=** Would you like to reboot? [y/n]
 if %input%==y goto continue
 if %input%==Y goto continue
 if %input%==n goto stop
