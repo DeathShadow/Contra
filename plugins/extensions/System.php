@@ -802,7 +802,7 @@ class System_commands extends extension {
 									}
 									$i--;
 									@flush();
-									usleep(5000);
+									sleep(1);
 								}
 							}
 							$this->dAmn->npmsg($paa, 'BDS:SYNC:FINISHED');
