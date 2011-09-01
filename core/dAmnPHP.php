@@ -51,7 +51,7 @@
 	}
 	// Also make sure date.timezone is set. If not, kill the program.
 	if(!ini_get('date.timezone')) {
-		echo '>> WARNING: You didn\'t setup php properly. (date.timezone not set)',chr(10);
+		echo '>> WARNING: You didn\'t setup php properly. (date.timezone is not set)',chr(10);
 		if(PHP_OS == 'WIN32' || PHP_OS == 'WINNT' || PHP_OS == 'Windows')
 			echo '>> Re-read the Install PHP guide @ http://botdom.com/documentation/Install_PHP_on_Windows',chr(10),'>> ';
 		if(PHP_OS == 'Linux')
