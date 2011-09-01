@@ -436,9 +436,7 @@ class System_commands extends extension {
 			}
 		}else{
 			$sb = "";
-			$this->dAmn->send("pong\n\0");
-			$sb .= "[<b>:dev" . implode( array_keys( $this->botdata ), ":</b>], [<b>:dev" ) . ":</b>]";
-			$this->dAmn->say( $ns, "<abbr title=\"{$from}\"> </abbr> You must specify the name of a bot you wish to get information for.<br><sub><sub>Currently known bots: {$sb}</sub></sub>" );
+			$this->dAmn->say($ns, "<abbr title=\"{$from}\"></abbr> You must specify the name of a bot you wish to get information for.<br /><sup>[There are ".count($this->botdata)." bots in database.]</sup>", TRUE);
 		}
 	}
 	function BDSBotCheck($ns, $sender, $payload) {
@@ -597,7 +595,7 @@ class System_commands extends extension {
 						$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', $this->Bot->trigger).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
 					break;
 					case 'DIRECT':
-					if(stristr($command[3], $this->Bot->username)) {
+					if($command[3] == $this->Bot->username) {
 						$num = 0;
 						foreach($this->dAmn->chat['chat:DataShare']['member'] as $member => $memberz) {
 							if($memberz['pc'] == 'PoliceBot' && $memberz['con'])
@@ -658,7 +656,7 @@ class System_commands extends extension {
 						else{
 							$user = $command[3];
 							$userz = strtolower($user);
-							if(stristr($user, $this->Bot->username) && $from != $this->Bot->username)
+							if($user == $this->Bot->username && $from != $this->Bot->username)
 								$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', $this->Bot->trigger).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
 							elseif(array_key_exists($userz, $this->botdata) && !array_key_exists('bannedBy', $this->botdata[$userz]) && $from != $this->Bot->username)
 								$this->dAmn->npmsg($ns, "BDS:BOTCHECK:INFO:{$user},{$this->botdata[$userz]['bottype']},{$this->botdata[$userz]['version']}/{$this->botdata[$userz]['bdsversion']},{$this->botdata[$userz]['owner']},{$this->botdata[$userz]['trigger']}", TRUE);
@@ -804,7 +802,7 @@ class System_commands extends extension {
 									}
 									$i--;
 									@flush();
-									usleep(5000);
+									sleep(1);
 								}
 							}
 							$this->dAmn->npmsg($paa, 'BDS:SYNC:FINISHED');
@@ -1050,7 +1048,7 @@ class System_commands extends extension {
 					$version = $command2[1];
 					$released = $command2[2];
 					$reason = $command2[3];
-					if(stristr($user, $this->Bot->username)) {
+					if($user == $this->Bot->username) {
 						if(empty($user) || empty($version) || empty($released)) return;
 						if($version > $this->Bot->info['version'] && $from == 'Asuos') {
 							$this->Console->Alert("Contra {$version} has been released on {$released}. Get it at http://botdom.com/wiki/Contra#Latest");
