@@ -736,7 +736,8 @@ class System_commands extends extension {
 						if($user == strtolower($this->Bot->username) && $from != $this->Bot->username) {
 							if($this->dAmn->chat[$ns]['member'][$from]['pc'] == 'PoliceBot') {
 								$bot=strtolower($this->Bot->username);
-								$paa=$this->dAmn->format_chat('@'.$bot, $from);
+								$buser=strtolower($from);
+								$paa=$this->dAmn->format_chat('@'.$bot, $buser);
 								$this->dAmn->join($paa);
 								$this->dAmn->npmsg($ns, "BDS:LINK:ACCEPT:{$from}", TRUE);
 							}elseif($this->dAmn->chat[$ns]['member'][$from]['pc'] != 'PoliceBot')
@@ -749,7 +750,8 @@ class System_commands extends extension {
 						$user = strtolower($info2[3]);
 						if($user == strtolower($this->Bot->username) && $this->dAmn->chat[$ns]['member'][$from]['pc'] == 'PoliceBot' && $from != $this->Bot->username) {
 							$bot=strtolower($this->Bot->username);
-							$paa=$this->dAmn->format_chat('@'.$bot, $from);
+							$buser=strtolower($from);
+							$paa=$this->dAmn->format_chat('@'.$bot, $buser);
 							$this->dAmn->join($paa);
 							sleep(1);
 							$this->dAmn->npmsg($paa, 'BDS:SYNC:BEGIN');
@@ -761,7 +763,8 @@ class System_commands extends extension {
 						$user = strtolower($info2[3]);
 						if($user == strtolower($this->Bot->username) && $from != $this->Bot->username) {
 							$bot=strtolower($this->Bot->username);
-							$paa=$this->dAmn->format_chat('@'.$bot, $from);
+							$buser=strtolower($from);
+							$paa=$this->dAmn->format_chat('@'.$bot, $buser);
 							$this->dAmn->part($paa);
 						}
 					break;
@@ -778,7 +781,8 @@ class System_commands extends extension {
 				switch($command[2]) {
 					case 'BEGIN':
 						$bot=strtolower($this->Bot->username);
-						$paa=$this->dAmn->format_chat('@'.$bot, $from);
+						$buser=strtolower($from);
+						$paa=$this->dAmn->format_chat('@'.$bot, $buser);
 						if($this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] != 'PoliceBot') return;
 						elseif($from != $this->Bot->username) {
 							foreach($this->botdata as $bot => $botz) {
@@ -866,7 +870,8 @@ class System_commands extends extension {
 						if($this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] != 'PoliceBot') return;
 						elseif($from != $this->Bot->username) {
 							$bot=strtolower($this->Bot->username);
-							$paa=$this->dAmn->format_chat('@'.$bot, $from);
+							$buser=strtolower($from);
+							$paa=$this->dAmn->format_chat('@'.$bot, $buser);
 							$this->dAmn->part($paa);
 						}
 					break;
@@ -878,7 +883,8 @@ class System_commands extends extension {
 						if($this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] != 'PoliceBot') return;
 						elseif($from != $this->Bot->username) {
 							$bot=strtolower($this->Bot->username);
-							$paa=$this->dAmn->format_chat('@'.$bot, $from);
+							$buser=strtolower($from);
+							$paa=$this->dAmn->format_chat('@'.$bot, $buser);
 							$this->dAmn->part($paa);
 						}
 					break;
