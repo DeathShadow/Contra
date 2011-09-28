@@ -104,67 +104,54 @@ class dAmn_commands extends extension {
 	function c_say($ns, $from, $message, $target) { $this->dAmn->say($target,args($message,1,true)); }
 	function c_promote($ns, $from, $message, $target) {
 		$user = args($message,1);
-		if(empty($user)) {
-			$this->dAmn->say($ns, $from.': Usage: '.$this->Bot->trigger.'promote (user) [privclass]');
-			return;
-		} $pc = args($message, 2); $pc = $pc==''?false:$pc;
+		if(empty($user))
+			return $this->dAmn->say($ns, $from.': Usage: '.$this->Bot->trigger.'promote (user) [privclass]');
+		$pc = args($message, 2); $pc = $pc==''?false:$pc;
 		$this->dAmn->promote($target, $user, $pc);
 	}
 	function c_demote($ns, $from, $message, $target) {
 		$user = args($message,1);
-		if(empty($user)) {
-			$this->dAmn->say($ns, $from.': Usage: '.$this->Bot->trigger.'demote (user) [privclass]');
-			return;
-		} $pc = args($message, 2); $pc = $pc==''?false:$pc;
+		if(empty($user))
+			return $this->dAmn->say($ns, $from.': Usage: '.$this->Bot->trigger.'demote (user) [privclass]');
+		$pc = args($message, 2); $pc = $pc==''?false:$pc;
 		$this->dAmn->demote($target, $user, $pc);
 	}
 	function c_kick($ns, $from, $message, $target) {
 		$user = args($message,1);
-		if(empty($user)) {
-			$this->dAmn->say($ns, $from.': Usage: '.$this->Bot->trigger.'kick (user) [reason]');
-			return;
-		} $r = args($message, 2, true); $r = $r==''?false:$r;
+		if(empty($user))
+			return $this->dAmn->say($ns, $from.': Usage: '.$this->Bot->trigger.'kick (user) [reason]');
+		$r = args($message, 2, true); $r = $r==''?false:$r;
 		$this->dAmn->kick($target, $user, $r);
 	}
 	function c_ban($ns, $from, $message, $target) {
 		$user = args($message,1);
-		if(empty($user)) {
-			$this->dAmn->say($ns, $from.': Usage: '.$this->Bot->trigger.'ban (user)');
-			return;
-		}
+		if(empty($user))
+			return $this->dAmn->say($ns, $from.': Usage: '.$this->Bot->trigger.'ban (user)');
 		$this->dAmn->ban($target, $user);
 	}
 	function c_unban($ns, $from, $message, $target) {
 		$user = args($message,1);
-		if(empty($user)) {
-			$this->dAmn->say($ns, $from.': Usage: '.$this->Bot->trigger.'unban (user)');
-			return;
-		}
+		if(empty($user))
+			return $this->dAmn->say($ns, $from.': Usage: '.$this->Bot->trigger.'unban (user)');
 		$this->dAmn->unban($target, $user);
 	}
 	function c_get($ns, $from, $message, $target) {
 		$prop = args($message,1);
-		if(empty($prop)) {
-			$this->dAmn->say($ns, $from.': Usage: '.$this->Bot->trigger.'get (property)');
-			return;
-		}
+		if(empty($prop))
+			return $this->dAmn->say($ns, $from.': Usage: '.$this->Bot->trigger.'get (property)');
 		$this->dAmn->get($target, $prop);
 	}
 	function c_set($ns, $from, $message, $target) {
 		$prop = args($message,1);
 		$val = args($message,2,true);
-		if(empty($prop) || empty($val)) {
-			$this->dAmn->say($ns, $from.': Usage: '.$this->Bot->trigger.'set (property) (value)');
-			return;
-		}
+		if(empty($prop) || empty($val))
+			return $this->dAmn->say($ns, $from.': Usage: '.$this->Bot->trigger.'set (property) (value)');
 		$this->dAmn->set($target, $prop, $val);
 	}
 	function c_admin($ns, $from, $message, $target) {
 		$com = args($message,1,true);
-		if(empty($com)) {
-			$this->dAmn->say($ns, $from.': Usage: '.$this->Bot->trigger.'admin (command)');
-			return;
-		}
+		if(empty($com))
+			return $this->dAmn->say($ns, $from.': Usage: '.$this->Bot->trigger.'admin (command)');
 		$this->dAmn->admin($target,$com);
 	}
 	function c_raw($ns, $from, $message, $target) { $this->dAmn->send(str_replace('\n', LBR, args($message, 1, true))); }
@@ -184,12 +171,8 @@ class dAmn_commands extends extension {
 	}
 
 	function e_kicked($ns, $from, $r = false) {
-		if($r!==false) {
-			if(strpos(strtolower($r),'autokicked')!==false
-			|| strpos(strtolower($r),'not privileged')!==false) {
-				return;
-			}
-		}
+		if($r!==false)
+			if(strpos(strtolower($r),'autokicked')!==false || strpos(strtolower($r),'not privileged')!==false) return;
 		$this->Console->Notice('Attempting to rejoin '.$this->dAmn->deform_chat($ns,$this->Bot->username).'.');
 		$this->dAmn->join($ns);
 	}
@@ -203,10 +186,8 @@ class dAmn_commands extends extension {
 
 	function c_members($ns, $from, $message, $target) {
 		$chan = $this->dAmn->is_channel($target);
-		if($chan===false) {
-			$this->dAmn->say($ns, $from.': I have not joined '.$this->dAmn->deform_chat($target, $this->Bot->username).'.');
-			return;
-		}
+		if($chan===false)
+			return $this->dAmn->say($ns, $from.': I have not joined '.$this->dAmn->deform_chat($target, $this->Bot->username).'.');
 		$type = strtolower(args($message,1));
 		switch($type) {
 			case 'inline':
