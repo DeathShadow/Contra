@@ -7,4 +7,4 @@ fi
 if [ -n "$(readlink --version 2>/dev/null | grep "GNU")" ]; then cd "$(dirname "$(readlink -f "$0")")";
 elif [ -e "$(which realpath)" ]; then cd "$(dirname "$(realpath "$0")")";
 else cd "$(dirname "${BASH_SOURCE[0]}")"; fi
-./RUN-Contra.sh --debug
+./RUN-Contra.command --debug
