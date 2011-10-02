@@ -51,13 +51,13 @@
 	}
 	// Also make sure date.timezone is set. If not, kill the program.
 	if(!ini_get('date.timezone')) {
-		echo '>> WARNING: You didn\'t setup php properly. (date.timezone not set)',chr(10);
+		echo '>> WARNING: You didn\'t setup php properly. (date.timezone is not set)',chr(10);
 		if(PHP_OS == 'WIN32' || PHP_OS == 'WINNT' || PHP_OS == 'Windows')
-			echo '>> Re-read the Install PHP guide @ http://botdom.com/documentation/Install_PHP_on_Windows',chr(10),'>> ';
+			echo '>> Re-read the Install PHP guide @ http://botdom.com/documentation/Install_PHP_on_Windows#Part_2 (Do/redo step 7-9)',chr(10),'>> ';
 		if(PHP_OS == 'Linux')
-			echo '>> Re-read the Install PHP guide @ http://botdom.com/documentation/Install_PHP_on_Linux',chr(10),'>> ';
+			echo '>> Re-read the Install PHP guide @ http://botdom.com/documentation/Install_PHP_on_Linux#PHP_configure_setup (Do/redo step 2-4)',chr(10),'>> ';
 		if(PHP_OS == 'Darwin')
-			echo '>> Re-read the Install PHP guide @ http://botdom.com/documentation/Install_PHP_on_Mac_OS_X',chr(10),'>> ';
+			echo '>> Re-read the Install PHP guide @ http://botdom.com/documentation/Install_PHP_on_Mac_OS_X#PHP_configure_setup (Do/redo step 2-4)',chr(10),'>> ';
 		for($i = 0;$i < 3; ++$i) {
 			sleep(1);
 			echo '.';
