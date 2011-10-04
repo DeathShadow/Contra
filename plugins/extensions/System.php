@@ -629,7 +629,7 @@ class System_commands extends extension {
 						$user = $info2[3];
 						$userz = strtolower($user);
 						if($this->dAmn->chat[$ns]['member'][$from]['pc'] != 'PoliceBot') return;
-						elseif($from != $this->Bot->username && !array_key_exists('bannedBy', $this->botdata[$userz])){
+						elseif($from != $this->Bot->username && is_array($this->botdata[$userz]) && !array_key_exists('bannedBy', $this->botdata[$userz])){
 							$bottype = $info[1];
 							$versions = explode('/', $info[2]);
 							$botowner = $info[3];
