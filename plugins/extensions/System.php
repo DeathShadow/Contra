@@ -89,7 +89,6 @@ class System_commands extends extension {
 		$this->hook('e_botKickTimer', 'botKickTimer');
 		$this->hook('e_banned', 'recv_privchg');
 		$this->hook('bdsmain', 'recv_msg');
-		$this->hook('pchatbds', 'recv_msg');
 		$this->hook('codsmain', 'recv_msg');
 		$this->hook('load_switches', 'startup');
 
