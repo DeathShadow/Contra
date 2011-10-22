@@ -49,7 +49,7 @@ class System_commands extends extension {
 		$this->addCmd($mods, 'c_modules');
 		$this->addCmd($mod, 'c_module', 99);
 		$this->addCmd('users', 'c_users');
-		$this->addCmd('user', 'c_user', 75);
+		$this->addCmd('user', 'c_user', 100);
 		$this->addCmd($aj, 'c_autojoin', 99);
 		$this->addCmd('ctrig', 'c_trigger', 100);
 		$this->addCmd($e, 'c_eval',100);
