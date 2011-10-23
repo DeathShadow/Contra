@@ -443,47 +443,9 @@ class System_commands extends extension {
 		$splitted = explode(',', $payload, 6);
 		if(count($splitted) !== 6) return;
 		$store = $this->store($splitted, $sender);
-		if($store) {
-			$members = array_change_key_case($this->dAmn->chat[$ns]['member']);
-			if($members[$this->Bot->username]['pc'] == 'PoliceBot') {
-				if(array_key_exists(strtolower($sender), $this->botBanTimers)) {
-					$this->Timer->delEvent($this->botBanTimers[$sender]);
-					unset($this->botBanTimers[$sender]);
-				}elseif($this->dAmn->chat[$ns]['member'][$sender]['pc'] == 'Clients')
-					$this->dAmn->promote($ns, $sender, 'Bots');
-			}
-		}else return;
-	}
-	function BDSClientCheck($ns, $sender, $payload) {
-		$splitted = explode(',', $payload, 4);
-		if(count($splitted) != 4) return;
-		if($this->verifyclient($splitted, $sender)) {
-			$members = array_change_key_case($this->dAmn->chat[$ns]['member']);
-			if($members[$this->Bot->username]['pc'] == 'PoliceBot') {
-				if(array_key_exists(strtolower($sender), $this->botBanTimers)) {
-					$this->Timer->delEvent($this->botBanTimers[$sender]);
-					unset($this->botBanTimers[$sender]);
-				}elseif($this->dAmn->chat[$ns]['member'][$sender]['pc'] == 'Bots')
-					$this->dAmn->promote($ns, $sender, 'Clients');
-			}
-		}else return;
 	}
 	function bds_recv($ns, $from, $message) {
 		if(strtolower($ns) == 'chat:datashare') {
-			$members = array_change_key_case($this->dAmn->chat[$ns]['member']);
-			if($members[$this->Bot->username]['pc'] == 'PoliceBot') {
-				if($this->dAmn->chat[$ns]['member'][$from]['pc'] == 'Bots' || $this->dAmn->chat[$ns]['member'][$from]['pc'] == 'Clients') {
-					if(preg_match($this->validBDS, $message) == 0 && stristr(args($message, 0), 'part')) {
-						$this->dAmn->kick($ns, $from, 'FAILURE TO READ THE TOPIC. Banned. <abbr title="(autokicked)"></abbr>');
-						$this->dAmn->ban($ns, $from);
-					}elseif(preg_match($this->validBDS, $message) == 0 && !stristr(args($message, 0), 'part')) {
-						$this->dAmn->kick($ns, $from, 'Malformed BDS protocol message.  If you are not a bot, please do not join this room. Thanks. <abbr title="(autokicked)"></abbr>');
-						$ts = time() - $this->kicks[$from];
-						if ($ts < 1*60) $this->dAmn->demote($ns, $from, 'Silenced');
-						$this->kicks[$from] = time();
-					}
-				}
-			}
 			$parts = explode(':', $message, 4);
 			if($parts[0] == 'BDS' && $parts[1] == 'BOTCHECK' && $parts[2] == 'RESPONSE')
 				$this->BDSBotCheck($ns, $from, $parts[3]);
@@ -538,35 +500,6 @@ class System_commands extends extension {
 		unset($this->botKickTimers[strtolower($from)]);
 		return true;
 	}
-	function verifyclient($data, $from) {
-		if(count($data) < 4) return false;
-
-		// Now, we have to recreate the hash
-		$sig = md5(strtolower($data[1].$data[2].$from.$data[0]));
-
-		if($sig !== $data[3]) return false;
-
-		// Hash check passed.
-		unset($this->botKickTimers[strtolower($from)]);
-		return true;
-	}
-	function bds_join($ns, $from, $message) {
-		if(strtolower($ns) == 'chat:datashare') {
-			$members = array_change_key_case($this->dAmn->chat[$ns]['member']);
-			if($members[$this->Bot->username]['pc'] == 'PoliceBot') {
-				if($this->dAmn->chat[$ns]['member'][$from]['pc'] == 'Bots' || $this->dAmn->chat[$ns]['member'][$from]['pc'] == 'Clients')
-					$this->botKickTimers[strtolower($from)] = $this->Timer->addEvt($this->name, 30, strtolower($from), 'botKickTimer', false);
-				if($this->dAmn->chat[$ns]['member'][$from]['pc'] == 'Bots' || $this->dAmn->chat[$ns]['member'][$from]['pc'] == 'Clients' || $this->dAmn->chat[$ns]['member'][$from]['pc'] == 'PoliceBot')
-					$this->dAmn->npmsg($ns, "BDS:BOTCHECK:DIRECT:{$from}", true);
-			}
-		}
-	}
-	function e_botKickTimer($who) {
-		if(empty($this->botKickTimers[$who])) return;
-		if(strtolower($who) == strtolower($this->Bot->username)) return;
-		$this->dAmn->kick('chat:datashare', $from, 'No response to or invaild BDS:BOTCHECK. If you are not a bot, please do not join this room. Thanks.');
-		echo "{$from} hasn't responded after 30 seconds.  Kickin'.\n";
-	}
 	function e_banned($ns, $user, $by, $npc) {
 		$bot = strtolower($user);
 		if($ns == 'chat:DataShare' && !empty($this->botdata[$bot]) && $npc == 'Banned') {
@@ -584,9 +517,6 @@ class System_commands extends extension {
 			);
 			ksort($this->botdata, SORT_STRING);
 			$this->save_botdata();
-			$members = array_change_key_case($this->dAmn->chat[$ns]['member']);
-			if($members[$this->Bot->username]['pc'] == 'PoliceBot')
-				$this->dAmn->npmsg($ns, "BDS:BOTCHECK:BADBOT:{$user},{$this->botdata[$bot]['owner']},{$this->botdata[$bot]['bottype']},{$this->botdata[$bot]['version']},{$this->botdata[$bot]['status']},{$this->botdata[$bot]['bannedBy']},{$this->botdata[$bot]['lastupdate']},{$this->botdata[$bot]['trigger']}", TRUE);
 		}
 	}
 	function bdsmain($ns, $from, $message) {
@@ -602,93 +532,6 @@ class System_commands extends extension {
 					case 'DIRECT':
 						if(strtolower($command[3]) == strtolower($this->Bot->username))
 						$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', $this->Bot->trigger).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
-					break;
-					case 'REQUEST':
-						$user = $command[3];
-						$userz = strtolower($user);
-						if(empty($user)) return;
-						$members = array_change_key_case($this->dAmn->chat[$ns]['member']);
-						if($members[$this->Bot->username]['pc'] != 'PoliceBot') return;
-						elseif(array_key_exists($userz, $this->botdata) && !array_key_exists('bannedBy', $this->botdata[$userz]) && strtolower($from) != strtolower($this->Bot->username))
-							$this->dAmn->npmsg($ns, "BDS:BOTCHECK:INFO:{$user},{$this->botdata[$userz]['bottype']},{$this->botdata[$userz]['version']}/{$this->botdata[$userz]['bdsversion']},{$this->botdata[$userz]['owner']},{$this->botdata[$userz]['trigger']}", TRUE);
-						elseif(array_key_exists($userz, $this->botdata) && array_key_exists('bannedBy', $this->botdata[$userz]) && strtolower($from) != strtolower($this->Bot->username))
-							$this->dAmn->npmsg($ns, "BDS:BOTCHECK:BADBOT:{$user},{$this->botdata[$userz]['owner']},{$this->botdata[$userz]['bottype']},{$this->botdata[$userz]['version']},{$this->botdata[$userz]['status']},{$this->botdata[$userz]['bannedBy']},{$this->botdata[$userz]['lastupdate']},{$this->botdata[$userz]['trigger']}", TRUE);
-						elseif(strtolower($from) != strtolower($this->Bot->username))
-							$this->dAmn->npmsg($ns, "BDS:BOTCHECK:NODATA:{$user}", TRUE);
-					break;
-					case 'INFO':
-						$info = explode(',', $message);
-						$info2 = explode(':', $info[0]);
-						$user = $info2[3];
-						$userz = strtolower($user);
-						$members = array_change_key_case($this->dAmn->chat[$ns]['member']);
-						if($members[$this->Bot->username]['pc'] != 'PoliceBot') return;
-						elseif(strtolower($from) != strtolower($this->Bot->username) && is_array($this->botdata[$userz]) && !array_key_exists('bannedBy', $this->botdata[$userz])){
-							$bottype = $info[1];
-							$versions = explode('/', $info[2]);
-							$botowner = $info[3];
-							$trigger = $info[4];
-
-							$this->botdata[$userz] = array(
-								'requestedBy'	=> $from,
-								'owner'		=> $botowner,
-								'trigger'	=> $trigger,
-								'bottype'	=> $bottype,
-								'version'	=> $versions[0],
-								'bdsversion'	=> $versions[1],
-								'actualname'	=> $user,
-								'bot'		=> true,
-								'lasthash'	=> 'Updated by a police bot.',
-								'lastupdate'	=> time() - (int)substr(date('O'),0,3)*60*60,
-							);
-							ksort($this->botdata, SORT_STRING);
-							$this->save_botdata();
-						}
-					break;
-					case 'NODATA':
-						$members = array_change_key_case($this->dAmn->chat[$ns]['member']);
-						if($members[$this->Bot->username]['pc'] != 'PoliceBot') return;
-						else{
-							$user = $command[3];
-							$userz = strtolower($user);
-							if($userz == strtolower($this->Bot->username) && strtolower($from) != strtolower($this->Bot->username))
-								$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', $this->Bot->trigger).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
-							elseif(array_key_exists($userz, $this->botdata) && !array_key_exists('bannedBy', $this->botdata[$userz]) && strtolower($from) != strtolower($this->Bot->username))
-								$this->dAmn->npmsg($ns, "BDS:BOTCHECK:INFO:{$user},{$this->botdata[$userz]['bottype']},{$this->botdata[$userz]['version']}/{$this->botdata[$userz]['bdsversion']},{$this->botdata[$userz]['owner']},{$this->botdata[$userz]['trigger']}", TRUE);
-							elseif(array_key_exists($userz, $this->botdata) && array_key_exists('bannedBy', $this->botdata[$userz]) && strtolower($from) != strtolower($this->Bot->username))
-								$this->dAmn->npmsg($ns, "BDS:BOTCHECK:BADBOT:{$user},{$this->botdata[$userz]['owner']},{$this->botdata[$userz]['bottype']},{$this->botdata[$userz]['version']},{$this->botdata[$userz]['status']},{$this->botdata[$userz]['bannedBy']},{$this->botdata[$userz]['lastupdate']},{$this->botdata[$userz]['trigger']}", TRUE);
-						}
-					break;
-					case 'BADBOT':
-						$members = array_change_key_case($this->dAmn->chat[$ns]['member']);
-						if($members[$this->Bot->username]['pc'] != 'PoliceBot') return;
-						elseif(strtolower($from) != strtolower($this->Bot->username)) {
-							$info = explode(',', $message);
-							$info2 = explode(':', $info[0]);
-							$user = $info2[3];
-							$userz = strtolower($user);
-							$bottype = $info[2];
-							$version = $info[3];
-							$status = $info[4];
-							$botowner = $info[1];
-							$bannedby = $info[5];
-							$lastupdate = $info[6];
-							$trigger = $info[7];
-
-							$this->botdata[$userz] = array(
-								'bannedBy'	=> $bannedby,
-								'owner'		=> $botowner,
-								'trigger'	=> $trigger,
-								'bottype'	=> $bottype,
-								'version'	=> $version,
-								'status'	=> $status,
-								'actualname'	=> $user,
-								'bot'		=> true,
-								'lastupdate'	=> intval($lastupdate),
-							);
-							ksort($this->botdata, SORT_STRING);
-							$this->save_botdata();
-						}
 					break;
 				}
 				break;
