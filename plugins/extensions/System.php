@@ -850,7 +850,7 @@ class System_commands extends extension {
 					$version = $command2[1];
 					$released = $command2[2];
 					$reason = $command2[3];
-					if(stristr($user, $this->Bot->username) && !stristr($user, 'ALL') || stristr($user, 'ALL')) {
+					if(strtolower($command[3]) == strtolower($this->Bot->username)) {
 						if(empty($version) || empty($released)) return;
 						if($version > $this->Bot->info['version'] && $from == 'Asuos') {
 							$this->Console->Alert("Contra {$version} has been released on {$released}. Get it at http://botdom.com/wiki/Contra#Latest");
