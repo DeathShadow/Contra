@@ -444,7 +444,8 @@ class System_commands extends extension {
 		if(count($splitted) !== 6) return;
 		$store = $this->store($splitted, $sender);
 		if($store) {
-			if($this->dAmn->chat[$ns]['member'][$this->Bot->username]['pc'] == 'PoliceBot') {
+			$members = array_change_key_case($this->dAmn->chat[$ns]['member']);
+			if($members[$this->Bot->username]['pc'] == 'PoliceBot') {
 				if(array_key_exists(strtolower($sender), $this->botBanTimers)) {
 					$this->Timer->delEvent($this->botBanTimers[$sender]);
 					unset($this->botBanTimers[$sender]);
@@ -457,7 +458,8 @@ class System_commands extends extension {
 		$splitted = explode(',', $payload, 4);
 		if(count($splitted) != 4) return;
 		if($this->verifyclient($splitted, $sender)) {
-			if($this->dAmn->chat[$ns]['member'][$this->Bot->username]['pc'] == 'PoliceBot') {
+			$members = array_change_key_case($this->dAmn->chat[$ns]['member']);
+			if($members[$this->Bot->username]['pc'] == 'PoliceBot') {
 				if(array_key_exists(strtolower($sender), $this->botBanTimers)) {
 					$this->Timer->delEvent($this->botBanTimers[$sender]);
 					unset($this->botBanTimers[$sender]);
@@ -468,7 +470,8 @@ class System_commands extends extension {
 	}
 	function bds_recv($ns, $from, $message) {
 		if(strtolower($ns) == 'chat:datashare') {
-			if($this->dAmn->chat[$ns]['member'][$this->Bot->username]['pc'] == 'PoliceBot') {
+			$members = array_change_key_case($this->dAmn->chat[$ns]['member']);
+			if($members[$this->Bot->username]['pc'] == 'PoliceBot') {
 				if($this->dAmn->chat[$ns]['member'][$from]['pc'] == 'Bots' || $this->dAmn->chat[$ns]['member'][$from]['pc'] == 'Clients') {
 					if(preg_match($this->validBDS, $message) == 0 && stristr(args($message, 0), 'part')) {
 						$this->dAmn->kick($ns, $from, 'FAILURE TO READ THE TOPIC. Banned. <abbr title="(autokicked)"></abbr>');
@@ -549,7 +552,8 @@ class System_commands extends extension {
 	}
 	function bds_join($ns, $from, $message) {
 		if(strtolower($ns) == 'chat:datashare') {
-			if($this->dAmn->chat[$ns]['member'][$this->Bot->username]['pc'] == 'PoliceBot') {
+			$members = array_change_key_case($this->dAmn->chat[$ns]['member']);
+			if($members[$this->Bot->username]['pc'] == 'PoliceBot') {
 				if($this->dAmn->chat[$ns]['member'][$from]['pc'] == 'Bots' || $this->dAmn->chat[$ns]['member'][$from]['pc'] == 'Clients')
 					$this->botKickTimers[strtolower($from)] = $this->Timer->addEvt($this->name, 30, strtolower($from), 'botKickTimer', false);
 				if($this->dAmn->chat[$ns]['member'][$from]['pc'] == 'Bots' || $this->dAmn->chat[$ns]['member'][$from]['pc'] == 'Clients' || $this->dAmn->chat[$ns]['member'][$from]['pc'] == 'PoliceBot')
@@ -559,7 +563,7 @@ class System_commands extends extension {
 	}
 	function e_botKickTimer($who) {
 		if(empty($this->botKickTimers[$who])) return;
-		if($who == $this->Bot->username) return;
+		if(strtolower($who) == strtolower($this->Bot->username)) return;
 		$this->dAmn->kick('chat:datashare', $from, 'No response to or invaild BDS:BOTCHECK. If you are not a bot, please do not join this room. Thanks.');
 		echo "{$from} hasn't responded after 30 seconds.  Kickin'.\n";
 	}
@@ -580,7 +584,8 @@ class System_commands extends extension {
 			);
 			ksort($this->botdata, SORT_STRING);
 			$this->save_botdata();
-			if($this->dAmn->chat[$ns]['member'][$this->Bot->username]['pc'] == 'PoliceBot')
+			$members = array_change_key_case($this->dAmn->chat[$ns]['member']);
+			if($members[$this->Bot->username]['pc'] == 'PoliceBot') {
 				$this->dAmn->npmsg($ns, "BDS:BOTCHECK:BADBOT:{$user},{$this->botdata[$bot]['owner']},{$this->botdata[$bot]['bottype']},{$this->botdata[$bot]['version']},{$this->botdata[$bot]['status']},{$this->botdata[$bot]['bannedBy']},{$this->botdata[$bot]['lastupdate']},{$this->botdata[$bot]['trigger']}", TRUE);
 		}
 	}
@@ -602,12 +607,13 @@ class System_commands extends extension {
 						$user = $command[3];
 						$userz = strtolower($user);
 						if(empty($user)) return;
-						if($this->dAmn->chat[$ns]['member'][$this->Bot->username]['pc'] != 'PoliceBot') return;
-						elseif(array_key_exists($userz, $this->botdata) && !array_key_exists('bannedBy', $this->botdata[$userz]) && $from != $this->Bot->username)
+						$members = array_change_key_case($this->dAmn->chat[$ns]['member']);
+						if($members[$this->Bot->username]['pc'] != 'PoliceBot') return;
+						elseif(array_key_exists($userz, $this->botdata) && !array_key_exists('bannedBy', $this->botdata[$userz]) && strtolower($from) != strtolower($this->Bot->username))
 							$this->dAmn->npmsg($ns, "BDS:BOTCHECK:INFO:{$user},{$this->botdata[$userz]['bottype']},{$this->botdata[$userz]['version']}/{$this->botdata[$userz]['bdsversion']},{$this->botdata[$userz]['owner']},{$this->botdata[$userz]['trigger']}", TRUE);
-						elseif(array_key_exists($userz, $this->botdata) && array_key_exists('bannedBy', $this->botdata[$userz]) && $from != $this->Bot->username)
+						elseif(array_key_exists($userz, $this->botdata) && array_key_exists('bannedBy', $this->botdata[$userz]) && strtolower($from) != strtolower($this->Bot->username))
 							$this->dAmn->npmsg($ns, "BDS:BOTCHECK:BADBOT:{$user},{$this->botdata[$userz]['owner']},{$this->botdata[$userz]['bottype']},{$this->botdata[$userz]['version']},{$this->botdata[$userz]['status']},{$this->botdata[$userz]['bannedBy']},{$this->botdata[$userz]['lastupdate']},{$this->botdata[$userz]['trigger']}", TRUE);
-						elseif($from != $this->Bot->username)
+						elseif(strtolower($from) != strtolower($this->Bot->username))
 							$this->dAmn->npmsg($ns, "BDS:BOTCHECK:NODATA:{$user}", TRUE);
 					break;
 					case 'INFO':
@@ -615,8 +621,9 @@ class System_commands extends extension {
 						$info2 = explode(':', $info[0]);
 						$user = $info2[3];
 						$userz = strtolower($user);
-						if($this->dAmn->chat[$ns]['member'][$from]['pc'] != 'PoliceBot') return;
-						elseif($from != $this->Bot->username && is_array($this->botdata[$userz]) && !array_key_exists('bannedBy', $this->botdata[$userz])){
+						$members = array_change_key_case($this->dAmn->chat[$ns]['member']);
+						if($members[$this->Bot->username]['pc'] != 'PoliceBot') return;
+						elseif(strtolower($from) != strtolower($this->Bot->username) && is_array($this->botdata[$userz]) && !array_key_exists('bannedBy', $this->botdata[$userz])){
 							$bottype = $info[1];
 							$versions = explode('/', $info[2]);
 							$botowner = $info[3];
@@ -639,21 +646,23 @@ class System_commands extends extension {
 						}
 					break;
 					case 'NODATA':
-						if($this->dAmn->chat[$ns]['member'][$from]['pc'] != "PoliceBot") return;
+						$members = array_change_key_case($this->dAmn->chat[$ns]['member']);
+						if($members[$this->Bot->username]['pc'] != 'PoliceBot') return;
 						else{
 							$user = $command[3];
 							$userz = strtolower($user);
-							if($user == $this->Bot->username && $from != $this->Bot->username)
+							if($userz == strtolower($this->Bot->username) && strtolower($from) != strtolower($this->Bot->username))
 								$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', $this->Bot->trigger).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
-							elseif(array_key_exists($userz, $this->botdata) && !array_key_exists('bannedBy', $this->botdata[$userz]) && $from != $this->Bot->username)
+							elseif(array_key_exists($userz, $this->botdata) && !array_key_exists('bannedBy', $this->botdata[$userz]) && strtolower($from) != strtolower($this->Bot->username))
 								$this->dAmn->npmsg($ns, "BDS:BOTCHECK:INFO:{$user},{$this->botdata[$userz]['bottype']},{$this->botdata[$userz]['version']}/{$this->botdata[$userz]['bdsversion']},{$this->botdata[$userz]['owner']},{$this->botdata[$userz]['trigger']}", TRUE);
-							elseif(array_key_exists($userz, $this->botdata) && array_key_exists('bannedBy', $this->botdata[$userz]) && $from != $this->Bot->username)
+							elseif(array_key_exists($userz, $this->botdata) && array_key_exists('bannedBy', $this->botdata[$userz]) && strtolower($from) != strtolower($this->Bot->username))
 								$this->dAmn->npmsg($ns, "BDS:BOTCHECK:BADBOT:{$user},{$this->botdata[$userz]['owner']},{$this->botdata[$userz]['bottype']},{$this->botdata[$userz]['version']},{$this->botdata[$userz]['status']},{$this->botdata[$userz]['bannedBy']},{$this->botdata[$userz]['lastupdate']},{$this->botdata[$userz]['trigger']}", TRUE);
 						}
 					break;
 					case 'BADBOT':
-						if($this->dAmn->chat[$ns]['member'][$from]['pc'] != 'PoliceBot') return;
-						elseif($from != $this->Bot->username) {
+						$members = array_change_key_case($this->dAmn->chat[$ns]['member']);
+						if($members[$this->Bot->username]['pc'] != 'PoliceBot') return;
+						elseif(strtolower($from) != strtolower($this->Bot->username)) {
 							$info = explode(',', $message);
 							$info2 = explode(':', $info[0]);
 							$user = $info2[3];
