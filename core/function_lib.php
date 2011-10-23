@@ -136,6 +136,8 @@
 		);
 		foreach(array('username' => Null, 'password' => Null, 'trigger' => Null, 'owner' => Null) as $part => $s)
 			$config['info'][$part] = cmd_get_args('Bot '.$part, $s, ($part=='password'?true:false));
+		if(strstr($config['info']['owner'], ',') || strstr($config['info']['owner'], ' '))
+			die('Contra does not support multi-owners.'.chr(10));
 		echo '> Which channels would you like your bot to join? Separate with commas.'.chr(10);
 		$rooms = explode(',',cmd_in('> ', true));
 		foreach($rooms as $id => $room)
