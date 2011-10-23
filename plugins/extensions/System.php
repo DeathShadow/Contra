@@ -86,8 +86,6 @@ class System_commands extends extension {
 		$this->hook('e_trigcheck', 'recv_msg');
 		$this->hook('bds_join', 'recv_join');
 		$this->hook('bds_recv', 'recv_msg');
-		$this->hook('bds_recv', 'recv_action');
-		$this->hook('e_botKickTimer', 'botKickTimer');
 		$this->hook('e_banned', 'recv_privchg');
 		$this->hook('bdsmain', 'recv_msg');
 		$this->hook('codsmain', 'recv_msg');
