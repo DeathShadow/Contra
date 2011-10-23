@@ -846,7 +846,6 @@ class System_commands extends extension {
 				switch($command[2]) {
 					case 'NOTIFY':
 					$command2 = explode(',', $message, 5);
-					$user = $command[3];
 					$version = $command2[1];
 					$released = $command2[2];
 					$reason = $command2[3];
