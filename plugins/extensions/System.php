@@ -533,6 +533,69 @@ class System_commands extends extension {
 						if(strtolower($command[3]) == strtolower($this->Bot->username))
 						$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', $this->Bot->trigger).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
 					break;
+					case 'INFO':
+						$info = explode(',', $message);
+						$info2 = explode(':', $info[0]);
+						$user = $info2[3];
+						$userz = strtolower($user);
+						if($this->dAmn->chat[$ns]['member'][$from]['pc'] != 'PoliceBot') return;
+						elseif(strtolower($from) != strtolower($this->Bot->username) && is_array($this->botdata[$userz]) && !array_key_exists('bannedBy', $this->botdata[$userz])){
+							$bottype = $info[1];
+							$versions = explode('/', $info[2]);
+							$botowner = $info[3];
+							$trigger = $info[4];
+
+							$this->botdata[$userz] = array(
+								'requestedBy'	=> $from,
+								'owner'		=> $botowner,
+								'trigger'	=> $trigger,
+								'bottype'	=> $bottype,
+								'version'	=> $versions[0],
+								'bdsversion'	=> $versions[1],
+								'actualname'	=> $user,
+								'bot'		=> true,
+								'lasthash'	=> 'Updated by a police bot.',
+								'lastupdate'	=> time() - (int)substr(date('O'),0,3)*60*60,
+							);
+							ksort($this->botdata, SORT_STRING);
+							$this->save_botdata();
+						}
+					break;
+					case 'NODATA':
+						if($this->dAmn->chat[$ns]['member'][$from]['pc'] != 'PoliceBot') return;
+						elseif(strtolower($command[3]) == strtolower($this->Bot->username) && strtolower($from) != strtolower($this->Bot->username))
+							$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', $this->Bot->trigger).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
+					break;
+					case 'BADBOT':
+						if($this->dAmn->chat[$ns]['member'][$from]['pc'] != 'PoliceBot') return;
+						elseif(strtolower($from) != strtolower($this->Bot->username)) {
+							$info = explode(',', $message);
+							$info2 = explode(':', $info[0]);
+							$user = $info2[3];
+							$userz = strtolower($user);
+							$bottype = $info[2];
+							$version = $info[3];
+							$status = $info[4];
+							$botowner = $info[1];
+							$bannedby = $info[5];
+							$lastupdate = $info[6];
+							$trigger = $info[7];
+
+							$this->botdata[$userz] = array(
+								'bannedBy'	=> $bannedby,
+								'owner'		=> $botowner,
+								'trigger'	=> $trigger,
+								'bottype'	=> $bottype,
+								'version'	=> $version,
+								'status'	=> $status,
+								'actualname'	=> $user,
+								'bot'		=> true,
+								'lastupdate'	=> intval($lastupdate),
+							);
+							ksort($this->botdata, SORT_STRING);
+							$this->save_botdata();
+						}
+					break;
 				}
 				break;
 			}
