@@ -585,7 +585,7 @@ class System_commands extends extension {
 			ksort($this->botdata, SORT_STRING);
 			$this->save_botdata();
 			$members = array_change_key_case($this->dAmn->chat[$ns]['member']);
-			if($members[$this->Bot->username]['pc'] == 'PoliceBot') {
+			if($members[$this->Bot->username]['pc'] == 'PoliceBot')
 				$this->dAmn->npmsg($ns, "BDS:BOTCHECK:BADBOT:{$user},{$this->botdata[$bot]['owner']},{$this->botdata[$bot]['bottype']},{$this->botdata[$bot]['version']},{$this->botdata[$bot]['status']},{$this->botdata[$bot]['bannedBy']},{$this->botdata[$bot]['lastupdate']},{$this->botdata[$bot]['trigger']}", TRUE);
 		}
 	}
