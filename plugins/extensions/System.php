@@ -749,13 +749,24 @@ class System_commands extends extension {
 					case 'NOTIFY':
 					$command2 = explode(',', $message, 5);
 					$version = $command2[1];
-					$released = $command2[2];
-					$reason = $command2[3];
+					$downloadlink = $command2[2];
 					if(stristr($command[3], $this->Bot->username)) {
-						if(empty($version) || empty($released)) return;
+						if(empty($version) || empty($downloadlink)) return;
 						if($version > $this->Bot->info['version'] && $from == 'Asuos') {
-							$this->Console->Alert("Contra {$version} has been released on {$released}. Get it at http://botdom.com/wiki/Contra#Latest");
-							if(!empty($reason)) $this->Console->Alert($reason);
+							$file = file_get_contents($downloadlink);
+							$link = explode('/', $downloadlink);
+							$moo = fopen($link[4], 'w+');
+							$moo2 = fwrite($moo, $file);
+							fclose($moo);
+							$zip = new ZipArchive;
+							if($zip->open($link[4]) === TRUE) {
+								$zip->extractTo('./');
+								$zip->close();
+							}
+							unlink($link[4]);
+							$this->Bot->shutdownStr[0] = 'Bot has been updated.';
+							$this->dAmn->close=true;
+							$this->dAmn->disconnect();
 						}
 					}
 					break;
