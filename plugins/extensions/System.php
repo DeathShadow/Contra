@@ -447,8 +447,6 @@ class System_commands extends extension {
 			$parts = explode(':', $message, 4);
 			if($parts[0] == 'BDS' && $parts[1] == 'BOTCHECK' && $parts[2] == 'RESPONSE')
 				$this->BDSBotCheck($ns, $from, $parts[3]);
-			if($parts[0] == 'BDS' && $parts[1] == 'BOTCHECK' && $parts[2] == 'CLIENT')
-				$this->BDSClientCheck($ns, $from, $parts[3]);
 		}
 
 	}
