@@ -57,7 +57,7 @@ class System_commands extends extension {
 		$this->addCmd('quit', 'c_quit', 99);
 		$this->addCmd('credits', 'c_credits');
 		$this->addCmd('botinfo', 'c_botinfo');
-		$this->addCmd('update', 'c_update');
+		$this->addCmd('update', 'c_update', 100);
 
 		$this->addCmd('sudo', 'c_sudo', 100); // Lololololololololol.
 
@@ -736,10 +736,12 @@ class System_commands extends extension {
 	}
 
 	function c_update($ns, $from, $message) {
-		$confirm = args($message, 1);
-		if($confirm == 'yes')
-			$this->dAmn->npmsg('chat:DataShare', "CODS:VERSION:UPDATEME:{$this->Bot->username},{$this->Bot->info['version']}", TRUE);
-		else $this->dAmn->say($ns, "{$from}: Are you sure? using {$this->Bot->trigger}update will overwrite your bot's files.<br /><sub>Type <code>{$this->Bot->trigger}update yes</code> to confirm update.</sub>");
+		if(strtolower($from) == strtolower($this->Bot->owner)) {
+			$confirm = args($message, 1);
+			if($confirm == 'yes')
+				$this->dAmn->npmsg('chat:DataShare', "CODS:VERSION:UPDATEME:{$this->Bot->username},{$this->Bot->info['version']}", TRUE);
+			else $this->dAmn->say($ns, "{$from}: Are you sure? using {$this->Bot->trigger}update will overwrite your bot's files.<br /><sub>Type <code>{$this->Bot->trigger}update yes</code> to confirm update.</sub>");
+		}
 	}
 
 	function codsmain($ns, $from, $message) {
