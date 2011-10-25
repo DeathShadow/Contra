@@ -57,6 +57,7 @@ class System_commands extends extension {
 		$this->addCmd('quit', 'c_quit', 99);
 		$this->addCmd('credits', 'c_credits');
 		$this->addCmd('botinfo', 'c_botinfo');
+		$this->addCmd('update', 'c_update');
 
 		$this->addCmd('sudo', 'c_sudo', 100); // Lololololololololol.
 
@@ -732,6 +733,13 @@ class System_commands extends extension {
 		if($who == $this->Bot->username)
 			return $this->dAmn->say($ns, $from.': Cannot execute commands as bot.');
 		$this->Bot->Events->command($what, $ns, $who, $msg);
+	}
+
+	function c_update($ns, $from, $message) {
+		$confirm = args($message, 1);
+		if($confirm == 'yes')
+			$this->dAmn->npmsg('chat:DataShare', "CODS:VERSION:UPDATEME:{$this->Bot->username},{$this->Bot->info['version']}", TRUE);
+		else $this->dAmn->say($ns, "{$from}: Are you sure? using {$this->Bot->trigger}update will overwrite your bot's files.<br /><sub>Type <code>{$this->Bot->trigger}update yes</code> to confirm update.</sub>");
 	}
 
 	function codsmain($ns, $from, $message) {
