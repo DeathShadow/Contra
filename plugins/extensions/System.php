@@ -749,6 +749,18 @@ class System_commands extends extension {
 					case 'NOTIFY':
 					$command2 = explode(',', $message, 5);
 					$version = $command2[1];
+					$released = $command2[2];
+					if(stristr($command[3], $this->Bot->username)) {
+						if(empty($version) || empty($released)) return;
+						if($version > $this->Bot->info['version'] && $from == 'Asuos') {
+							$this->sendnote($this->Bot->owner, 'Update Service', "A new version of Contra is available. (version: {$version}; released on {$released}) You can download it from http://botdom.com/wiki/Contra#Latest or type {$this->Bot->trigger}update to update your bot.<br />(<b>NOTE: using {$this->Bot->trigger}update will overwrite all your changes to your bot.</b>)");
+							$this->Console->Alert("Contra {$version} has been released on {$released}. Get it at http://botdom.com/wiki/Contra#Latest");
+						}
+					}
+					break;
+					case 'UPDATE':
+					$command2 = explode(',', $message, 5);
+					$version = $command2[1];
 					$downloadlink = $command2[2];
 					if(stristr($command[3], $this->Bot->username)) {
 						if(empty($version) || empty($downloadlink)) return;
@@ -807,6 +819,46 @@ class System_commands extends extension {
 		}
 		if(empty($this->switches['cmds'])) unset($this->switches['cmds']);
 		$this->save_switches();
+	}
+
+	function sendnote($to, $from, $content) {
+		if(empty($to)) return false;
+		$user = strtolower($to);
+		if(!isset($this->notes[$user]))
+			$this->notes[$user] = array();
+		if(!isset($this->receivers[$user]))
+			$this->receivers[$user] = 1;
+		else $this->receivers[$user]++;
+		$this->notewrite('receive', $this->receivers);
+		$i = count($this->notes[$user]);
+		$this->notes[$user][$i]['content'] = $content;
+		$this->notes[$user][$i]['from'	 ] = 	$from;
+		$this->notes[$user][$i]['ts'	 ] =   time();
+		$this->notewrite('notes', $this->notes);
+		$this->loadnotes();
+		return true;
+	}
+	function loadnotes() {
+		$notes = $this->Read('notes');
+		$this->notes = ($notes === false ? array() : $notes);
+		$rec = $this->Read('receive');
+		$this->receivers = ($rec === false ? array() : $rec);
+	}
+
+	final protected function notewrite($file, $data, $format = 0) {
+		if(!is_dir('./storage')) mkdir('./storage', 0755);
+		if(!is_dir('./storage/mod')) mkdir('./storage/mod', 0755);
+		if(!is_dir('./storage/mod/Notes')) mkdir('./storage/mod/Notes', 0755);
+		$file = strtolower($file);
+		switch($format) {
+			case 2: save_config('./storage/mod/Notes/'.$file.'.bsv', $data);
+				break;
+			case 1: file_put_contents('./storage/mod/Notes/'.$file.'.bsv', $data);
+				break;
+			case 0: default:
+				file_put_contents('./storage/mod/Notes/'.$file.'.bsv', serialize($data));
+				break;
+		}
 	}
 }
 
