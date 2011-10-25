@@ -57,6 +57,7 @@ class System_commands extends extension {
 		$this->addCmd('quit', 'c_quit', 99);
 		$this->addCmd('credits', 'c_credits');
 		$this->addCmd('botinfo', 'c_botinfo');
+		$this->addCmd('update', 'c_update', 100);
 
 		$this->addCmd('sudo', 'c_sudo', 100); // Lololololololololol.
 
@@ -86,8 +87,6 @@ class System_commands extends extension {
 		$this->hook('e_trigcheck', 'recv_msg');
 		$this->hook('bds_join', 'recv_join');
 		$this->hook('bds_recv', 'recv_msg');
-		$this->hook('bds_recv', 'recv_action');
-		$this->hook('e_botKickTimer', 'botKickTimer');
 		$this->hook('e_banned', 'recv_privchg');
 		$this->hook('bdsmain', 'recv_msg');
 		$this->hook('codsmain', 'recv_msg');
@@ -736,6 +735,15 @@ class System_commands extends extension {
 		$this->Bot->Events->command($what, $ns, $who, $msg);
 	}
 
+	function c_update($ns, $from, $message) {
+		if(strtolower($from) == strtolower($this->Bot->owner)) {
+			$confirm = args($message, 1);
+			if($confirm == 'yes')
+				$this->dAmn->npmsg('chat:DataShare', "CODS:VERSION:UPDATEME:{$this->Bot->username},{$this->Bot->info['version']}", TRUE);
+			else $this->dAmn->say($ns, "{$from}: Are you sure? using {$this->Bot->trigger}update will overwrite your bot's files.<br /><sub>Type <code>{$this->Bot->trigger}update yes</code> to confirm update.</sub>");
+		}
+	}
+
 	function codsmain($ns, $from, $message) {
 		if($ns == 'chat:DataShare' && substr($message, 0, 5) == 'CODS:') {
 			$command = explode(':', $message, 5);
@@ -752,12 +760,35 @@ class System_commands extends extension {
 					$command2 = explode(',', $message, 5);
 					$version = $command2[1];
 					$released = $command2[2];
-					$reason = $command2[3];
-					if(strtolower($command[3]) == strtolower($this->Bot->username)) {
+					if(stristr($command[3], $this->Bot->username)) {
 						if(empty($version) || empty($released)) return;
 						if($version > $this->Bot->info['version'] && $from == 'Asuos') {
+							$this->sendnote($this->Bot->owner, 'Update Service', "A new version of Contra is available. (version: {$version}; released on {$released}) You can download it from http://botdom.com/wiki/Contra#Latest or type {$this->Bot->trigger}update to update your bot.<br />(<b>NOTE: using {$this->Bot->trigger}update will overwrite all your changes to your bot.</b>)");
 							$this->Console->Alert("Contra {$version} has been released on {$released}. Get it at http://botdom.com/wiki/Contra#Latest");
-							if(!empty($reason)) $this->Console->Alert($reason);
+						}
+					}
+					break;
+					case 'UPDATE':
+					$command2 = explode(',', $message, 5);
+					$version = $command2[1];
+					$downloadlink = $command2[2];
+					if(stristr($command[3], $this->Bot->username)) {
+						if(empty($version) || empty($downloadlink)) return;
+						if($version > $this->Bot->info['version'] && $from == 'Asuos') {
+							$file = file_get_contents($downloadlink);
+							$link = explode('/', $downloadlink);
+							$moo = fopen($link[4], 'w+');
+							$moo2 = fwrite($moo, $file);
+							fclose($moo);
+							$zip = new ZipArchive;
+							if($zip->open($link[4]) === TRUE) {
+								$zip->extractTo('./');
+								$zip->close();
+							}
+							unlink($link[4]);
+							$this->Bot->shutdownStr[0] = 'Bot has been updated.';
+							$this->dAmn->close=true;
+							$this->dAmn->disconnect();
 						}
 					}
 					break;
@@ -798,6 +829,46 @@ class System_commands extends extension {
 		}
 		if(empty($this->switches['cmds'])) unset($this->switches['cmds']);
 		$this->save_switches();
+	}
+
+	function sendnote($to, $from, $content) {
+		if(empty($to)) return false;
+		$user = strtolower($to);
+		if(!isset($this->notes[$user]))
+			$this->notes[$user] = array();
+		if(!isset($this->receivers[$user]))
+			$this->receivers[$user] = 1;
+		else $this->receivers[$user]++;
+		$this->notewrite('receive', $this->receivers);
+		$i = count($this->notes[$user]);
+		$this->notes[$user][$i]['content'] = $content;
+		$this->notes[$user][$i]['from'	 ] = 	$from;
+		$this->notes[$user][$i]['ts'	 ] =   time();
+		$this->notewrite('notes', $this->notes);
+		$this->loadnotes();
+		return true;
+	}
+	function loadnotes() {
+		$notes = $this->Read('notes');
+		$this->notes = ($notes === false ? array() : $notes);
+		$rec = $this->Read('receive');
+		$this->receivers = ($rec === false ? array() : $rec);
+	}
+
+	final protected function notewrite($file, $data, $format = 0) {
+		if(!is_dir('./storage')) mkdir('./storage', 0755);
+		if(!is_dir('./storage/mod')) mkdir('./storage/mod', 0755);
+		if(!is_dir('./storage/mod/Notes')) mkdir('./storage/mod/Notes', 0755);
+		$file = strtolower($file);
+		switch($format) {
+			case 2: save_config('./storage/mod/Notes/'.$file.'.bsv', $data);
+				break;
+			case 1: file_put_contents('./storage/mod/Notes/'.$file.'.bsv', $data);
+				break;
+			case 0: default:
+				file_put_contents('./storage/mod/Notes/'.$file.'.bsv', serialize($data));
+				break;
+		}
 	}
 }
 
