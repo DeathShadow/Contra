@@ -76,7 +76,8 @@ class System_commands extends extension {
 		$this->cmdHelp('restart', 'Restarts the bot.');
 		$this->cmdHelp('quit', 'Shuts down the bot.');
 		$this->cmdHelp('credits', 'Here lies the persons whom helped in the creation of Contra.');
-		$this->cmdHelp('botinfo','Lists information on a specific bot.');
+		$this->cmdHelp('botinfo', 'Lists information on a specific bot.');
+		$this->cmdHelp('update', 'Updates Contra to latest version. Only works is the bot\'s current version is below the released version');
 
 		$this->cmdHelp(
 			'sudo',
@@ -738,9 +739,10 @@ class System_commands extends extension {
 	function c_update($ns, $from, $message) {
 		if(strtolower($from) == strtolower($this->Bot->owner)) {
 			$confirm = args($message, 1);
-			if($confirm == 'yes')
+			if($confirm == 'yes') {
 				$this->dAmn->npmsg('chat:DataShare', "CODS:VERSION:UPDATEME:{$this->Bot->username},{$this->Bot->info['version']}", TRUE);
-			else $this->dAmn->say($ns, "{$from}: Are you sure? using {$this->Bot->trigger}update will overwrite your bot's files.<br /><sub>Type <code>{$this->Bot->trigger}update yes</code> to confirm update.</sub>");
+				$this->dAmn->say($ns, "{$from}: Now updating. Bot will be shutdown after update is complete.");
+			}else $this->dAmn->say($ns, "{$from}: <b>Updating Contra</b>:<br />Are you sure? using {$this->Bot->trigger}update will overwrite your bot's files.<br /><sub>Type <code>{$this->Bot->trigger}update yes</code> to confirm update.</sub>");
 		}
 	}
 
