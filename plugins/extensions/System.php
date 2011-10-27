@@ -77,7 +77,7 @@ class System_commands extends extension {
 		$this->cmdHelp('quit', 'Shuts down the bot.');
 		$this->cmdHelp('credits', 'Here lies the persons whom helped in the creation of Contra.');
 		$this->cmdHelp('botinfo', 'Lists information on a specific bot.');
-		$this->cmdHelp('update', 'Updates Contra to latest version. Only works is the bot\'s current version is below the released version');
+		$this->cmdHelp('update', 'Updates Contra to latest version. Only works if the bot\'s current version is below the released version');
 
 		$this->cmdHelp(
 			'sudo',
