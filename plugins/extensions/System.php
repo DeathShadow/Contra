@@ -487,7 +487,7 @@ class System_commands extends extension {
 		if(count($data) < 6) return false;
 
 		$versions = explode('/', $data[3]);
-		if($data[2] == ('Indigo'|'Dante') && $data[5] == '&amp;')
+		if($data[2] == 'Indigo' && $data[5] == '&amp;' || $data[2] == 'Dante' && $data[5] == '&amp;')
 			$strig = trim(htmlspecialchars_decode($data[5], ENT_NOQUOTES));
 		else $strig = trim($data[5]);
 
