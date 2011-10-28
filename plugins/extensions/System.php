@@ -487,7 +487,9 @@ class System_commands extends extension {
 		if(count($data) < 6) return false;
 
 		$versions = explode('/', $data[3]);
-		$strig = str_replace(' ', '', htmlspecialchars_decode($data[5], ENT_NOQUOTES));
+		if($data[2] == 'Indigo' && $data[5] == '&amp;' || $data[2] == 'Dante' && $data[5] == '&amp;')
+			$strig = trim(htmlspecialchars_decode($data[5], ENT_NOQUOTES));
+		else $strig = trim($data[5]);
 
 		// Now, we have to recreate the hash
 		$sig = md5(strtolower($strig.$data[0].$from));
