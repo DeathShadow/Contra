@@ -96,8 +96,10 @@ class dAmn_commands extends extension {
 		$chans = explode(' ', ($target==$ns?'':$target.' ').args($message,1,true));
 		if(empty($chans[0]))
 			return $this->dAmn->$func($this->dAmn->format_chat($ns));
-		if(!empty($chans[0]) && empty($chans[1]))
-			return $this->dAmn->$func($this->dAmn->format_chat($target));
+		if(!empty($chans[0]) && empty($chans[1])) {
+			if($chans[0] == $ns) unset($chans[0]);
+			$this->dAmn->$func($this->dAmn->format_chat($target));
+		}
 		foreach($chans as $chan)
 			$this->dAmn->$func($this->dAmn->format_chat($chan));
 	}
