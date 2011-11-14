@@ -111,10 +111,8 @@ class System_commands extends extension {
 				break;
 			case 'uptime':
 				$about = '<abbr title="'.$from.'"></abbr>Uptime: '.time_length(time()-$this->Bot->start).'.';
-				break;
-                        case 'pcuptime':
 				if(PHP_OS == 'Linux')
-					$about = '<abbr title="'.$from.'"></abbr>'.`uptime`;
+					$about.= '<br />Server Uptime: '.`uptime`;
 				break;
 			case 'about':
 			case '':
@@ -128,7 +126,8 @@ class System_commands extends extension {
 				$about = str_replace('%D%', (DEBUG===true?'Running in debug mode.':''), $about);
 				break;
 		}
-		$this->dAmn->say($target, $about);
+		if(!empty($about))
+			$this->dAmn->say($target, $about);
 	}
 
 	function c_commands($ns, $from, $message, $target) { $this->c_command($ns, $from, 'command list '.args($message, 1, true), $target); }
