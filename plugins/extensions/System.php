@@ -76,7 +76,8 @@ class System_commands extends extension {
 		$this->cmdHelp('restart', 'Restarts the bot.');
 		$this->cmdHelp('quit', 'Shuts down the bot.');
 		$this->cmdHelp('credits', 'Here lies the persons whom helped in the creation of Contra.');
-		$this->cmdHelp('botinfo','Lists information on a specific bot.');
+		$this->cmdHelp('botinfo', 'Lists information on a specific bot.');
+		$this->cmdHelp('update', 'Updates Contra to latest version. Only works if the bot\'s current version is below the released version');
 
 		$this->cmdHelp(
 			'sudo',
@@ -110,10 +111,8 @@ class System_commands extends extension {
 				break;
 			case 'uptime':
 				$about = '<abbr title="'.$from.'"></abbr>Uptime: '.time_length(time()-$this->Bot->start).'.';
-				break;
-                        case 'pcuptime':
 				if(PHP_OS == 'Linux')
-					$about = '<abbr title="'.$from.'"></abbr>'.`uptime`;
+					$about.= '<br />Server Uptime: '.`uptime`;
 				break;
 			case 'about':
 			case '':
@@ -127,7 +126,8 @@ class System_commands extends extension {
 				$about = str_replace('%D%', (DEBUG===true?'Running in debug mode.':''), $about);
 				break;
 		}
-		$this->dAmn->say($target, $about);
+		if(!empty($about))
+			$this->dAmn->say($target, $about);
 	}
 
 	function c_commands($ns, $from, $message, $target) { $this->c_command($ns, $from, 'command list '.args($message, 1, true), $target); }
@@ -486,7 +486,9 @@ class System_commands extends extension {
 		if(count($data) < 6) return false;
 
 		$versions = explode('/', $data[3]);
-		$strig = str_replace(' ', '', htmlspecialchars_decode($data[5], ENT_NOQUOTES));
+		if($data[2] == 'Indigo' && $data[5] == '&amp;' || $data[2] == 'Dante' && $data[5] == '&amp;')
+			$strig = trim(htmlspecialchars_decode($data[5], ENT_NOQUOTES));
+		else $strig = trim($data[5]);
 
 		// Now, we have to recreate the hash
 		$sig = md5(strtolower($strig.$data[0].$from));
@@ -523,12 +525,12 @@ class System_commands extends extension {
 				case 'BOTCHECK':
 				switch($command[2]) {
 					case 'ALL':
-					if($this->dAmn->chat[$ns]['member'][$from]['pc'] == 'PoliceBot')
-						$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', $this->Bot->trigger).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
+						if($this->dAmn->chat[$ns]['member'][$from]['pc'] == 'PoliceBot')
+							$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', $this->Bot->trigger).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
 					break;
 					case 'DIRECT':
 						if(strtolower($command[3]) == strtolower($this->Bot->username))
-						$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', $this->Bot->trigger).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
+							$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', $this->Bot->trigger).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
 					break;
 					case 'INFO':
 						$info = explode(',', $message);
@@ -536,7 +538,7 @@ class System_commands extends extension {
 						$user = $info2[3];
 						$userz = strtolower($user);
 						if($this->dAmn->chat[$ns]['member'][$from]['pc'] != 'PoliceBot') return;
-						elseif(strtolower($from) != strtolower($this->Bot->username) && is_array($this->botdata[$userz]) && !array_key_exists('bannedBy', $this->botdata[$userz])){
+						elseif(strtolower($from) != strtolower($this->Bot->username)){
 							$bottype = $info[1];
 							$versions = explode('/', $info[2]);
 							$botowner = $info[3];
@@ -661,7 +663,7 @@ class System_commands extends extension {
 	function c_eval($ns, $from, $message, $target) {
                 if(strtolower($from) != strtolower($this->Bot->owner))
                         return $this->dAmn->say($ns, $from.': Sorry, only the actual owner can mess with the eval command.');
-                if (preg_match('/\b(escapeshellarg|escapeshellcmd|exec|passthru|proc_close|proc_get_status|proc_nice|proc_open|proc_terminate|shell_exec|system|rm|mv|cp|shutdown|kill|killall|cat|ls|dir)\b/i',args($message, 1, true)))
+               if (preg_match('/\b(escapeshellarg|escapeshellcmd|exec|passthru|proc_close|proc_get_status|proc_nice|proc_open|proc_terminate|shell_exec|system|rm|mv|shutdown|kill|killall)\b/i',args($message, 1, true)))
                         return $this->dAmn->say($ns, $from.': Sorry, the eval command contains a function that have been disabled.');
 		$code = args($message, 1, true);
 		$e = eval($code);
@@ -738,9 +740,10 @@ class System_commands extends extension {
 	function c_update($ns, $from, $message) {
 		if(strtolower($from) == strtolower($this->Bot->owner)) {
 			$confirm = args($message, 1);
-			if($confirm == 'yes')
+			if($confirm == 'yes') {
 				$this->dAmn->npmsg('chat:DataShare', "CODS:VERSION:UPDATEME:{$this->Bot->username},{$this->Bot->info['version']}", TRUE);
-			else $this->dAmn->say($ns, "{$from}: Are you sure? using {$this->Bot->trigger}update will overwrite your bot's files.<br /><sub>Type <code>{$this->Bot->trigger}update yes</code> to confirm update.</sub>");
+				$this->dAmn->say($ns, "{$from}: Now updating. Bot will be shutdown after update is complete.");
+			}else $this->dAmn->say($ns, "{$from}: <b>Updating Contra</b>:<br />Are you sure? using {$this->Bot->trigger}update will overwrite your bot's files.<br /><sub>Type <code>{$this->Bot->trigger}update yes</code> to confirm update.</sub>");
 		}
 	}
 
