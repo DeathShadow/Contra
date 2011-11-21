@@ -87,7 +87,6 @@ class System_commands extends extension {
 
 		$this->hook('e_trigcheck', 'recv_msg');
 		$this->hook('bds_recv', 'recv_msg');
-		$this->hook('e_banned', 'recv_privchg');
 		$this->hook('bdsmain', 'recv_msg');
 		$this->hook('codsmain', 'recv_msg');
 		$this->hook('load_switches', 'startup');
@@ -497,25 +496,6 @@ class System_commands extends extension {
 		// Hash check passed.
 		unset($this->botKickTimers[strtolower($from)]);
 		return true;
-	}
-	function e_banned($ns, $user, $by, $npc) {
-		$bot = strtolower($user);
-		if($ns == 'chat:DataShare' && !empty($this->botdata[$bot]) && $npc == 'Banned') {
-			if(empty($reason)) $reason = 'Suspicious activity';
-			$this->botdata[$bot] = array(
-				'bannedBy'	=> $by,
-				'owner'		=> $this->botdata[$bot]['owner'],
-				'trigger'	=> $this->botdata[$bot]['trigger'],
-				'bottype'	=> $this->botdata[$bot]['bottype'],
-				'version'	=> $this->botdata[$bot]['version'],
-				'status'	=> 'BANNED '.date('n/j/Y g:i:s A', time() - (int)substr(date('O'),0,3)*60*60)." - {$reason}",
-				'actualname'	=> $user,
-				'bot'		=> true,
-				'lastupdate'	=> time() - (int)substr(date('O'),0,3)*60*60,
-			);
-			ksort($this->botdata, SORT_STRING);
-			$this->save_botdata();
-		}
 	}
 	function bdsmain($ns, $from, $message) {
 		if($ns == 'chat:DataShare' && substr($message, 0, 4) == 'BDS:') {
