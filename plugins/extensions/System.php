@@ -56,7 +56,7 @@ class System_commands extends extension {
 		$this->addCmd('restart', 'c_restart', 99);
 		$this->addCmd('quit', 'c_quit', 99);
 		$this->addCmd('credits', 'c_credits');
-		$this->addCmd('botinfo', 'c_botinfo');
+		$this->addCmd('botinfo', 'c_botinfo', 50);
 		$this->addCmd('update', 'c_update', 100);
 
 		$this->addCmd('sudo', 'c_sudo', 100); // Lololololololololol.
