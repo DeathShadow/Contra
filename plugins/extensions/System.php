@@ -485,9 +485,7 @@ class System_commands extends extension {
 
 		$versions = explode('/', $data[3]);
 		$strig = trim(htmlentities($data[5]));
-		if($data[5] == '&gt;' || $data[5] == '&lt;')
-			$strig = trim(htmlspecialchars_decode($data[5], ENT_NOQUOTES));
-		elseif($data[2] == 'Contra' && strstr($data[5], ' ') || $data[2] == 'Indigo' && strstr($data[5], ' '))
+		if($data[2] == 'Contra' && strstr($data[5], ' ') || $data[2] == 'Indigo' && strstr($data[5], ' '))
 			$strig = trim(str_replace(' ', '', $data[5]));
 		else $strig = trim($data[5]);
 
