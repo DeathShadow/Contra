@@ -485,7 +485,9 @@ class System_commands extends extension {
 
 		$versions = explode('/', $data[3]);
 		$strig = trim(htmlentities($data[5]));
-		if($data[2] == 'Contra' && strstr($data[5], ' ') || $data[2] == 'Indigo' && strstr($data[5], ' '))
+		if($data[5] == '&amp;' || $data[5] == '&gt;' || $data[5] == '&lt;')
+			$strig = trim(htmlspecialchars_decode($data[5], ENT_NOQUOTES));
+		elseif($data[2] == 'Contra' && strstr($data[5], ' ') || $data[2] == 'Indigo' && strstr($data[5], ' '))
 			$strig = trim(str_replace(' ', '', $data[5]));
 		else $strig = trim($data[5]);
 
@@ -506,11 +508,11 @@ class System_commands extends extension {
 				switch($command[2]) {
 					case 'ALL':
 						if($this->dAmn->chat[$ns]['member'][$from]['pc'] == 'PoliceBot')
-							$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', $this->Bot->trigger).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
+							$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', htmlspecialchars_decode($this->Bot->trigger, ENT_NOQUOTES)).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
 					break;
 					case 'DIRECT':
 						if(strtolower($command[3]) == strtolower($this->Bot->username))
-							$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', $this->Bot->trigger).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
+							$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', htmlspecialchars_decode($this->Bot->trigger, ENT_NOQUOTES)).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
 					break;
 					case 'INFO':
 						$info = explode(',', $message);
@@ -543,7 +545,7 @@ class System_commands extends extension {
 					case 'NODATA':
 						if($this->dAmn->chat[$ns]['member'][$from]['pc'] != 'PoliceBot') return;
 						elseif(strtolower($command[3]) == strtolower($this->Bot->username) && strtolower($from) != strtolower($this->Bot->username))
-							$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', $this->Bot->trigger).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
+							$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', htmlspecialchars_decode($this->Bot->trigger, ENT_NOQUOTES)).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
 					break;
 					case 'BADBOT':
 						if($this->dAmn->chat[$ns]['member'][$from]['pc'] != 'PoliceBot') return;
@@ -734,7 +736,7 @@ class System_commands extends extension {
 				case 'BOTCHECK':
 				switch($command[2]) {
 					case 'ALL':
-					$this->dAmn->npmsg('chat:datashare', 'CODS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', $this->Bot->trigger).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
+					$this->dAmn->npmsg('chat:datashare', 'CODS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', htmlspecialchars_decode($this->Bot->trigger, ENT_NOQUOTES)).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
 					break;
 				}
 				case 'VERSION':
