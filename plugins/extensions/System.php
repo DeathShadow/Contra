@@ -108,7 +108,7 @@ class System_commands extends extension {
 				$about = '/npmsg '.$from.': Running PHP '.PHP_VERSION.' on '.$this->Bot->sysString.'.';
 				break;
 			case 'uptime':
-				$about = '<abbr title="'.$from.'"></abbr>Bot Uptime: '.time_length(time()-$this->Bot->start).'.';
+				$about = '<abbr title="'.$from.'"></abbr>Bot Uptime: '.time_length(time()-$this->Bot->start);
 				if(PHP_OS == 'Linux')
 					$about.= '<br />Server Uptime: '.`uptime`;
 				elseif((PHP_OS == 'WIN32' || PHP_OS == 'WINNT' || PHP_OS == 'Windows') && system('uptime') != false) {
@@ -117,7 +117,7 @@ class System_commands extends extension {
 					$uptime2 = trim(preg_replace('/\(|,|\)|[a-zA-Z]*/', '', $uptime[1]));
 					$uptime3 = explode('  ', $uptime2);
 					$uptime4 = (intval($uptime3[0])*86400) + (intval($uptime3[1])*3600) + (intval($uptime3[2])*60) + intval($uptime3[3]);
-					$about .= '<br />Server uptime: '.time_length(time()-(time()-$uptime4)).'.';
+					$about .= '<br />Server uptime: '.time_length(time()-(time()-$uptime4));
 				}
 				break;
 			case 'about':
