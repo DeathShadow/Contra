@@ -92,16 +92,20 @@ class dAmn_commands extends extension {
 	}
 
 	function c_joinpart($ns, $from, $message, $target) {
-		$func = (strtolower(args($message, 0))=='join'?'join':'part');
-		$chans = explode(' ', ($target==$ns?'':$target.' ').args($message,1,true));
-		if(empty($chans[0]))
-			return $this->dAmn->$func($this->dAmn->format_chat($ns));
-		if(!empty($chans[0]) && empty($chans[1])) {
-			if($chans[0] == $ns) unset($chans[0]);
+		$func = strtolower(args($message, 0)) == 'join' ? 'join' : 'part';
+		$chans = str_replace('#', ' ', args($message, 1, true));
+		$chans = explode(' ', $chans);
+		$chans = array_filter($chans);
+		if(empty($chans[0]) && $func != 'join' && $target == $ns && count($chans) <= 1)
+			$this->dAmn->$func($ns);
+		elseif(empty($chans[0]) && count($chans) <= 1)
 			$this->dAmn->$func($this->dAmn->format_chat($target));
+		else {
+			if($target != $ns)
+				$this->dAmn->$func($target);
+			foreach($chans as $chan)
+				$this->dAmn->$func($this->dAmn->format_chat($chan));
 		}
-		foreach($chans as $chan)
-			$this->dAmn->$func($this->dAmn->format_chat($chan));
 	}
 	function c_say($ns, $from, $message, $target) { $this->dAmn->say($target,args($message,1,true)); }
 	function c_promote($ns, $from, $message, $target) {
