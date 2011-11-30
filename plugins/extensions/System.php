@@ -590,7 +590,11 @@ class System_commands extends extension {
 				case 'BOTDEF':
 				switch($command[2]) {
 					case 'REQUEST':
-						if($this->dAmn->chat[$ns]['member'][$from]['pc'] == 'PoliceBot')
+						$user = $command[3];
+						$userz = strtolower($user);
+						if(empty($user)) return;
+						if($this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] != 'PoliceBot') return;
+						if($user == $this->Bot->username && $from != $this->Bot->username)
 							$this->dAmn->npmsg('chat:datashare', "BDS:BOTDEF:RESPONSE:{$from},{$this->Bot->info['name']},PHP,{$this->Bot->info['author']},http://botdom.com/wiki/Contra,".md5(strtolower($from.$this->Bot->info['name'].$this->Bot->info['author'])), TRUE);
 					break;
 				}
