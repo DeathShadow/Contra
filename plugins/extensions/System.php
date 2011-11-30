@@ -56,7 +56,7 @@ class System_commands extends extension {
 		$this->addCmd('restart', 'c_restart', 99);
 		$this->addCmd('quit', 'c_quit', 99);
 		$this->addCmd('credits', 'c_credits');
-		$this->addCmd('botinfo', 'c_botinfo');
+		$this->addCmd('botinfo', 'c_botinfo', 50);
 		$this->addCmd('update', 'c_update', 100);
 
 		$this->addCmd('sudo', 'c_sudo', 100); // Lololololololololol.
@@ -86,9 +86,7 @@ class System_commands extends extension {
 		);
 
 		$this->hook('e_trigcheck', 'recv_msg');
-		$this->hook('bds_join', 'recv_join');
 		$this->hook('bds_recv', 'recv_msg');
-		$this->hook('e_banned', 'recv_privchg');
 		$this->hook('bdsmain', 'recv_msg');
 		$this->hook('codsmain', 'recv_msg');
 		$this->hook('load_switches', 'startup');
@@ -110,9 +108,17 @@ class System_commands extends extension {
 				$about = '/npmsg '.$from.': Running PHP '.PHP_VERSION.' on '.$this->Bot->sysString.'.';
 				break;
 			case 'uptime':
-				$about = '<abbr title="'.$from.'"></abbr>Uptime: '.time_length(time()-$this->Bot->start).'.';
+				$about = '<abbr title="'.$from.'"></abbr>Bot Uptime: '.time_length(time()-$this->Bot->start);
 				if(PHP_OS == 'Linux')
 					$about.= '<br />Server Uptime: '.`uptime`;
+				elseif((PHP_OS == 'WIN32' || PHP_OS == 'WINNT' || PHP_OS == 'Windows') && system('uptime') != false) {
+					$uptime = system('uptime');
+					$uptime = explode(': ', $uptime);
+					$uptime2 = trim(preg_replace('/\(|,|\)|[a-zA-Z]*/', '', $uptime[1]));
+					$uptime3 = explode('  ', $uptime2);
+					$uptime4 = (intval($uptime3[0])*86400) + (intval($uptime3[1])*3600) + (intval($uptime3[2])*60) + intval($uptime3[3]);
+					$about .= '<br />Server uptime: '.time_length(time()-(time()-$uptime4));
+				}
 				break;
 			case 'about':
 			case '':
@@ -486,8 +492,11 @@ class System_commands extends extension {
 		if(count($data) < 6) return false;
 
 		$versions = explode('/', $data[3]);
-		if($data[2] == 'Indigo' && $data[5] == '&amp;' || $data[2] == 'Dante' && $data[5] == '&amp;')
+		$strig = trim(htmlentities($data[5]));
+		if($data[5] == '&amp;' || $data[5] == '&gt;' || $data[5] == '&lt;')
 			$strig = trim(htmlspecialchars_decode($data[5], ENT_NOQUOTES));
+		elseif($data[2] == 'Contra' && strstr($data[5], ' ') || $data[2] == 'Indigo' && strstr($data[5], ' '))
+			$strig = trim(str_replace(' ', '', $data[5]));
 		else $strig = trim($data[5]);
 
 		// Now, we have to recreate the hash
@@ -499,25 +508,6 @@ class System_commands extends extension {
 		unset($this->botKickTimers[strtolower($from)]);
 		return true;
 	}
-	function e_banned($ns, $user, $by, $npc) {
-		$bot = strtolower($user);
-		if($ns == 'chat:DataShare' && !empty($this->botdata[$bot]) && $npc == 'Banned') {
-			if(empty($reason)) $reason = 'Suspicious activity';
-			$this->botdata[$bot] = array(
-				'bannedBy'	=> $by,
-				'owner'		=> $this->botdata[$bot]['owner'],
-				'trigger'	=> $this->botdata[$bot]['trigger'],
-				'bottype'	=> $this->botdata[$bot]['bottype'],
-				'version'	=> $this->botdata[$bot]['version'],
-				'status'	=> 'BANNED '.date('n/j/Y g:i:s A', time() - (int)substr(date('O'),0,3)*60*60)." - {$reason}",
-				'actualname'	=> $user,
-				'bot'		=> true,
-				'lastupdate'	=> time() - (int)substr(date('O'),0,3)*60*60,
-			);
-			ksort($this->botdata, SORT_STRING);
-			$this->save_botdata();
-		}
-	}
 	function bdsmain($ns, $from, $message) {
 		if($ns == 'chat:DataShare' && substr($message, 0, 4) == 'BDS:') {
 			$command = explode(':', $message, 4);
@@ -526,11 +516,11 @@ class System_commands extends extension {
 				switch($command[2]) {
 					case 'ALL':
 						if($this->dAmn->chat[$ns]['member'][$from]['pc'] == 'PoliceBot')
-							$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', $this->Bot->trigger).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
+							$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', htmlspecialchars_decode($this->Bot->trigger, ENT_NOQUOTES)).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
 					break;
 					case 'DIRECT':
 						if(strtolower($command[3]) == strtolower($this->Bot->username))
-							$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', $this->Bot->trigger).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
+							$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', htmlspecialchars_decode($this->Bot->trigger, ENT_NOQUOTES)).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
 					break;
 					case 'INFO':
 						$info = explode(',', $message);
@@ -563,7 +553,7 @@ class System_commands extends extension {
 					case 'NODATA':
 						if($this->dAmn->chat[$ns]['member'][$from]['pc'] != 'PoliceBot') return;
 						elseif(strtolower($command[3]) == strtolower($this->Bot->username) && strtolower($from) != strtolower($this->Bot->username))
-							$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', $this->Bot->trigger).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
+							$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', htmlspecialchars_decode($this->Bot->trigger, ENT_NOQUOTES)).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
 					break;
 					case 'BADBOT':
 						if($this->dAmn->chat[$ns]['member'][$from]['pc'] != 'PoliceBot') return;
@@ -754,7 +744,7 @@ class System_commands extends extension {
 				case 'BOTCHECK':
 				switch($command[2]) {
 					case 'ALL':
-					$this->dAmn->npmsg('chat:datashare', 'CODS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', $this->Bot->trigger).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
+					$this->dAmn->npmsg('chat:datashare', 'CODS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', htmlspecialchars_decode($this->Bot->trigger, ENT_NOQUOTES)).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
 					break;
 				}
 				case 'VERSION':
@@ -766,7 +756,7 @@ class System_commands extends extension {
 					if(stristr($command[3], $this->Bot->username)) {
 						if(empty($version) || empty($released)) return;
 						if($version > $this->Bot->info['version'] && $from == 'Asuos') {
-							$this->sendnote($this->Bot->owner, 'Update Service', "A new version of Contra is available. (version: {$version}; released on {$released}) You can download it from http://botdom.com/wiki/Contra#Latest or type {$this->Bot->trigger}update to update your bot.<br />(<b>NOTE: using {$this->Bot->trigger}update will overwrite all your changes to your bot.</b>)");
+							$this->sendnote($this->Bot->owner, 'Update Service', "A new version of Contra is available. (version: {$version}; released on {$released}) You can download it from http://botdom.com/wiki/Contra#Latest or type <code>{$this->Bot->trigger}update</code> to update your bot.<br /><br />(<b>NOTE: using <code>{$this->Bot->trigger}update</code> will overwrite all your changes to your bot.</b>)");
 							$this->Console->Alert("Contra {$version} has been released on {$released}. Get it at http://botdom.com/wiki/Contra#Latest");
 						}
 					}
