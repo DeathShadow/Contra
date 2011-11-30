@@ -587,6 +587,14 @@ class System_commands extends extension {
 					break;
 				}
 				break;
+				case 'BOTDEF':
+				switch($command[2]) {
+					case 'REQUEST':
+						if($this->dAmn->chat[$ns]['member'][$from]['pc'] == 'PoliceBot')
+							$this->dAmn->npmsg('chat:datashare', "BDS:BOTDEF:RESPONSE:{$from},{$this->Bot->info['name']},PHP,{$this->Bot->info['author']},http://botdom.com/wiki/Contra,".md5(strtolower($from.$this->Bot->info['name'].$this->Bot->info['author'])), TRUE);
+					break;
+				}
+				break;
 			}
 		}
 	}
