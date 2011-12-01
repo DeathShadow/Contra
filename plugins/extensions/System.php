@@ -595,7 +595,7 @@ class System_commands extends extension {
 						if(empty($user)) return;
 						if($this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] != 'PoliceBot') return;
 						if($user == $this->Bot->username && $from != $this->Bot->username)
-							$this->dAmn->npmsg('chat:datashare', "BDS:BOTDEF:RESPONSE:{$from},{$this->Bot->info['name']},PHP,{$this->Bot->info['author']},http://botdom.com/wiki/Contra,".md5(strtolower($from.$this->Bot->info['name'].$this->Bot->info['author'])), TRUE);
+							$this->dAmn->npmsg('chat:datashare', "BDS:BOTDEF:RESPONSE:{$from},Contra,PHP,photofroggy,http://botdom.com/wiki/Contra,".md5(strtolower($from.'contraphotofroggy')), TRUE);
 					break;
 				}
 				break;
