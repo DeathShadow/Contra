@@ -151,7 +151,7 @@ class Welcome extends extension {
 				}
 				if(!isset($this->welcome[$target])) {
 					$say.= 'There are no welcome settings for '.$this->dAmn->deform_chat($target, $this->Bot->username).'.';
-					break:
+					break;
 				}
 				$sw = $subcom == 'on' ? true : false;
 				if($this->welcome[$target]['switch'] === $sw) {
