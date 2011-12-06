@@ -3,26 +3,26 @@
 	/*
 	*	Games for Contra!
 	*	Created for Contra v3 by photofroggy!
-	*	
+	*
 	*	Released under a Creative Commons Attribution-Noncommercial-Share Alike 3.0 License, which allows you to copy, distribute, transmit, alter, transform,
 	*	and build upon this work but not use it for commercial purposes, providing that you attribute me, photofroggy (froggywillneverdie@msn.com) for its creation.
-	*	
+	*
 	*	To install this as a module, drop the file in ~/plugins/extensions in your bot!
 	*/
-	
+
 class Games extends extension {
 	public $name = 'Games';
 	public $version = 4;
 	public $about = 'Small games for Contra v2';
 	public $status = true;
 	public $author = 'photofroggy';
-	
+
 	protected $ball = array();
 	protected $drinks = array();
 	protected $cookies = array();
 	protected $rpc = array('rock', 'paper', 'scissors');
 	protected $vender = 1;
-	
+
 	function init() {
 		$this->addCmd('8ball', 'c_8ball');
 		$this->addCmd('fortune','c_fortune');
@@ -32,7 +32,7 @@ class Games extends extension {
 		$this->addCmd('vender', 'c_vender');
 		$this->addCmd('stock', 'c_stock', 75);
 		$this->addCmd('games', 'c_games');
-		
+
 		$this->cmdHelp('8ball','Ask the 8ball a question!');
 		$this->cmdHelp('fortune','Get a fortune cookie!');
 		$this->cmdHelp('rr','Play Russian Roulette, if you dare!');
@@ -41,12 +41,12 @@ class Games extends extension {
 		$this->cmdHelp('vender', 'View the items available in the vending machine!');
 		$this->cmdHelp('stock', 'Manage and view the vending machine\'s stock!');
 		$this->cmdHelp('games', 'Get info about my games!');
-		
+
 		$this->load_8ball();
 		$this->load_drinks();
 		$this->load_fortunes();
 	}
-	
+
 	function c_8ball($ns, $from, $message, $target) {
 		$question = args($message, 1, true);
 		if(empty($question)) { $say = $from.': Give a question to the 8ball!'; }
@@ -148,28 +148,41 @@ class Games extends extension {
 		$say = $from.': ';
 		switch($subcom) {
 			case 'add':
-				if(empty($item))
-					break $say.= 'You need to give an item to be stocked.';
-				if($this->stocks($item) !== false)
-					break $say.= 'The vending machine already stocks '.$item.'.';
+				if(empty($item)) {
+					$say.= 'You need to give an item to be stocked.';
+					break;
+				}
+				if($this->stocks($item) !== false) {
+					$say.= 'The vending machine already stocks '.$item.'.';
+					break;
+				}
 				$this->drinks[] = $item;
-				break $say.= $item.' has been added to the vending machine.';
+				$say.= $item.' has been added to the vending machine.';
+				break;
 			case 'rem':
 			case 'remove':
-				if(empty($item))
-					break $say.= 'You need to give an item to remove from stock.';
+				if(empty($item)) {
+					$say.= 'You need to give an item to remove from stock.';
+					break;
+				}
 				$key = $this->stocks($item);
-				if($key === false)
-					break $say.= 'The vending machine doesn\'t stock '.$item.'.';
+				if($key === false) {
+					$say.= 'The vending machine doesn\'t stock '.$item.'.';
+					break;
+				}
 				unset($this->drinks[$key]);
-				break $say.= 'Removed '.$item.' from the vending machine.';
+				$say.= 'Removed '.$item.' from the vending machine.';
+				break;
 			case 'list':
-				if(empty($this->drinks))
-					break $say.= 'The vending machine is empty.';
+				if(empty($this->drinks)) {
+					$say.= 'The vending machine is empty.';
+					break;
+				}
 				$say.= 'The vending machine contains these items:<br/><sup>-> ';
 				foreach($this->drinks as $drink)
 					$say.= $drink.', ';
-				break $say = rtrim($say, ', ').'</sup>';
+				$say = rtrim($say, ', ').'</sup>';
+				break;
 			default:
 				$cmd = args($message, 0);
 				$pre = str_replace('&', '&amp;', $this->Bot->trigger).$cmd.' ';

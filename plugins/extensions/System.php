@@ -822,14 +822,18 @@ class System_commands extends extension {
 		$this->switches = $this->switches == false ? array() : $this->switches;
 		if(empty($this->switches)) return;
 		foreach($this->switches['mods'] as $mod => $s) {
-			if($s['orig'] === $this->Bot->mod[$mod]->status && $s['orig'] !== $s['cur'])
-				break $this->Bot->mod[$mod]->status = $s['cur'];
+			if($s['orig'] === $this->Bot->mod[$mod]->status && $s['orig'] !== $s['cur']) {
+				$this->Bot->mod[$mod]->status = $s['cur'];
+				break;
+			}
 			unset($this->switches['mods'][$mod]);
 		}
 		if(empty($this->switches['mods'])) unset($this->switches['mods']);
 		foreach($this->switches['cmds'] as $cmd => $s) {
-			if($s['orig'] === $this->Bot->Events->events['cmd'][$cmd]['s'] && $s['orig'] !== $s['cur'])
-				break $this->switchCmd($cmd, $s['cur']);
+			if($s['orig'] === $this->Bot->Events->events['cmd'][$cmd]['s'] && $s['orig'] !== $s['cur']) {
+				$this->switchCmd($cmd, $s['cur']);
+				break;
+			}
 			unset($this->switches['cmds'][$cmd]);
 		}
 		if(empty($this->switches['cmds'])) unset($this->switches['cmds']);
