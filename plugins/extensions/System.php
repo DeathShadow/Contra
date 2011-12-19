@@ -26,6 +26,7 @@ class System_commands extends extension {
 	protected $trigc2;
 	protected $trigc3;
 	protected $trigc4;
+	protected $botinfo = array();
 	protected $switches = array();
 
 	protected $botdata = array();
@@ -97,6 +98,7 @@ class System_commands extends extension {
 		$this->trigc2 = strtolower($this->Bot->username.': trigger');
 		$this->trigc3 = strtolower($this->Bot->username.', trigcheck');
 		$this->trigc4 = strtolower($this->Bot->username.', trigger');
+		$this->botinfo['on'] = false;
 	}
 
 	function c_about($ns, $from, $message, $target) {
@@ -405,15 +407,21 @@ class System_commands extends extension {
 	}
 
 	function c_botinfo($ns, $from, $message, $target) {
-		$param = strtolower(args($message, 1));
+		$this->botinfo['on'] = true;
+		$this->botinfo['from'] = $from;
+		$this->botinfo['params'] = strtolower(args($message, 1));
+		$this->botinfo['ns'] = $ns;
 		$ownerz = args($message, 2);
 		$this->botdata = array_change_key_case($this->botdata, CASE_LOWER);
-		if($param !== '') {
-			if(!array_key_exists($param, $this->botdata)) {
-				$this->dAmn->say($ns, "Sorry, {$from}, I don't have any data on <b>{$param}</b>. Sending request for botinfo, check back again.");
-				$this->dAmn->npmsg('chat:DataShare', "BDS:BOTCHECK:REQUEST:{$param}", TRUE);
-			}elseif(array_key_exists($param, $this->botdata) && empty($this->botdata[$param]['bannedBy'])) {
-				$work = $this->botdata[$param];
+
+		if($this->botinfo['params'] == '') {
+			$sb = "";
+			$this->dAmn->say($ns, "<abbr title=\"{$from}\"></abbr> You must specify the name of a bot you wish to get information for.<br /><sup>[There are ".count($this->botdata)." bots in database.]</sup>", TRUE);
+		} elseif(!array_key_exists($this->botinfo['params'], $this->botdata))
+			$this->dAmn->npmsg('chat:DataShare', "BDS:BOTCHECK:REQUEST:{$this->botinfo['params']}", TRUE);
+		else {
+			if(empty($this->botdata[$this->botinfo['params']]['bannedBy'])) {
+				$work = $this->botdata[$this->botinfo['params']];
 				$ass = explode(';', $work['owner']);
 				foreach($ass as $poo => $pooz) {
 					$satan[$pooz] = array(true);
@@ -430,7 +438,7 @@ class System_commands extends extension {
 				$sb .= "</sub><abbr title=\"{$from}\"> </abbr>";
 				$this->dAmn->say($ns, $sb);
 			}else{
-				$work = $this->botdata[$param];
+				$work = $this->botdata[$this->botinfo['params']];
 				$sb  = '<sub>';
 				$sb .= "Bot Username: [<b>:dev{$work['actualname']}:</b>]<br>";
 				$sb .= "Bot Owner: [<b>:dev{$work['owner']}:</b>]<br>";
@@ -439,9 +447,6 @@ class System_commands extends extension {
 				$sb .= "</sub><abbr title=\"{$from}\"> </abbr>";
 				$this->dAmn->say($ns, $sb);
 			}
-		}else{
-			$sb = "";
-			$this->dAmn->say($ns, "<abbr title=\"{$from}\"></abbr> You must specify the name of a bot you wish to get information for.<br /><sup>[There are ".count($this->botdata)." bots in database.]</sup>", TRUE);
 		}
 	}
 	function BDSBotCheck($ns, $sender, $payload) {
@@ -548,12 +553,36 @@ class System_commands extends extension {
 							);
 							ksort($this->botdata, SORT_STRING);
 							$this->save_botdata();
+							if(!$this->botinfo['on']) break;
+							if(empty($this->botdata[$this->botinfo['params']]['bannedBy'])) {
+								$work = $this->botdata[$this->botinfo['params']];
+								$ass = explode(';', $work['owner']);
+								foreach($ass as $poo => $pooz) {
+									$satan[$pooz] = array(true);
+								}
+								$asshole = '[<b>:dev' . implode(array_keys($satan), ':</b>], [<b>:dev') . ':</b>]';
+								$sb  = '<sub>';
+								$sb .= "Bot Username: [<b>:dev{$work['actualname']}:</b>]<br>";
+								$sb .= "Bot Owner: {$asshole}<br>";
+								$sb .= "Bot Version: <b>{$work['bottype']} <i>{$work['version']}</i></b><br>";
+								$sb .= "BDS Version: <b>{$work['bdsversion']}</b><br>";
+								$sb .= "Bot Trigger: <b>" . implode('</b><b>', str_split($work["trigger"])) . "</b><br>";
+								$sb .= "Signature: <b>{$work['lasthash']}</b><br>";
+								$sb .= 'Last update on <i>'.date('n/j/Y g:i:s A', $work['lastupdate'])." UTC</i> by [<b><i>:dev{$work['requestedBy']}:</i></b>]";
+								$sb .= "</sub><abbr title=\"{$this->botinfo['from']}\"> </abbr>";
+								$this->dAmn->say($this->botinfo['ns'], $sb);
+							}
+							$this->botinfo['on'] = false;
 						}
 					break;
 					case 'NODATA':
 						if($this->dAmn->chat[$ns]['member'][$from]['pc'] != 'PoliceBot') return;
 						elseif(strtolower($command[3]) == strtolower($this->Bot->username) && strtolower($from) != strtolower($this->Bot->username))
 							$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', htmlspecialchars_decode($this->Bot->trigger, ENT_NOQUOTES)).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
+						if($this->botinfo['on']) {
+							$this->dAmn->say($this->botinfo['ns'], "Sorry, {$this->botinfo['from']}, there is no information on <b>{$this->botinfo['params']}</b> in the database.");
+							$this->botinfo['on'] = false;
+						}
 					break;
 					case 'BADBOT':
 						if($this->dAmn->chat[$ns]['member'][$from]['pc'] != 'PoliceBot') return;
@@ -581,6 +610,15 @@ class System_commands extends extension {
 								'bot'		=> true,
 								'lastupdate'	=> intval($lastupdate),
 							);
+							if(!$this->botinfo['on']) break;
+							$work = $this->botdata[$this->botinfo['params']];
+							$sb  = '<sub>';
+							$sb .= "Bot Username: [<b>:dev{$work['actualname']}:</b>]<br>";
+							$sb .= "Bot Owner: [<b>:dev{$work['owner']}:</b>]<br>";
+							$sb .= "Bot Status: <b>{$work['status']}</b><br>";
+							$sb .= 'Last update on <i>'.date('n/j/Y g:i:s A', $work['lastupdate'])." UTC</i> by [<b><i>:dev{$work['bannedBy']}:</i></b>]";
+							$sb .= "</sub><abbr title=\"{$this->botinfo['from']}\"> </abbr>";
+							$this->dAmn->say($this->botinfo['ns'], $sb);
 							ksort($this->botdata, SORT_STRING);
 							$this->save_botdata();
 						}
