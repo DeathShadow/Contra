@@ -619,6 +619,7 @@ class System_commands extends extension {
 							$sb .= 'Last update on <i>'.date('n/j/Y g:i:s A', $work['lastupdate'])." UTC</i> by [<b><i>:dev{$work['bannedBy']}:</i></b>]";
 							$sb .= "</sub><abbr title=\"{$this->botinfo['from']}\"> </abbr>";
 							$this->dAmn->say($this->botinfo['ns'], $sb);
+							$this->botinfo['on'] = false;
 							ksort($this->botdata, SORT_STRING);
 							$this->save_botdata();
 						}
