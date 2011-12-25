@@ -9,11 +9,7 @@
        ######   #######  ##    ##    ##    ##     ## ##     ##
 
 ====================================================================
-This git branch is dev and may not be stable.
-- Do not use unless you plan to keep up-to-date with it.
-Otherwise, download the latest stable from Contra's wiki page or
-use the stable branch @ https://github.com/dAmnLab/Contra.
-
+This git branch is stable.
 
 Author: photofroggy (http://photofroggy.deviantart.com)
 Current Dev: DeathShadow--666 (http://deathshadow--666.deviantart.com)
@@ -21,12 +17,11 @@ Current Dev: DeathShadow--666 (http://deathshadow--666.deviantart.com)
 Contra wiki page: http://botdom.com/wiki/Contra
 Installation guide: http://botdom.com/documentation/Install_a_bot
 #Botdom: http://chat.deviantart.com/chat/Botdom
-Bugtracker: https://github.com/DeathShadow/Contra/issues
+Bugtracker: https://github.com/dAmnLab/Contra/issues
 
 ====================================================================
 When reporting bugs, don't forget to:
 - Search bugs before the bugs to avoid posting the same bug.
-- Include the git rev and your OS version. (Avoid using words like
-latest version, etc. The git version of Contra will always be changing.)
-- Use the latest git rev. Chances is that the bug is probably fixed in
+- Include the git rev and your OS version.
+- Use the latest stable. Chances is that the bug is probably fixed in
 the latest version.
