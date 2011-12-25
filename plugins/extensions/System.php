@@ -158,6 +158,28 @@ class System_commands extends extension {
 					} else $say.= 'Could not edit '.$user.'\'s access to '.$cmd.'.';
 				} else $say.= 'Use this command to edit a users access to a command.';
 				break;
+			case 'change':
+				$say = "$from: ";
+				$cmd = strtolower(args($message, 2));
+				$level = strtolower(args($message, 3));
+				if($cmd == null)
+					$say .= "You have not specified a command to change.";
+				elseif($level == null)
+					$say .= "You have not specified a privilege level to set the command to.";
+				elseif($level == 'reset')
+				{
+					if($this->user->delOverride($cmd))
+						$say .= "Level for command $cmd has been reset to ".$this->Bot->Events->events['cmd'][$cmd]['p'].".";
+					else $say .= "The command $cmd does not have an overrided privilege level.";
+				}
+				elseif(is_numeric($level))
+				{
+					if($this->user->addOverride($cmd, $level))
+						$say .= "Privilege level for $cmd has been set to $level.";
+					else $say .= "Command $cmd does not exist.";
+				}
+				else $say .= "Invalid level. The level must be a number or \"reset\".";
+				break;
 			case 'on':
 			case 'off':
 				$s = (strtolower(args($message, 1)) == 'on' ? true : false);
@@ -197,14 +219,16 @@ class System_commands extends extension {
 				}
 				break;
 			case 'list':
-			default:
 				$all = ($subby == 'list' ? strtolower(args($message, 2)) : $subby) == 'all' ? true : false;
 				$say = '<abbr title="'.$from.'"></abbr><b>'.($all ? 'All' : 'Available').' commands:</b><sub>';
 				foreach($this->user->list['pc'] as $num => $name) {
 					$modline = '<br/>&nbsp;-<b> '.$name.':</b> ';
 					$cmds = '';
 					foreach($this->Bot->Events->events['cmd'] as $cmd => $cmda) {
-						if($cmda['p'] == $num) {
+						if(array_key_exists($cmd, $this->user->list['override']['command']))
+							$priv_level = $this->user->list['override']['command'][$cmd];
+						else $priv_level = $cmda['p'];
+						if($priv_level == $num) {
 							if($this->user->hasCmd($from,$cmd) || $all) {
 								if($cmd != 'mod' && $cmd != 'mods' && $cmd != 'aj' && $cmd != 'e' && $cmd != 'cmd' && $cmd != 'cmds') {
 									$off = (($cmda['s']===false||$this->Bot->mod[$cmda['m']]->status===false)?true:false);
@@ -217,6 +241,19 @@ class System_commands extends extension {
 					if(!empty($cmds)) $say.= $modline.rtrim($cmds, ', ');
 				}
 				$say.= '</sub><br/>Italic commands are off.';
+				break;
+			default:
+				$command_list = array(
+					"allow (command) (user)" => "Give a specific user access to a command.",
+					"ban (command) (user)" => "Deny a specific user access to a command.",
+					"reset (command) (user)" => "Reset a particular user's overrided access to a command",
+					"change (command) (level)" => "Change the minimum level required to use a command to a different level.",
+					"change (command) reset" => "Reset the overrided privilege level of the command to the default level.",
+					"on/off (command)" => "Turn a command on or off."
+				);
+				$say = "$from: command has the following commands:<sub>\n";
+				foreach($command_list as $cmd => $help)
+					$say .= "<b>".$this->Bot->trigger."command $cmd</b> - $help\n";
 				break;
 		}
 		$this->dAmn->say($target, $say);
