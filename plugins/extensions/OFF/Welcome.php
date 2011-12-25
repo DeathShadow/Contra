@@ -78,9 +78,14 @@ class Welcome extends extension {
 		$say = $from.': ';
 		switch($subcom) {
 			case 'all':
-				if($target == "chat:Botdom") break $say.='Welcomes are not allowed in #Botdom.';
-				if(empty($com1s))
-					break $say.= 'You need to give a welcome message to set.';
+				if($target == "chat:Botdom") {
+					$say.='Welcomes are not allowed in #Botdom.';
+					break;
+				}
+				if(empty($com1s)) {
+					$say.= 'You need to give a welcome message to set.';
+					break;
+				}
 				$this->welcome[$target] = array(
 					'type' => 'all',
 					'msg' => $com1s,
@@ -90,7 +95,10 @@ class Welcome extends extension {
 				$say.= ' set to "'.$com1s.'"';
 				break;
 			case 'pc':
-				if($target == "chat:Botdom") break $say.='Welcomes are not allowed in #Botdom.';
+				if($target == "chat:Botdom") {
+					$say.='Welcomes are not allowed in #Botdom.';
+					break;
+				}
 				if(empty($com1)) {
 					$say.= 'You need to give a privclass name.';
 				} else {
@@ -124,7 +132,10 @@ class Welcome extends extension {
 				}
 				break;
 			case 'indv':
-				if($target == "chat:Botdom") break $say.='Welcomes are not allowed in #Botdom.';
+				if($target == "chat:Botdom") {
+					$say.='Welcomes are not allowed in #Botdom.';
+					break;
+				}
 				$this->welcome[$target] = array(
 					'type' => 'indv',
 					'users' => array(),
@@ -134,14 +145,22 @@ class Welcome extends extension {
 				break;
 			case 'on':
 			case 'off':
-				if($target == "chat:Botdom") break $say.='Welcomes are not allowed in #Botdom.';
-				if(!isset($this->welcome[$target]))
-					break $say.= 'There are no welcome settings for '.$this->dAmn->deform_chat($target, $this->Bot->username).'.';
+				if($target == "chat:Botdom") {
+					$say.='Welcomes are not allowed in #Botdom.';
+					break;
+				}
+				if(!isset($this->welcome[$target])) {
+					$say.= 'There are no welcome settings for '.$this->dAmn->deform_chat($target, $this->Bot->username).'.';
+					break;
+				}
 				$sw = $subcom == 'on' ? true : false;
-				if($this->welcome[$target]['switch'] === $sw)
-					break $say.= 'Welcomes in '.$this->dAmn->deform_chat($target, $this->Bot->username).' are already '.$subcom.'.';
+				if($this->welcome[$target]['switch'] === $sw) {
+					$say.= 'Welcomes in '.$this->dAmn->deform_chat($target, $this->Bot->username).' are already '.$subcom.'.';
+					break;
+				}
 				$this->welcome[$target]['switch'] = $sw;
-				break $say.= 'Welcomes in '.$this->dAmn->deform_chat($target, $this->Bot->username).' have been turned '.$subcom.'.';
+				$say.= 'Welcomes in '.$this->dAmn->deform_chat($target, $this->Bot->username).' have been turned '.$subcom.'.';
+				break;
 			case 'clear':
 				if(empty($com1)) {
 					$say.= 'This will delete all welcome data! Type "<code>';
@@ -153,9 +172,10 @@ class Welcome extends extension {
 				}
 				break;
 			case 'settings':
-				if(!isset($this->welcome[$target]))
-					break $say.= 'Welcomes are not being used in '
-						.$this->dAmn->deform_chat($target, $this->Bot->username).'.';
+				if(!isset($this->welcome[$target])) {
+					$say.= 'Welcomes are not being used in '.$this->dAmn->deform_chat($target, $this->Bot->username).'.';
+					break;
+				}
 				$say.= 'Welcomes set to '.$this->welcome[$target]['type'].' in ';
 				$say.= $this->dAmn->deform_chat($target, $this->Bot->username).'.';
 				$say.= ' Welcomes are currently '.($this->welcome[$target]['switch'] ? 'on' : 'off').'.';
@@ -188,9 +208,11 @@ class Welcome extends extension {
 				break;
 			case 'indv':
 				if(!isset($this->welcome[$ns]['users'][$from])) return;
-				break $this->send_welcome($ns, $from, $this->welcome[$ns]['users'][$from]);
+				$this->send_welcome($ns, $from, $this->welcome[$ns]['users'][$from]);
+				break;
 			case 'all':
-				break $this->send_welcome($ns, $from, $this->welcome[$ns]['msg']);
+				$this->send_welcome($ns, $from, $this->welcome[$ns]['msg']);
+				break;
 		}
 	}
 

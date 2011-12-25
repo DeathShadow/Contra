@@ -26,6 +26,7 @@ class System_commands extends extension {
 	protected $trigc2;
 	protected $trigc3;
 	protected $trigc4;
+	protected $botinfo = array();
 	protected $switches = array();
 
 	protected $botdata = array();
@@ -97,6 +98,7 @@ class System_commands extends extension {
 		$this->trigc2 = strtolower($this->Bot->username.': trigger');
 		$this->trigc3 = strtolower($this->Bot->username.', trigcheck');
 		$this->trigc4 = strtolower($this->Bot->username.', trigger');
+		$this->botinfo['on'] = false;
 	}
 
 	function c_about($ns, $from, $message, $target) {
@@ -156,6 +158,28 @@ class System_commands extends extension {
 					} else $say.= 'Could not edit '.$user.'\'s access to '.$cmd.'.';
 				} else $say.= 'Use this command to edit a users access to a command.';
 				break;
+			case 'change':
+				$say = "$from: ";
+				$cmd = strtolower(args($message, 2));
+				$level = strtolower(args($message, 3));
+				if($cmd == null)
+					$say .= "You have not specified a command to change.";
+				elseif($level == null)
+					$say .= "You have not specified a privilege level to set the command to.";
+				elseif($level == 'reset')
+				{
+					if($this->user->delOverride($cmd))
+						$say .= "Level for command $cmd has been reset to ".$this->Bot->Events->events['cmd'][$cmd]['p'].".";
+					else $say .= "The command $cmd does not have an overrided privilege level.";
+				}
+				elseif(is_numeric($level))
+				{
+					if($this->user->addOverride($cmd, $level))
+						$say .= "Privilege level for $cmd has been set to $level.";
+					else $say .= "Command $cmd does not exist.";
+				}
+				else $say .= "Invalid level. The level must be a number or \"reset\".";
+				break;
 			case 'on':
 			case 'off':
 				$s = (strtolower(args($message, 1)) == 'on' ? true : false);
@@ -195,14 +219,16 @@ class System_commands extends extension {
 				}
 				break;
 			case 'list':
-			default:
 				$all = ($subby == 'list' ? strtolower(args($message, 2)) : $subby) == 'all' ? true : false;
 				$say = '<abbr title="'.$from.'"></abbr><b>'.($all ? 'All' : 'Available').' commands:</b><sub>';
 				foreach($this->user->list['pc'] as $num => $name) {
 					$modline = '<br/>&nbsp;-<b> '.$name.':</b> ';
 					$cmds = '';
 					foreach($this->Bot->Events->events['cmd'] as $cmd => $cmda) {
-						if($cmda['p'] == $num) {
+						if(array_key_exists($cmd, $this->user->list['override']['command']))
+							$priv_level = $this->user->list['override']['command'][$cmd];
+						else $priv_level = $cmda['p'];
+						if($priv_level == $num) {
 							if($this->user->hasCmd($from,$cmd) || $all) {
 								if($cmd != 'mod' && $cmd != 'mods' && $cmd != 'aj' && $cmd != 'e' && $cmd != 'cmd' && $cmd != 'cmds') {
 									$off = (($cmda['s']===false||$this->Bot->mod[$cmda['m']]->status===false)?true:false);
@@ -215,6 +241,19 @@ class System_commands extends extension {
 					if(!empty($cmds)) $say.= $modline.rtrim($cmds, ', ');
 				}
 				$say.= '</sub><br/>Italic commands are off.';
+				break;
+			default:
+				$command_list = array(
+					"allow (command) (user)" => "Give a specific user access to a command.",
+					"ban (command) (user)" => "Deny a specific user access to a command.",
+					"reset (command) (user)" => "Reset a particular user's overrided access to a command",
+					"change (command) (level)" => "Change the minimum level required to use a command to a different level.",
+					"change (command) reset" => "Reset the overrided privilege level of the command to the default level.",
+					"on/off (command)" => "Turn a command on or off."
+				);
+				$say = "$from: command has the following commands:<sub>\n";
+				foreach($command_list as $cmd => $help)
+					$say .= "<b>".$this->Bot->trigger."command $cmd</b> - $help\n";
 				break;
 		}
 		$this->dAmn->say($target, $say);
@@ -405,15 +444,21 @@ class System_commands extends extension {
 	}
 
 	function c_botinfo($ns, $from, $message, $target) {
-		$param = strtolower(args($message, 1));
+		$this->botinfo['on'] = true;
+		$this->botinfo['from'] = $from;
+		$this->botinfo['params'] = strtolower(args($message, 1));
+		$this->botinfo['ns'] = $ns;
 		$ownerz = args($message, 2);
 		$this->botdata = array_change_key_case($this->botdata, CASE_LOWER);
-		if($param !== '') {
-			if(!array_key_exists($param, $this->botdata)) {
-				$this->dAmn->say($ns, "Sorry, {$from}, I don't have any data on <b>{$param}</b>. Sending request for botinfo, check back again.");
-				$this->dAmn->npmsg('chat:DataShare', "BDS:BOTCHECK:REQUEST:{$param}", TRUE);
-			}elseif(array_key_exists($param, $this->botdata) && empty($this->botdata[$param]['bannedBy'])) {
-				$work = $this->botdata[$param];
+
+		if($this->botinfo['params'] == '') {
+			$sb = "";
+			$this->dAmn->say($ns, "<abbr title=\"{$from}\"></abbr> You must specify the name of a bot you wish to get information for.<br /><sup>[There are ".count($this->botdata)." bots in database.]</sup>", TRUE);
+		} elseif(!array_key_exists($this->botinfo['params'], $this->botdata))
+			$this->dAmn->npmsg('chat:DataShare', "BDS:BOTCHECK:REQUEST:{$this->botinfo['params']}", TRUE);
+		else {
+			if(empty($this->botdata[$this->botinfo['params']]['bannedBy'])) {
+				$work = $this->botdata[$this->botinfo['params']];
 				$ass = explode(';', $work['owner']);
 				foreach($ass as $poo => $pooz) {
 					$satan[$pooz] = array(true);
@@ -430,7 +475,7 @@ class System_commands extends extension {
 				$sb .= "</sub><abbr title=\"{$from}\"> </abbr>";
 				$this->dAmn->say($ns, $sb);
 			}else{
-				$work = $this->botdata[$param];
+				$work = $this->botdata[$this->botinfo['params']];
 				$sb  = '<sub>';
 				$sb .= "Bot Username: [<b>:dev{$work['actualname']}:</b>]<br>";
 				$sb .= "Bot Owner: [<b>:dev{$work['owner']}:</b>]<br>";
@@ -439,9 +484,6 @@ class System_commands extends extension {
 				$sb .= "</sub><abbr title=\"{$from}\"> </abbr>";
 				$this->dAmn->say($ns, $sb);
 			}
-		}else{
-			$sb = "";
-			$this->dAmn->say($ns, "<abbr title=\"{$from}\"></abbr> You must specify the name of a bot you wish to get information for.<br /><sup>[There are ".count($this->botdata)." bots in database.]</sup>", TRUE);
 		}
 	}
 	function BDSBotCheck($ns, $sender, $payload) {
@@ -548,12 +590,36 @@ class System_commands extends extension {
 							);
 							ksort($this->botdata, SORT_STRING);
 							$this->save_botdata();
+							if(!$this->botinfo['on']) break;
+							if(empty($this->botdata[$this->botinfo['params']]['bannedBy'])) {
+								$work = $this->botdata[$this->botinfo['params']];
+								$ass = explode(';', $work['owner']);
+								foreach($ass as $poo => $pooz) {
+									$satan[$pooz] = array(true);
+								}
+								$asshole = '[<b>:dev' . implode(array_keys($satan), ':</b>], [<b>:dev') . ':</b>]';
+								$sb  = '<sub>';
+								$sb .= "Bot Username: [<b>:dev{$work['actualname']}:</b>]<br>";
+								$sb .= "Bot Owner: {$asshole}<br>";
+								$sb .= "Bot Version: <b>{$work['bottype']} <i>{$work['version']}</i></b><br>";
+								$sb .= "BDS Version: <b>{$work['bdsversion']}</b><br>";
+								$sb .= "Bot Trigger: <b>" . implode('</b><b>', str_split($work["trigger"])) . "</b><br>";
+								$sb .= "Signature: <b>{$work['lasthash']}</b><br>";
+								$sb .= 'Last update on <i>'.date('n/j/Y g:i:s A', $work['lastupdate'])." UTC</i> by [<b><i>:dev{$work['requestedBy']}:</i></b>]";
+								$sb .= "</sub><abbr title=\"{$this->botinfo['from']}\"> </abbr>";
+								$this->dAmn->say($this->botinfo['ns'], $sb);
+							}
+							$this->botinfo['on'] = false;
 						}
 					break;
 					case 'NODATA':
 						if($this->dAmn->chat[$ns]['member'][$from]['pc'] != 'PoliceBot') return;
 						elseif(strtolower($command[3]) == strtolower($this->Bot->username) && strtolower($from) != strtolower($this->Bot->username))
 							$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', htmlspecialchars_decode($this->Bot->trigger, ENT_NOQUOTES)).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
+						if($this->botinfo['on']) {
+							$this->dAmn->say($this->botinfo['ns'], "Sorry, {$this->botinfo['from']}, there is no information on <b>{$this->botinfo['params']}</b> in the database.");
+							$this->botinfo['on'] = false;
+						}
 					break;
 					case 'BADBOT':
 						if($this->dAmn->chat[$ns]['member'][$from]['pc'] != 'PoliceBot') return;
@@ -581,9 +647,31 @@ class System_commands extends extension {
 								'bot'		=> true,
 								'lastupdate'	=> intval($lastupdate),
 							);
+							if(!$this->botinfo['on']) break;
+							$work = $this->botdata[$this->botinfo['params']];
+							$sb  = '<sub>';
+							$sb .= "Bot Username: [<b>:dev{$work['actualname']}:</b>]<br>";
+							$sb .= "Bot Owner: [<b>:dev{$work['owner']}:</b>]<br>";
+							$sb .= "Bot Status: <b>{$work['status']}</b><br>";
+							$sb .= 'Last update on <i>'.date('n/j/Y g:i:s A', $work['lastupdate'])." UTC</i> by [<b><i>:dev{$work['bannedBy']}:</i></b>]";
+							$sb .= "</sub><abbr title=\"{$this->botinfo['from']}\"> </abbr>";
+							$this->dAmn->say($this->botinfo['ns'], $sb);
+							$this->botinfo['on'] = false;
 							ksort($this->botdata, SORT_STRING);
 							$this->save_botdata();
 						}
+					break;
+				}
+				break;
+				case 'BOTDEF':
+				switch($command[2]) {
+					case 'REQUEST':
+						$user = $command[3];
+						$userz = strtolower($user);
+						if(empty($user)) return;
+						if($this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] != 'PoliceBot') return;
+						if($user == $this->Bot->username && $from != $this->Bot->username)
+							$this->dAmn->npmsg('chat:datashare', "BDS:BOTDEF:RESPONSE:{$from},Contra,PHP,photofroggy,http://botdom.com/wiki/Contra,".md5(strtolower($from.'contraphotofroggy')), TRUE);
 					break;
 				}
 				break;
@@ -810,14 +898,18 @@ class System_commands extends extension {
 		$this->switches = $this->switches == false ? array() : $this->switches;
 		if(empty($this->switches)) return;
 		foreach($this->switches['mods'] as $mod => $s) {
-			if($s['orig'] === $this->Bot->mod[$mod]->status && $s['orig'] !== $s['cur'])
-				break $this->Bot->mod[$mod]->status = $s['cur'];
+			if($s['orig'] === $this->Bot->mod[$mod]->status && $s['orig'] !== $s['cur']) {
+				$this->Bot->mod[$mod]->status = $s['cur'];
+				break;
+			}
 			unset($this->switches['mods'][$mod]);
 		}
 		if(empty($this->switches['mods'])) unset($this->switches['mods']);
 		foreach($this->switches['cmds'] as $cmd => $s) {
-			if($s['orig'] === $this->Bot->Events->events['cmd'][$cmd]['s'] && $s['orig'] !== $s['cur'])
-				break $this->switchCmd($cmd, $s['cur']);
+			if($s['orig'] === $this->Bot->Events->events['cmd'][$cmd]['s'] && $s['orig'] !== $s['cur']) {
+				$this->switchCmd($cmd, $s['cur']);
+				break;
+			}
 			unset($this->switches['cmds'][$cmd]);
 		}
 		if(empty($this->switches['cmds'])) unset($this->switches['cmds']);
