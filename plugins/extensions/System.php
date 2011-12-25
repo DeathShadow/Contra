@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 	/*
 	*	System commands. Version 3.
