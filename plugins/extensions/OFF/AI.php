@@ -4,7 +4,7 @@
 	*	AI module version 3.
 	*	Made for Contra v3.
 	*	Created by photofroggy.
-	*	
+	*
 	*	Released under a Creative Commons Attribution-Noncommercial-Share Alike 3.0 License, which allows you to copy, distribute, transmit, alter, transform,
 	*	and build upon this work but not use it for commercial purposes, providing that you attribute me, photofroggy (froggywillneverdie@msn.com) for its creation.
 	*/
@@ -15,12 +15,12 @@ class Brain extends extension {
 	public $about = 'Artificial Intelligence.';
 	public $status = true;
 	public $author = 'photofroggy';
-	
+
 	function init() {
 		$this->addCmd('ai', 'c_ai', 25);
 		$this->switch_board();
 	}
-	
+
 	function c_ai($ns, $from, $message, $target) {
 		$dAmn = $this->dAmn;
 		$user = $this->user;
@@ -29,7 +29,10 @@ class Brain extends extension {
 			case 'on':
 			case 'off':
 				$kw = $com == 'on' ? 'hook' : 'unhook';
-				if($ns == "chat:Botdom" && $com == 'on') break $dAmn->say($ns, $from.': AI can\'t be turned on in #Botdom.');
+				if($ns == "chat:Botdom" && $com == 'on') {
+					$dAmn->say($ns, $from.': AI can\'t be turned on in #Botdom.');
+					break;
+				}
 				elseif($user->has($from, 99)) {
 					if($this->$kw('e_msg', 'recv_msg')) $dAmn->say($ns, $from.': AI turned '.$com.'!');
 					else $dAmn->say($ns, $from.': AI could not be turned '.$com.'.');
@@ -54,7 +57,7 @@ class Brain extends extension {
 			$dAmn->say($c, $from.': '.$response);
 		}
 	}
-	
+
 	function switch_board($switch = false) {
 		if($switch !== false) {
 			if($switch == 'on')

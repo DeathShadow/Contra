@@ -1,4 +1,10 @@
 @echo off
+setlocal enableextensions
+pushd %~dp0
+for %%* in (.) do @title %%~n*
+popd
+endlocal
+
 if not exist ./phpbin (
 	if not exist ./run.php (
 		echo =========================== WARNING: LAUNCH ERROR =============================

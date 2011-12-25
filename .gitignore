@@ -8,3 +8,4 @@ storage/logs
 storage/mod
 storage/config.cf
 storage/users.cf
+Connection.log

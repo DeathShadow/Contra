@@ -19,7 +19,7 @@ class Bot {
 	public $start;
 	public $info = array(
 		'name' => 'Contra',
-		'version' => '5.4.2',
+		'version' => '5.4.3',
 		'status' => '',
 		'release' => 'public',
 		'author' => 'photofroggy',
@@ -53,7 +53,7 @@ class Bot {
 		global $Bot;
 		$Bot = $this;
 		// Generate a session ID code.
-		if(DEBUG) $this->session = sha1($UTS+microtime());
+		if(DEBUG) $this->session = sha1(microtime());
 		// Our start time is here.
 		$this->start = time();
 		// System information string.

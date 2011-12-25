@@ -37,13 +37,17 @@ class Responses extends extension {
 		$say = $from.': ';
 		switch($subcom) {
 			case 'add':
-				if(isset($this->response[$ar]))
-					break $say.= $ar.' is already stored as an autoresponse.';
+				if(isset($this->response[$ar])) {
+					$say.= $ar.' is already stored as an autoresponse.';
+					break;
+				}
 				$ara = explode(" | ", $message, 3);
 				$ar = $ara[1];
 				$re = $ara[2];
-				if(empty($re))
-					break $say.= 'You need to give a response to be used!';
+				if(empty($re)) {
+					$say.= 'You need to give a response to be used!';
+					break;
+				}
 				$this->response[$ar] = $re;
 				$say.= 'Added response "'.$re.'" for "'.$ar.'".';
 				break;
@@ -51,8 +55,10 @@ class Responses extends extension {
 			case 'remove':
 				$ara = explode(" | ", $message, 2);
 				$ar = $ara[1];
-				if(!isset($this->response[$ar]))
-					break $say.= $ar.' is not an autoresponse.';
+				if(!isset($this->response[$ar])) {
+					$say.= $ar.' is not an autoresponse.';
+					break;
+				}
 				unset($this->response[$ar]);
 				$say.= 'Removed autoresponse for '.$ar.'.';
 				break;
@@ -68,14 +74,18 @@ class Responses extends extension {
 				break;
 			case 'off':
 				$key = array_search($target, $this->rooms);
-				if($key !== false)
-					break $say.= 'Responses are already disabled in '.$this->dAmn->deform_chat($target, $this->Bot->username).'.';
+				if($key !== false) {
+					$say.= 'Responses are already disabled in '.$this->dAmn->deform_chat($target, $this->Bot->username).'.';
+					break;
+				}
 				$this->rooms[] = $target;
 				$say.= 'Responses disabled in '.$this->dAmn->deform_chat($target, $this->Bot->username).'!';
 				break;
 			case 'list':
-				if(empty($this->response))
-					break $say.= 'There are currently no responses stored.';
+				if(empty($this->response)) {
+					$say.= 'There are currently no responses stored.';
+					break;
+				}
 				$say.= 'Stored responses:<sup>';
 				foreach($this->response as $ar => $re)
 					$say.= '<br/><b>'.$ar.'</b> - '.$re;
@@ -83,8 +93,10 @@ class Responses extends extension {
 				break;
 			case 'channels':
 			case 'rooms':
-				if(empty($this->rooms))
-					break $say.= 'Responses are not disabled in any rooms.';
+				if(empty($this->rooms)) {
+					$say.= 'Responses are not disabled in any rooms.';
+					break;
+				}
 				$say.= 'Responses are disabled in the following rooms:<br/><sup>';
 				foreach($this->rooms as $chan)
 					$say.= $this->dAmn->deform_chat($chan, $this->Bot->username).', ';
@@ -95,29 +107,38 @@ class Responses extends extension {
 				switch(strtolower($ar)) {
 					case 'channels':
 					case 'rooms':
-						if(empty($this->rooms))
-							break $say.= 'Responses are not disabled in any rooms.';
-						if(empty($cc) || strtolower($cc) != 'yes')
-							break $say.= 'This will re-enable responses in all rooms. Type "<code>'
-								.$this->Bot->trigger.args($message, 0).' '.$subcom.' '.$ar.' yes</code>" to confirm.';
+						if(empty($this->rooms)) {
+							$say.= 'Responses are not disabled in any rooms.';
+							break;
+						}
+						if(empty($cc) || strtolower($cc) != 'yes') {
+							$say.= 'This will re-enable responses in all rooms. Type "<code>'.$this->Bot->trigger.args($message, 0).' '.$subcom.' '.$ar.' yes</code>" to confirm.';
+							break;
+						}
 						$this->rooms = array();
 						$say.= 'Responses re-enabled for all rooms!';
 						break;
 					case 'responses':
-						if(empty($this->response))
-							break $say.= 'There are no responses stored.';
-						if(empty($cc) || strtolower($cc) != 'yes')
-							break $say.= 'This will delete all stored responses. Type "<code>'
-								.$this->Bot->trigger.args($message, 0).' '.$subcom.' '.$ar.' yes</code>" to confirm.';
+						if(empty($this->response)) {
+							$say.= 'There are no responses stored.';
+							break;
+						}
+						if(empty($cc) || strtolower($cc) != 'yes') {
+							$say.= 'This will delete all stored responses. Type "<code>'.$this->Bot->trigger.args($message, 0).' '.$subcom.' '.$ar.' yes</code>" to confirm.';
+							break;
+						}
 						$this->response = array();
 						$say.= 'Responses have been deleted!';
 						break;
 					case 'all':
-						if(empty($this->response) && empty($this->rooms))
-							break $say.= 'There is no data being stored for this module.';
-						if(empty($cc) || strtolower($cc) != 'yes')
-							break $say.= 'This will delete all data stored for this module. Type "<code>'
-								.$this->Bot->trigger.args($message, 0).' '.$subcom.' '.$ar.' yes</code>" to confirm.';
+						if(empty($this->response) && empty($this->rooms)) {
+							$say.= 'There is no data being stored for this module.';
+							break;
+						}
+						if(empty($cc) || strtolower($cc) != 'yes') {
+							$say.= 'This will delete all data stored for this module. Type "<code>'.$this->Bot->trigger.args($message, 0).' '.$subcom.' '.$ar.' yes</code>" to confirm.';
+							break;
+						}
 						$this->response = $this->rooms = array();
 						$say.= 'All data for this module has been deleted!';
                                                 break;
