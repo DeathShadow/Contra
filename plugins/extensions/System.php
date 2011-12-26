@@ -444,7 +444,6 @@ class System_commands extends extension {
 	}
 
 	function c_botinfo($ns, $from, $message, $target) {
-		$this->botinfo['on'] = true;
 		$this->botinfo['from'] = $from;
 		$this->botinfo['params'] = strtolower(args($message, 1));
 		$this->botinfo['ns'] = $ns;
@@ -454,9 +453,10 @@ class System_commands extends extension {
 		if($this->botinfo['params'] == '') {
 			$sb = "";
 			$this->dAmn->say($ns, "<abbr title=\"{$from}\"></abbr> You must specify the name of a bot you wish to get information for.<br /><sup>[There are ".count($this->botdata)." bots in database.]</sup>", TRUE);
-		} elseif(!array_key_exists($this->botinfo['params'], $this->botdata))
+		} elseif(!array_key_exists($this->botinfo['params'], $this->botdata)) {
 			$this->dAmn->npmsg('chat:DataShare', "BDS:BOTCHECK:REQUEST:{$this->botinfo['params']}", TRUE);
-		else {
+			$this->botinfo['on'] = true;
+		} else {
 			if(empty($this->botdata[$this->botinfo['params']]['bannedBy'])) {
 				$work = $this->botdata[$this->botinfo['params']];
 				$ass = explode(';', $work['owner']);
