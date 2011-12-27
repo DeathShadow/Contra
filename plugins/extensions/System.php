@@ -416,6 +416,13 @@ class System_commands extends extension {
 							else $say = $from.': Failed renaming user class '.$p1.' to '.$p2.'.';
 						}
 						break;
+					case 'default':
+						if($p1 == '') $say = $from.': Usage: '.$this->Bot->trigger.'user class default [class]';
+						else {
+							if($this->user->defaultClass($p1) === true) $say = $from.': Set default user class to '.$p1.'.';
+							else $say = $from.': Failed setting default user class to '.$p1.'.';
+						}
+						break;
 					default: $say = $from.': Use this command to add, remove and rename access levels for your bot.';
 						break;
 				}
