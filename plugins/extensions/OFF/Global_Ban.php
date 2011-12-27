@@ -77,7 +77,7 @@ class Global_Ban extends extension {
 			default:
 				foreach($this->gban['rooms'] as $room) {
 					if(in_array(strtolower($room), array_keys(array_change_key_case($this->dAmn->chat))))
-						$this->dAmn->ban($ns, args($message, 1));
+						$this->dAmn->ban($room, args($message, 1));
 				}
 				break;
 		}
