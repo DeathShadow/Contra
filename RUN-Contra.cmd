@@ -42,12 +42,13 @@ if exist "storage\bat\quit.bcd" (
 	set /p shit= <storage\bat\quit.bcd
 	del storage\bat\quit.bcd
 )
-if %shit%==hard goto stop
-if %shit%==soft goto softstop
-
 if exist "storage\bat\restart.bcd" (
-	goto refresher
+	del storage\bat\restart.bcd
+	goto :refresher
 )
+if %shit%==hard goto :stop
+if %shit%==soft goto :softstop
+
 if !%1==! goto stopped
 if %1==--bot goto stopped
 if %1==--debug goto stopped
