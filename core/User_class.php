@@ -188,7 +188,7 @@ return '.var_export($this->list, true).';'.chr(10).'?>';
 					foreach($this->list[$pc] as $mem => $k)
 						if(strtolower($k)==strtolower($user))
 							$tapriv = $pc;
-			if(!$tapriv) $tapriv = $this->list['override']['default'];
+			if(!$tapriv) $tapriv = isset($this->list['override']['default']) ? $this->list['override']['default'] : 25;
 			if($privs) {
 				$class = is_numeric($privs) ? $privs : $this->priv->Number($priv);
 				if($class) return ($tapriv >= $class ? true : false);
