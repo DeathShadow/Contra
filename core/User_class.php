@@ -34,7 +34,7 @@ class User_System {
 				50 => array(),
 				25 => array(),
 				1 => array(),
-				'override' => array('user' => array(), 'command' => array()),
+				'override' => array('user' => array(), 'command' => array(), 'default' => 25),
 				'pc' => array(
 					100 => 'Owner',
 					99 => 'Operators',
@@ -188,7 +188,7 @@ return '.var_export($this->list, true).';'.chr(10).'?>';
 					foreach($this->list[$pc] as $mem => $k)
 						if(strtolower($k)==strtolower($user))
 							$tapriv = $pc;
-			if(!$tapriv) $tapriv = 25;
+			if(!$tapriv) $tapriv = $this->list['override']['default'];
 			if($privs) {
 				$class = is_numeric($privs) ? $privs : $this->priv->Number($priv);
 				if($class) return ($tapriv >= $class ? true : false);
@@ -366,6 +366,17 @@ return '.var_export($this->list, true).';'.chr(10).'?>';
 		if($pc==100) return false;
 		unset($this->list[$pc]);
 		unset($this->list['pc'][$pc]);
+		$this->UpdateList();
+		return true;
+	}
+
+	public function defaultClass($pc) {
+		if(is_numeric($pc)) {
+			$pc = $this->class_name($pc);
+			if($pc !== false) $pc = $this->class_order($pc);
+		}
+		if($pc === false) return false;
+		$this->list['override']['default'] = $pc;
 		$this->UpdateList();
 		return true;
 	}
