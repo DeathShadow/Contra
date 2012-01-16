@@ -100,6 +100,7 @@ class System_commands extends extension {
 		$this->trigc3 = strtolower($this->Bot->username.', trigcheck');
 		$this->trigc4 = strtolower($this->Bot->username.', trigger');
 		$this->botinfo['on'] = false;
+		$this->botversion['latest'] = true;
 	}
 
 	function c_about($ns, $from, $message, $target) {
@@ -829,10 +830,13 @@ class System_commands extends extension {
 	function c_update($ns, $from, $message) {
 		if(strtolower($from) == strtolower($this->Bot->owner)) {
 			$confirm = args($message, 1);
-			if($confirm == 'yes') {
+			if($this->botversion['latest'] == false && $confirm == 'yes') {
 				$this->dAmn->npmsg('chat:DataShare', "CODS:VERSION:UPDATEME:{$this->Bot->username},{$this->Bot->info['version']}", TRUE);
 				$this->dAmn->say($ns, "{$from}: Now updating. Bot will be shutdown after update is complete.");
-			}else $this->dAmn->say($ns, "{$from}: <b>Updating Contra</b>:<br />Are you sure? using {$this->Bot->trigger}update will overwrite your bot's files.<br /><sub>Type <code>{$this->Bot->trigger}update yes</code> to confirm update.</sub>");
+			}elseif($this->botversion['latest'] == false && empty($confim))
+				$this->dAmn->say($ns, "{$from}: <b>Updating Contra</b>:<br />Are you sure? using {$this->Bot->trigger}update will overwrite your bot's files.<br /><sub>Type <code>{$this->Bot->trigger}update yes</code> to confirm update.</sub>");
+			elseif($this->botversion['latest'] == true)
+				$this->dAmn->say($ns, "{$from}: Your Contra version is already the latest.");
 		}
 	}
 
@@ -855,6 +859,7 @@ class System_commands extends extension {
 					if(stristr($command[3], $this->Bot->username)) {
 						if(empty($version) || empty($released)) return;
 						if($version > $this->Bot->info['version'] && $from == 'Asuos') {
+							$this->botversion['latest'] = false;
 							$this->sendnote($this->Bot->owner, 'Update Service', "A new version of Contra is available. (version: {$version}; released on {$released}) You can download it from http://botdom.com/wiki/Contra#Latest or type <code>{$this->Bot->trigger}update</code> to update your bot.<br /><br />(<b>NOTE: using <code>{$this->Bot->trigger}update</code> will overwrite all your changes to your bot.</b>)");
 							$this->Console->Alert("Contra {$version} has been released on {$released}. Get it at http://botdom.com/wiki/Contra#Latest");
 						}
