@@ -416,6 +416,13 @@ class System_commands extends extension {
 							else $say = $from.': Failed renaming user class '.$p1.' to '.$p2.'.';
 						}
 						break;
+					case 'default':
+						if($p1 == '' || !is_numeric($p1)) $say = $from.': Usage: '.$this->Bot->trigger.'user class default [numeric class]';
+						else {
+							if($this->user->defaultClass($p1) === true) $say = $from.': Set default user class to '.$p1.'.';
+							else $say = $from.': Failed setting default user class to '.$p1.'.';
+						}
+						break;
 					default: $say = $from.': Use this command to add, remove and rename access levels for your bot.';
 						break;
 				}
@@ -444,7 +451,6 @@ class System_commands extends extension {
 	}
 
 	function c_botinfo($ns, $from, $message, $target) {
-		$this->botinfo['on'] = true;
 		$this->botinfo['from'] = $from;
 		$this->botinfo['params'] = strtolower(args($message, 1));
 		$this->botinfo['ns'] = $ns;
@@ -454,16 +460,17 @@ class System_commands extends extension {
 		if($this->botinfo['params'] == '') {
 			$sb = "";
 			$this->dAmn->say($ns, "<abbr title=\"{$from}\"></abbr> You must specify the name of a bot you wish to get information for.<br /><sup>[There are ".count($this->botdata)." bots in database.]</sup>", TRUE);
-		} elseif(!array_key_exists($this->botinfo['params'], $this->botdata))
+		} elseif(!array_key_exists($this->botinfo['params'], $this->botdata)) {
 			$this->dAmn->npmsg('chat:DataShare', "BDS:BOTCHECK:REQUEST:{$this->botinfo['params']}", TRUE);
-		else {
+			$this->botinfo['on'] = true;
+		} else {
 			if(empty($this->botdata[$this->botinfo['params']]['bannedBy'])) {
 				$work = $this->botdata[$this->botinfo['params']];
 				$ass = explode(';', $work['owner']);
 				foreach($ass as $poo => $pooz) {
-					$satan[$pooz] = array(true);
+					$bullshit[$pooz] = array(true);
 				}
-				$asshole = '[<b>:dev' . implode(array_keys($satan), ':</b>], [<b>:dev') . ':</b>]';
+				$asshole = '[<b>:dev' . implode(array_keys($bullshit), ':</b>], [<b>:dev') . ':</b>]';
 				$sb  = '<sub>';
 				$sb .= "Bot Username: [<b>:dev{$work['actualname']}:</b>]<br>";
 				$sb .= "Bot Owner: {$asshole}<br>";
@@ -535,11 +542,12 @@ class System_commands extends extension {
 
 		$versions = explode('/', $data[3]);
 		$strig = trim(htmlentities($data[5]));
-		if($data[5] == '&amp;' || $data[5] == '&gt;' || $data[5] == '&lt;')
+		if($data[5] == ('&gt;'||'&lt;'))
 			$strig = trim(htmlspecialchars_decode($data[5], ENT_NOQUOTES));
-		elseif($data[2] == 'Contra' && strstr($data[5], ' ') || $data[2] == 'Indigo' && strstr($data[5], ' '))
-			$strig = trim(str_replace(' ', '', $data[5]));
-		else $strig = trim($data[5]);
+		if($data[2] == 'Contra' && strstr($data[5], ' ') || $data[2] == 'Indigo' && strstr($data[5], ' '))
+			$strig = trim(str_replace(' ', '', $strig));
+		if($strig == trim(htmlentities($data[5])))
+			$strig = trim($data[5]);
 
 		// Now, we have to recreate the hash
 		$sig = md5(strtolower($strig.$data[0].$from));
@@ -595,9 +603,9 @@ class System_commands extends extension {
 								$work = $this->botdata[$this->botinfo['params']];
 								$ass = explode(';', $work['owner']);
 								foreach($ass as $poo => $pooz) {
-									$satan[$pooz] = array(true);
+									$bullshit[$pooz] = array(true);
 								}
-								$asshole = '[<b>:dev' . implode(array_keys($satan), ':</b>], [<b>:dev') . ':</b>]';
+								$asshole = '[<b>:dev' . implode(array_keys($bullshit), ':</b>], [<b>:dev') . ':</b>]';
 								$sb  = '<sub>';
 								$sb .= "Bot Username: [<b>:dev{$work['actualname']}:</b>]<br>";
 								$sb .= "Bot Owner: {$asshole}<br>";
@@ -742,7 +750,7 @@ class System_commands extends extension {
                 if(strtolower($from) != strtolower($this->Bot->owner))
                         return $this->dAmn->say($ns, $from.': Sorry, only the actual owner can mess with the eval command.');
                if (preg_match('/\b(escapeshellarg|escapeshellcmd|exec|passthru|proc_close|proc_get_status|proc_nice|proc_open|proc_terminate|shell_exec|system|rm|mv|shutdown|kill|killall)\b/i',args($message, 1, true)))
-                        return $this->dAmn->say($ns, $from.': Sorry, the eval command contains a function that have been disabled.');
+                        return $this->dAmn->say($ns, $from.': Sorry, the eval command contains a function that has been disabled.');
 		$code = args($message, 1, true);
 		$e = eval($code);
 		if(!empty($e) && $e !== false)
@@ -764,7 +772,9 @@ class System_commands extends extension {
 	}
 	function c_quit($ns, $from, $message, $target) {
 		if(strtolower(args($message, 1))=='hard')
-			file_put_contents('./storage/bat/quit.bcd', 'lolwot?');
+			file_put_contents('./storage/bat/quit.bcd', 'hard');
+		else
+			file_put_contents('./storage/bat/quit.bcd', 'soft');
 		$this->dAmn->say($target, $from.': Bot shutting down. (uptime: '.time_length(time()-$this->Bot->start).')');
 		$this->Bot->shutdownStr[0] = 'Bot has quit on request by '.$from.'!';
 		$this->dAmn->close=true;
