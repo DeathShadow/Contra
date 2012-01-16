@@ -468,9 +468,9 @@ class System_commands extends extension {
 				$work = $this->botdata[$this->botinfo['params']];
 				$ass = explode(';', $work['owner']);
 				foreach($ass as $poo => $pooz) {
-					$satan[$pooz] = array(true);
+					$bullshit[$pooz] = array(true);
 				}
-				$asshole = '[<b>:dev' . implode(array_keys($satan), ':</b>], [<b>:dev') . ':</b>]';
+				$asshole = '[<b>:dev' . implode(array_keys($bullshit), ':</b>], [<b>:dev') . ':</b>]';
 				$sb  = '<sub>';
 				$sb .= "Bot Username: [<b>:dev{$work['actualname']}:</b>]<br>";
 				$sb .= "Bot Owner: {$asshole}<br>";
@@ -603,9 +603,9 @@ class System_commands extends extension {
 								$work = $this->botdata[$this->botinfo['params']];
 								$ass = explode(';', $work['owner']);
 								foreach($ass as $poo => $pooz) {
-									$satan[$pooz] = array(true);
+									$bullshit[$pooz] = array(true);
 								}
-								$asshole = '[<b>:dev' . implode(array_keys($satan), ':</b>], [<b>:dev') . ':</b>]';
+								$asshole = '[<b>:dev' . implode(array_keys($bullshit), ':</b>], [<b>:dev') . ':</b>]';
 								$sb  = '<sub>';
 								$sb .= "Bot Username: [<b>:dev{$work['actualname']}:</b>]<br>";
 								$sb .= "Bot Owner: {$asshole}<br>";
