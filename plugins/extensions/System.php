@@ -93,6 +93,7 @@ class System_commands extends extension {
 		$this->hook('load_switches', 'startup');
 
 		$this->load_botdata();
+		$this->loadnotes();
 
 		$this->trigc1 = strtolower($this->Bot->username.': trigcheck');
 		$this->trigc2 = strtolower($this->Bot->username.': trigger');
@@ -944,26 +945,26 @@ class System_commands extends extension {
 		return true;
 	}
 	function loadnotes() {
-		$notes = $this->Read('notes');
+		$notes = $this->noteread('notes');
 		$this->notes = ($notes === false ? array() : $notes);
-		$rec = $this->Read('receive');
+		$rec = $this->noteread('receive');
 		$this->receivers = ($rec === false ? array() : $rec);
 	}
 
-	final protected function notewrite($file, $data, $format = 0) {
+	final protected function noteread($file) {
 		if(!is_dir('./storage')) mkdir('./storage', 0755);
 		if(!is_dir('./storage/mod')) mkdir('./storage/mod', 0755);
 		if(!is_dir('./storage/mod/Notes')) mkdir('./storage/mod/Notes', 0755);
 		$file = strtolower($file);
-		switch($format) {
-			case 2: save_config('./storage/mod/Notes/'.$file.'.bsv', $data);
-				break;
-			case 1: file_put_contents('./storage/mod/Notes/'.$file.'.bsv', $data);
-				break;
-			case 0: default:
-				file_put_contents('./storage/mod/Notes/'.$file.'.bsv', serialize($data));
-				break;
-		}
+		if(!file_exists('./storage/mod/Notes/'.$file.'.bsv')) return false;
+		return unserialize(file_get_contents('./storage/mod/Notes/'.$file.'.bsv'));
+	}
+	final protected function notewrite($file, $data) {
+		if(!is_dir('./storage')) mkdir('./storage', 0755);
+		if(!is_dir('./storage/mod')) mkdir('./storage/mod', 0755);
+		if(!is_dir('./storage/mod/Notes')) mkdir('./storage/mod/Notes', 0755);
+		$file = strtolower($file);
+		file_put_contents('./storage/mod/Notes/'.$file.'.bsv', serialize($data));
 	}
 }
 
