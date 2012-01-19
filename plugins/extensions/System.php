@@ -858,7 +858,7 @@ class System_commands extends extension {
 					$released = $command2[2];
 					if(stristr($command[3], $this->Bot->username)) {
 						if(empty($version) || empty($released)) return;
-						if($version > $this->Bot->info['version'] && $from == 'Asuos') {
+						if($version > $this->Bot->info['version'] && $from == 'Botdom') {
 							$this->botversion['latest'] = false;
 							$this->sendnote($this->Bot->owner, 'Update Service', "A new version of Contra is available. (version: {$version}; released on {$released}) You can download it from http://botdom.com/wiki/Contra#Latest or type <code>{$this->Bot->trigger}update</code> to update your bot.<br /><br />(<b>NOTE: using <code>{$this->Bot->trigger}update</code> will overwrite all your changes to your bot.</b>)");
 							$this->Console->Alert("Contra {$version} has been released on {$released}. Get it at http://botdom.com/wiki/Contra#Latest");
@@ -871,7 +871,7 @@ class System_commands extends extension {
 					$downloadlink = $command2[2];
 					if(stristr($command[3], $this->Bot->username)) {
 						if(empty($version) || empty($downloadlink)) return;
-						if($version > $this->Bot->info['version'] && $from == 'Asuos') {
+						if($version > $this->Bot->info['version'] && $from == 'Botdom') {
 							$file = file_get_contents($downloadlink);
 							$link = explode('/', $downloadlink);
 							$moo = fopen($link[4], 'w+');
