@@ -544,7 +544,8 @@ class System_commands extends extension {
 
 		$versions = explode('/', $data[3]);
 		$strig = trim(htmlentities($data[5]));
-		if(strstr($data[5], '&amp;') || $data[2] != 'Komodo' && strstr($data[5], '&lt;') || $data[2] != 'Komodo' && strstr($data[5], '&gt;')) $strig = trim(htmlspecialchars_decode($data[5], ENT_NOQUOTES));
+		if(strstr($data[5], '&amp;') || strstr($data[5], '&lt;') || strstr($data[5], '&gt;'))
+			$strig = trim(htmlspecialchars_decode($data[5], ENT_NOQUOTES));
 		if($data[2] == 'Contra' && strstr($data[5], ' ') || $data[2] == 'Indigo' && strstr($data[5], ' ') || $data[2] == 'Komodo' && $versions[0] >= '2.58' && strstr($data[5], ' '))
 			$strig = trim(str_replace(' ', '', $strig));
 		if($strig == trim(htmlentities($data[5])))
