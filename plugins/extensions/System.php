@@ -635,7 +635,7 @@ class System_commands extends extension {
 						if($this->dAmn->chat[$ns]['member'][$from]['pc'] != 'PoliceBot') return;
 						elseif(strtolower($from) != strtolower($this->Bot->username)) {
 							$info = explode(',', $message, 8);
-							$info2 = explode(':', $info[0], 3);
+							$info2 = explode(':', $info[0], 4);
 							$user = $info2[3];
 							$userz = strtolower($user);
 							$bottype = $info[2];
