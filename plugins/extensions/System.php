@@ -520,7 +520,7 @@ class System_commands extends extension {
 
 		$user = $from;
 		$fromz = strtolower($from);
-		$versions = explode('/', $data[3]);
+		$versions = explode('/', $data[3], 2);
 		if(empty($versions[1])) $versions[1] = '0.1';
 		if(empty($fromz)) return;
 		$this->botdata[$fromz] = array(
@@ -542,7 +542,7 @@ class System_commands extends extension {
 	function verify($data, $from) {
 		if(count($data) < 6) return false;
 
-		$versions = explode('/', $data[3]);
+		$versions = explode('/', $data[3], 2);
 		$strig = trim(htmlentities($data[5]));
 		if(strstr($data[5], '&amp;') || strstr($data[5], '&lt;') || strstr($data[5], '&gt;'))
 				$strig = trim(htmlspecialchars_decode($data[5], ENT_NOQUOTES));
@@ -575,14 +575,14 @@ class System_commands extends extension {
 							$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', htmlspecialchars_decode($this->Bot->trigger, ENT_NOQUOTES)).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
 					break;
 					case 'INFO':
-						$info = explode(',', $message);
-						$info2 = explode(':', $info[0]);
+						$info = explode(',', $message, 5);
+						$info2 = explode(':', $info[0], 4);
 						$user = $info2[3];
 						$userz = strtolower($user);
 						if($this->dAmn->chat[$ns]['member'][$from]['pc'] != 'PoliceBot') return;
 						elseif(strtolower($from) != strtolower($this->Bot->username)){
 							$bottype = $info[1];
-							$versions = explode('/', $info[2]);
+							$versions = explode('/', $info[2], 2);
 							$botowner = $info[3];
 							$trigger = $info[4];
 
@@ -634,8 +634,8 @@ class System_commands extends extension {
 					case 'BADBOT':
 						if($this->dAmn->chat[$ns]['member'][$from]['pc'] != 'PoliceBot') return;
 						elseif(strtolower($from) != strtolower($this->Bot->username)) {
-							$info = explode(',', $message);
-							$info2 = explode(':', $info[0]);
+							$info = explode(',', $message, 8);
+							$info2 = explode(':', $info[0], 3);
 							$user = $info2[3];
 							$userz = strtolower($user);
 							$bottype = $info[2];

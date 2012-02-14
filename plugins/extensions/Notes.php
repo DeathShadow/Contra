@@ -36,6 +36,7 @@ class notes_module extends extension {
 	}
 
 	function notes_check($ns, $from, $msg = false) {
+		$this->loadnotes();
 		$trig = $this->Bot->trigger;
 		if(substr(strtolower($msg), 0, strlen($trig.'note read')) == $trig.'note read') {
 			$this->clearRecvs($from);
