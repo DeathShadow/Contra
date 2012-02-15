@@ -558,7 +558,6 @@ class System_commands extends extension {
 		if($sig !== $data[4]) return false;
 
 		// Hash check passed.
-		unset($this->botKickTimers[strtolower($from)]);
 		return true;
 	}
 	function bdsmain($ns, $from, $message) {
