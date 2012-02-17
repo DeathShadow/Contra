@@ -115,7 +115,7 @@ class notes_module extends extension {
 				break;
 			default:
 				if(empty($note)||empty($com1)) return;
-				if($this->sendnote($com1, $from, $note, $ns)) $dAmn->say($ns, $f.'Note sent!');
+				if($this->sendnote($com1, $from, $note, $ns)) $dAmn->say($ns, $f.'<abbr title="away"></abbr>Note sent!');
 				break;
 		}
 	}
@@ -136,8 +136,7 @@ class notes_module extends extension {
 		if($id=='') return $user.': You must provide a note ID number.';
 		if(!isset($this->notes[$user][$id])) return $user.': Note #'.$id.' not found.';
 		$note = $this->notes[$user][$id];
-		return '<br/><b>To:</b> '.$user.'<b>; From:</b> '.$note['from'].'<b>; Date received</b>: '.gmdate('r', $note['ts']).'<b>;'.
-		'<br/>Message:</b> '.$note['content'];
+		return '<br/><b>To:</b> '.$user.'<b>; From:</b> '.$note['from'].'<b>; Date received</b>: '.gmdate('r', $note['ts']).'<b>;'.'<br/>Message:</b> '.$note['content'].'<br/><sub>Use "'.$this->Bot->trigger.'note clear" to delete all notes or "'.$this->Bot->trigger.'note delete '.$id.'" to delete this note.</sub>';
 	}
 
 	protected function delNote($user, $id, $ns) {
