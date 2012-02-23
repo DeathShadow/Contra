@@ -186,8 +186,6 @@ class dAmn_commands extends extension {
 	function e_respond($ns, $from, $message, $target) {
 		if($message == $this->Bot->username.': botcheck' && $ns == 'chat:Botdom' || stristr($message, '<abbr title="'.$this->Bot->username.': botcheck"></abbr>') && stristr($message, $this->Bot->username) && $ns == 'chat:Botdom')
 			$this->dAmn->say($ns, '<abbr title="away"></abbr>I\'m a bot. <abbr title="botresponse: '.$from.' '.$this->Bot->owner.' '.$this->Bot->info['name'].' '.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].' '.md5(strtolower(str_replace(' ', '', htmlspecialchars_decode($this->Bot->trigger, ENT_NOQUOTES)).$from.$this->Bot->username)).' '.$this->Bot->trigger.'"></abbr>');
-		if($ns == 'chat:Botdom' && $message == 'bots: botcheck')
-			$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', htmlspecialchars_decode($this->Bot->trigger, ENT_NOQUOTES)).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
 	}
 
 	function c_members($ns, $from, $message, $target) {

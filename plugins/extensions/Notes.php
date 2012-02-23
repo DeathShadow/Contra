@@ -36,6 +36,7 @@ class notes_module extends extension {
 	}
 
 	function notes_check($ns, $from, $msg = false) {
+		$this->loadnotes();
 		$trig = $this->Bot->trigger;
 		if(substr(strtolower($msg), 0, strlen($trig.'note read')) == $trig.'note read') {
 			$this->clearRecvs($from);
@@ -114,8 +115,7 @@ class notes_module extends extension {
 				break;
 			default:
 				if(empty($note)||empty($com1)) return;
-				if($this->sendnote($com1, $from, $note)) $dAmn->say($ns, $f.'Note sent!');
-				else $dAmn->say($ns, $f.'You can\'t send notes to noone!');
+				if($this->sendnote($com1, $from, $note, $ns)) $dAmn->say($ns, $f.'<abbr title="away"></abbr>Note sent!');
 				break;
 		}
 	}
@@ -136,8 +136,7 @@ class notes_module extends extension {
 		if($id=='') return $user.': You must provide a note ID number.';
 		if(!isset($this->notes[$user][$id])) return $user.': Note #'.$id.' not found.';
 		$note = $this->notes[$user][$id];
-		return '<br/><b>To:</b> '.$user.'<b>; From:</b> '.$note['from'].'<b>; Date received</b>: '.gmdate('r', $note['ts']).'<b>;'.
-		'<br/>Message:</b> '.$note['content'];
+		return '<br/><b>To:</b> '.$user.'<b>; From:</b> '.$note['from'].'<b>; Date received</b>: '.gmdate('r', $note['ts']).'<b>;'.'<br/>Message:</b> '.$note['content'].'<br/><sub>Use "'.$this->Bot->trigger.'note clear" to delete all notes or "'.$this->Bot->trigger.'note delete '.$id.'" to delete this note.</sub>';
 	}
 
 	protected function delNote($user, $id, $ns) {
@@ -157,22 +156,36 @@ class notes_module extends extension {
 		$this->receivers = ($rec === false ? array() : $rec);
 	}
 
-	protected function sendnote($to, $from, $content) {
+	protected function sendnote($to, $from, $content, $ns) {
 		if(empty($to)) return false;
 		$user = strtolower($to);
-		if(!isset($this->notes[$user]))
-			$this->notes[$user] = array();
-		if(!isset($this->receivers[$user]))
-			$this->receivers[$user] = 1;
-		else $this->receivers[$user]++;
-		$this->Write('receive', $this->receivers);
-		$i = count($this->notes[$user]);
-		$this->notes[$user][$i]['content'] = $content;
-		$this->notes[$user][$i]['from'	 ] = 	$from;
-		$this->notes[$user][$i]['ts'	 ] =   time();
-		$this->Write('notes', $this->notes);
-		$this->loadnotes();
-		return true;
+		$socket = fsockopen('ssl://www.deviantart.com', 443);
+		$response = $this->send_headers(
+			$socket,
+			$user.'.deviantart.com',
+			'/',
+			'http://'.$user.'.deviantart.com'
+		);
+		fclose($socket);
+
+		if(($pos = strpos($response, 'HTTP/1.1 404 Not Found')) !== false) {
+			$this->dAmn->say($ns, "{$from}: {$user} does not exist.");
+			return;
+		}else{
+			if(!isset($this->notes[$user]))
+				$this->notes[$user] = array();
+			if(!isset($this->receivers[$user]))
+				$this->receivers[$user] = 1;
+			else $this->receivers[$user]++;
+			$this->Write('receive', $this->receivers);
+			$i = count($this->notes[$user]);
+			$this->notes[$user][$i]['content'] = $content;
+			$this->notes[$user][$i]['from'	 ] = 	$from;
+			$this->notes[$user][$i]['ts'	 ] =   time();
+			$this->Write('notes', $this->notes);
+			$this->loadnotes();
+			return true;
+		}
 	}
 
 	protected function check($user) {
@@ -249,6 +262,32 @@ class notes_module extends extension {
 		else $this->Write('receive', $this->receivers);
 		$rec = $this->Read('receive');
 		$this->receivers = ($rec === false) ? array() : $rec;
+	}
+
+	function send_headers($socket, $host, $url, $referer)
+	{
+	    try
+	    {
+		$headers = '';
+		$headers .= "GET $url HTTP/1.1\r\n";
+		$headers .= "Host: $host\r\n";
+		$headers .= "User-Agent: Contra\r\n";
+		$headers .= "Referer: $referer\r\n";
+		$headers .= "Connection: close\r\n";
+		$headers .= "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*\/*;q=0.8\r\n";
+		$headers .= "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\n";
+		$headers .= "Content-Type: application/x-www-form-urlencoded\r\n";
+		$headers .= "\r\n";
+		$response = '';
+		fputs($socket, $headers);
+		$response .= @fgets ($socket, 23);
+		return $response;
+	    }
+	    catch (Exception $e)
+	    {
+		echo 'Exception occured: '.$e->getMessage()."\n";
+		return '';
+	    }
 	}
 }
 

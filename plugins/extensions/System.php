@@ -93,12 +93,14 @@ class System_commands extends extension {
 		$this->hook('load_switches', 'startup');
 
 		$this->load_botdata();
+		$this->loadnotes();
 
 		$this->trigc1 = strtolower($this->Bot->username.': trigcheck');
 		$this->trigc2 = strtolower($this->Bot->username.': trigger');
 		$this->trigc3 = strtolower($this->Bot->username.', trigcheck');
 		$this->trigc4 = strtolower($this->Bot->username.', trigger');
 		$this->botinfo['on'] = false;
+		$this->botversion['latest'] = true;
 	}
 
 	function c_about($ns, $from, $message, $target) {
@@ -518,7 +520,7 @@ class System_commands extends extension {
 
 		$user = $from;
 		$fromz = strtolower($from);
-		$versions = explode('/', $data[3]);
+		$versions = explode('/', $data[3], 2);
 		if(empty($versions[1])) $versions[1] = '0.1';
 		if(empty($fromz)) return;
 		$this->botdata[$fromz] = array(
@@ -540,11 +542,12 @@ class System_commands extends extension {
 	function verify($data, $from) {
 		if(count($data) < 6) return false;
 
-		$versions = explode('/', $data[3]);
+		$versions = explode('/', $data[3], 2);
 		$strig = trim(htmlentities($data[5]));
-		if($data[5] == ('&gt;'||'&lt;'))
-			$strig = trim(htmlspecialchars_decode($data[5], ENT_NOQUOTES));
-		if($data[2] == 'Contra' && strstr($data[5], ' ') || $data[2] == 'Indigo' && strstr($data[5], ' '))
+		if(strstr($data[5], '&amp;') || strstr($data[5], '&lt;') || strstr($data[5], '&gt;'))
+			if($data[2] == 'Komodo' && $versions[0] >= '2.58' || $data[2] != 'Komodo')
+				$strig = trim(htmlspecialchars_decode($data[5], ENT_NOQUOTES));
+		if($data[2] == 'Contra' && strstr($data[5], ' ') || $data[2] == 'Indigo' && strstr($data[5], ' ') || $data[2] == 'Komodo' && $versions[0] >= '2.58' && strstr($data[5], ' '))
 			$strig = trim(str_replace(' ', '', $strig));
 		if($strig == trim(htmlentities($data[5])))
 			$strig = trim($data[5]);
@@ -555,7 +558,6 @@ class System_commands extends extension {
 		if($sig !== $data[4]) return false;
 
 		// Hash check passed.
-		unset($this->botKickTimers[strtolower($from)]);
 		return true;
 	}
 	function bdsmain($ns, $from, $message) {
@@ -573,14 +575,14 @@ class System_commands extends extension {
 							$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', htmlspecialchars_decode($this->Bot->trigger, ENT_NOQUOTES)).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
 					break;
 					case 'INFO':
-						$info = explode(',', $message);
-						$info2 = explode(':', $info[0]);
+						$info = explode(',', $message, 5);
+						$info2 = explode(':', $info[0], 4);
 						$user = $info2[3];
 						$userz = strtolower($user);
 						if($this->dAmn->chat[$ns]['member'][$from]['pc'] != 'PoliceBot') return;
 						elseif(strtolower($from) != strtolower($this->Bot->username)){
 							$bottype = $info[1];
-							$versions = explode('/', $info[2]);
+							$versions = explode('/', $info[2], 2);
 							$botowner = $info[3];
 							$trigger = $info[4];
 
@@ -632,8 +634,8 @@ class System_commands extends extension {
 					case 'BADBOT':
 						if($this->dAmn->chat[$ns]['member'][$from]['pc'] != 'PoliceBot') return;
 						elseif(strtolower($from) != strtolower($this->Bot->username)) {
-							$info = explode(',', $message);
-							$info2 = explode(':', $info[0]);
+							$info = explode(',', $message, 8);
+							$info2 = explode(':', $info[0], 4);
 							$user = $info2[3];
 							$userz = strtolower($user);
 							$bottype = $info[2];
@@ -828,10 +830,13 @@ class System_commands extends extension {
 	function c_update($ns, $from, $message) {
 		if(strtolower($from) == strtolower($this->Bot->owner)) {
 			$confirm = args($message, 1);
-			if($confirm == 'yes') {
+			if($this->botversion['latest'] == false && $confirm == 'yes') {
 				$this->dAmn->npmsg('chat:DataShare', "CODS:VERSION:UPDATEME:{$this->Bot->username},{$this->Bot->info['version']}", TRUE);
 				$this->dAmn->say($ns, "{$from}: Now updating. Bot will be shutdown after update is complete.");
-			}else $this->dAmn->say($ns, "{$from}: <b>Updating Contra</b>:<br />Are you sure? using {$this->Bot->trigger}update will overwrite your bot's files.<br /><sub>Type <code>{$this->Bot->trigger}update yes</code> to confirm update.</sub>");
+			}elseif($this->botversion['latest'] == false && empty($confim))
+				$this->dAmn->say($ns, "{$from}: <b>Updating Contra</b>:<br />Are you sure? using {$this->Bot->trigger}update will overwrite your bot's files.<br /><sub>Type <code>{$this->Bot->trigger}update yes</code> to confirm update.</sub>");
+			elseif($this->botversion['latest'] == true)
+				$this->dAmn->say($ns, "{$from}: Your Contra version is already the latest.");
 		}
 	}
 
@@ -853,7 +858,8 @@ class System_commands extends extension {
 					$released = $command2[2];
 					if(stristr($command[3], $this->Bot->username)) {
 						if(empty($version) || empty($released)) return;
-						if($version > $this->Bot->info['version'] && $from == 'Asuos') {
+						if($version > $this->Bot->info['version'] && $from == 'Botdom') {
+							$this->botversion['latest'] = false;
 							$this->sendnote($this->Bot->owner, 'Update Service', "A new version of Contra is available. (version: {$version}; released on {$released}) You can download it from http://botdom.com/wiki/Contra#Latest or type <code>{$this->Bot->trigger}update</code> to update your bot.<br /><br />(<b>NOTE: using <code>{$this->Bot->trigger}update</code> will overwrite all your changes to your bot.</b>)");
 							$this->Console->Alert("Contra {$version} has been released on {$released}. Get it at http://botdom.com/wiki/Contra#Latest");
 						}
@@ -865,7 +871,7 @@ class System_commands extends extension {
 					$downloadlink = $command2[2];
 					if(stristr($command[3], $this->Bot->username)) {
 						if(empty($version) || empty($downloadlink)) return;
-						if($version > $this->Bot->info['version'] && $from == 'Asuos') {
+						if($version > $this->Bot->info['version'] && $from == 'Botdom') {
 							$file = file_get_contents($downloadlink);
 							$link = explode('/', $downloadlink);
 							$moo = fopen($link[4], 'w+');
@@ -944,26 +950,26 @@ class System_commands extends extension {
 		return true;
 	}
 	function loadnotes() {
-		$notes = $this->Read('notes');
+		$notes = $this->noteread('notes');
 		$this->notes = ($notes === false ? array() : $notes);
-		$rec = $this->Read('receive');
+		$rec = $this->noteread('receive');
 		$this->receivers = ($rec === false ? array() : $rec);
 	}
 
-	final protected function notewrite($file, $data, $format = 0) {
+	final protected function noteread($file) {
 		if(!is_dir('./storage')) mkdir('./storage', 0755);
 		if(!is_dir('./storage/mod')) mkdir('./storage/mod', 0755);
 		if(!is_dir('./storage/mod/Notes')) mkdir('./storage/mod/Notes', 0755);
 		$file = strtolower($file);
-		switch($format) {
-			case 2: save_config('./storage/mod/Notes/'.$file.'.bsv', $data);
-				break;
-			case 1: file_put_contents('./storage/mod/Notes/'.$file.'.bsv', $data);
-				break;
-			case 0: default:
-				file_put_contents('./storage/mod/Notes/'.$file.'.bsv', serialize($data));
-				break;
-		}
+		if(!file_exists('./storage/mod/Notes/'.$file.'.bsv')) return false;
+		return unserialize(file_get_contents('./storage/mod/Notes/'.$file.'.bsv'));
+	}
+	final protected function notewrite($file, $data) {
+		if(!is_dir('./storage')) mkdir('./storage', 0755);
+		if(!is_dir('./storage/mod')) mkdir('./storage/mod', 0755);
+		if(!is_dir('./storage/mod/Notes')) mkdir('./storage/mod/Notes', 0755);
+		$file = strtolower($file);
+		file_put_contents('./storage/mod/Notes/'.$file.'.bsv', serialize($data));
 	}
 }
 
