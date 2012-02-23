@@ -39,16 +39,12 @@ goto stop
 
 :loop
 if exist "storage\bat\quit.bcd" (
-	set /p shit= <storage\bat\quit.bcd
 	del storage\bat\quit.bcd
+	goto stop
 )
 if exist "storage\bat\restart.bcd" (
-	del storage\bat\restart.bcd
-	goto :refresher
+	goto refresher
 )
-if %shit%==hard goto :stop
-if %shit%==soft goto :softstop
-
 if !%1==! goto stopped
 if %1==--bot goto stopped
 if %1==--debug goto stopped
@@ -65,30 +61,14 @@ goto loop
 :stopped
 echo ===============================================================================
 echo ** Contra has stopped.
-set AttemptZ=0
-echo [%time%] [%date%] - Disconnected.>>Connection.log
-:check
-set /a AttemptZ=%AttemptZ%+1
-ping -n 1 www.deviantart.com | find "Reply from " >NUL
-if errorlevel 1 (
-cls
-echo Attempt %AttemptZ% - Not connected. Trying again, please wait...
-goto check
-) else (
-cls
-echo Attempt %Attempts% - Connected!
-echo [%time%] [%date%] Attempt %AttemptZ% - Connected!>>Connection.log
-goto continue
-)
-
-:softstop
-echo ===============================================================================
-echo ** Contra has stopped.
-set /p input="** Would you like to reboot? [y/n]: "
+goto confirm
+:confirm
+set /p input=** Would you like to reboot? [y/n]
 if %input%==y goto continue
 if %input%==Y goto continue
 if %input%==n goto stop
 if %input%==N goto stop
+goto confirm
 
 :continue
 echo ===============================================================================
