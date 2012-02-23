@@ -39,16 +39,12 @@ goto stop
 
 :loop
 if exist "storage\bat\quit.bcd" (
-	set /p shit= <storage\bat\quit.bcd
 	del storage\bat\quit.bcd
+	goto stop
 )
 if exist "storage\bat\restart.bcd" (
-	del storage\bat\restart.bcd
-	goto :refresher
+	goto refresher
 )
-if %shit%==hard goto :stop
-if %shit%==soft goto :softstop
-
 if !%1==! goto stopped
 if %1==--bot goto stopped
 if %1==--debug goto stopped
@@ -66,7 +62,6 @@ goto loop
 echo ===============================================================================
 echo ** Contra has stopped.
 goto confirm
-
 :confirm
 set /p input=** Would you like to reboot? [y/n]
 if %input%==y goto continue
