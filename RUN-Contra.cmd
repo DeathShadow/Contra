@@ -43,6 +43,7 @@ if exist "storage\bat\quit.bcd" (
 	goto stop
 )
 if exist "storage\bat\restart.bcd" (
+	del storage\bat\restart.bcd
 	goto refresher
 )
 if !%1==! goto stopped
