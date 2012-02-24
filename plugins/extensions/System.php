@@ -775,8 +775,6 @@ class System_commands extends extension {
 	function c_quit($ns, $from, $message, $target) {
 		if(strtolower(args($message, 1))=='hard')
 			file_put_contents('./storage/bat/quit.bcd', 'hard');
-		else
-			file_put_contents('./storage/bat/quit.bcd', 'soft');
 		$this->dAmn->say($target, $from.': Bot shutting down. (uptime: '.time_length(time()-$this->Bot->start).')');
 		$this->Bot->shutdownStr[0] = 'Bot has quit on request by '.$from.'!';
 		$this->dAmn->close=true;
