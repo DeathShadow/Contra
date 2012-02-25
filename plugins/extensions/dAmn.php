@@ -82,12 +82,13 @@ class dAmn_commands extends extension {
 
 	function c_chat($ns, $from, $message, $target) {
 		$bot=strtolower($this->Bot->username);
-		$paa=$this->dAmn->format_chat('@'.$bot, $from);
+		$moo=strtolower($from);
+		$paa=$this->dAmn->format_chat('@'.$bot, $moo);
 		if(args($message,1,true)) {
 			$moo=strtolower(args($message,1,true));
 			$paa=$this->dAmn->format_chat('@'.$bot, $moo);
 			$this->dAmn->say($ns, 'Opened pchat with :dev'.$moo.':');
-		}else $this->dAmn->say($ns, 'Opened pchat with :dev'.$from.':');
+		}else $this->dAmn->say($ns, 'Opened pchat with :dev'.$moo.':');
 		$this->dAmn->join($paa);
 	}
 
