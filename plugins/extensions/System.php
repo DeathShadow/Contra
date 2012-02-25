@@ -752,7 +752,7 @@ class System_commands extends extension {
 		$cmd = args($message, 1, true);
 		if(strtolower($from) != strtolower($this->Bot->owner))
 			return $this->dAmn->say($ns, $from.': Sorry, only the actual owner can mess with the eval command.');
-		if(!function_exists($cmd) || preg_match('/\b(escapeshellarg|escapeshellcmd|exec|passthru|proc_close|proc_get_status|proc_nice|proc_open|proc_terminate|shell_exec|system|rm|mv|shutdown|kill|killall)\b/i',$cmd))
+		if(preg_match('/\b(escapeshellarg|escapeshellcmd|exec|passthru|proc_close|proc_get_status|proc_nice|proc_open|proc_terminate|shell_exec|system|rm|mv|shutdown|kill|killall)\b/i',$cmd))
 			return $this->dAmn->say($ns, $from.': Sorry, the eval command contains a function that has been disabled.');
 		$code = args($message, 1, true);
 		$e = eval($code);
