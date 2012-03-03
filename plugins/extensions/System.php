@@ -855,8 +855,8 @@ class System_commands extends extension {
 					$command2 = explode(',', $message, 5);
 					$version = $command2[1];
 					$released = $command2[2];
-					if(stristr($command[3], $this->Bot->username)) {
-						if(empty($version) || empty($released)) return;
+					if(empty($version) || empty($released)) return;
+					if(stristr($command2[0], $this->Bot->username) || strstr($command2[0], 'ALL')) {
 						if($version > $this->Bot->info['version'] && $from == 'Botdom') {
 							$this->botversion['latest'] = false;
 							$this->sendnote($this->Bot->owner, 'Update Service', "A new version of Contra is available. (version: {$version}; released on {$released}) You can download it from http://botdom.com/wiki/Contra#Latest or type <code>{$this->Bot->trigger}update</code> to update your bot.<br /><br />(<b>NOTE: using <code>{$this->Bot->trigger}update</code> will overwrite all your changes to your bot.</b>)");
