@@ -60,7 +60,7 @@ class notes_module extends extension {
 		switch(strtolower($com1)) {
 			case 'to':
 			case 'send':
-				$dAmn->say($ns, $f.'The correct command is: '.$this->Bot->trigger.'note username message.');
+				$this->say($ns, $from, 'The correct command is: '.$this->Bot->trigger.'note username message.');
 				break;
 			case 'list':
 			case 'read':
@@ -68,11 +68,11 @@ class notes_module extends extension {
 				$check = strtolower($from);
 				foreach($this->notes as $user => $nn) {
 					if($user == $check) {
-						$dAmn->say($ns, $this->$call($user, ($call=='getList'?false:$com2)));
+						$this->say($ns, $from, $this->$call($user, ($call=='getList'?false:$com2)));
 						return;
 					}
 				}
-				$dAmn->say($ns, $f.'You have no notes.');
+				$this->say($ns, $from, 'You have no notes.');
 				break;
 			case 'del':
 			case 'delete':
@@ -80,42 +80,42 @@ class notes_module extends extension {
 				if(strtolower($com1)=='clear'||strtolower($com2)=='all') {
 					$clr = $this->clear($from);
 					if($clr=='cleared')
-						$dAmn->say($ns, $f.'Notes cleared!');
+						$this->say($ns, $from, 'Notes cleared!');
 					if($clr=='error')
-						$dAmn->say($ns, $f.'Couldn\'t clear your notes...');
+						$this->say($ns, $from, 'Couldn\'t clear your notes...');
 					if($clr=='none')
-						$dAmn->say($ns, $f.'You don\'t have any notes to delete...');
+						$this->say($ns, $from, 'You don\'t have any notes to delete...');
 					return;
 				}
 				$check = strtolower($from);
 				foreach($this->notes as $user => $nn) {
 					if($user == $check) {
-						$dAmn->say($ns, $this->delNote($user, $com2, $ns));
+						$this->say($ns, $from, $this->delNote($user, $com2, $ns));
 						return;
 					}
 				}
-				$dAmn->say($ns, $f.'You don\'t have any notes to delete.');
+				$this->say($ns, $from, 'You don\'t have any notes to delete.');
 				break;
 			case 'about':
 				$say = $f.'This is a basic notes extension which allows you to leave notes for people on the bot. This extension is bundled with Contra.';
-				$dAmn->say($ns, $say);
+				$this->say($ns, $from, $say);
 				return;
 				break;
 			case 'admin':
 				if($user->has($from, 100)) {
 					if($com2=='list') {
-						$dAmn->say($ns, $this->adminList($from));
+						$this->say($ns, $from, $this->adminList($from));
 						return;
 					}
 					if($com2=='del'||$com2=='delete') {
-						$dAmn->say($ns, $this->adminClr($from, $com3));
+						$this->say($ns, $from, $this->adminClr($from, $com3));
 						return;
 					}
 				}
 				break;
 			default:
 				if(empty($note)||empty($com1)) return;
-				if($this->sendnote($com1, $from, $note, $ns)) $dAmn->say($ns, $f.'<abbr title="away"></abbr>Note sent!');
+				if($this->sendnote($com1, $from, $note, $ns)) $this->say($ns, $from, 'Note sent!');
 				break;
 		}
 	}
@@ -169,7 +169,7 @@ class notes_module extends extension {
 		fclose($socket);
 
 		if(($pos = strpos($response, 'HTTP/1.1 404 Not Found')) !== false) {
-			$this->dAmn->say($ns, "{$from}: {$user} does not exist.");
+			$this->say($ns, $from, "{$user} does not exist.");
 			return;
 		}else{
 			if(!isset($this->notes[$user]))
@@ -251,7 +251,7 @@ class notes_module extends extension {
 		$trig = str_replace('&','&amp;',$this->Bot->trigger);
 		if($notes!==false && $ns != 'chat:DataShare') {
 			$am = ($notes == 1 ? 'note' : 'notes');
-			$dAmn->say($ns,'<b>:thumb42731685:'.$from.': You have '.$notes.' new '.$am.'.</b><br/><code>Type "'.$trig.'note list" to view your notes.</code>');
+			$this->say($ns, $from, '<b>:thumb42731685:'.$from.': You have '.$notes.' new '.$am.'.</b><br/><code>Type "'.$trig.'note list" to view your notes.</code>');
 			$this->clearRecvs($from);
 		}
 	}
@@ -288,6 +288,10 @@ class notes_module extends extension {
 		echo 'Exception occured: '.$e->getMessage()."\n";
 		return '';
 	    }
+	}
+
+	function say($ns, $from, $message, $DATASHARE = FALSE) {
+		$this->dAmn->say($ns, '<abbr title="'.$from.' -away"></abbr>'.$message);
 	}
 }
 

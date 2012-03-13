@@ -217,7 +217,7 @@ class Welcome extends extension {
 	}
 
 	function send_welcome($ns, $from, $msg) {
-                if($ns == "chat:Botdom") return;
+                if($ns == 'chat:Botdom') return;
 		if($this->dAmn->chat[$ns]['member'][$from]['con'] > 1) return;
 		$msg = str_replace('{channel}', $this->dAmn->deform_chat($ns, $this->Bot->username), $msg);
 		$msg = str_replace('{ns}', $ns, $msg);
