@@ -45,7 +45,7 @@ class dAmn_lib extends extension {
 
 	function e_damntoken() {
 		$this->unhook('e_damntoken', 'damntoken');
-		$this->dAmn->damntoken = !$this->Bot->usingStored ? $this->dAmn->damntoken->damntoken : $this->Bot->damntoken;
+		$this->dAmn->damntokenz = !$this->Bot->usingStored ? $this->dAmn->damntoken->damntoken : $this->Bot->damntoken;
 		$this->Bot->save_config();
 		if(!$this->Bot->usingStored) {
 			$this->Console->Notice('Got a valid damntoken!');
@@ -56,7 +56,7 @@ class dAmn_lib extends extension {
 		$this->ticker = 0;
 		if(DEBUG) {
 			$this->Console->Write('Data received:'.chr(10));
-			$this->Console->Write(!$this->Bot->usingStored ? $this->dAmn->damntoken->damntoken : $this->Bot->damntoken);
+			$this->Console->Write(!$this->Bot->usingStored ? $this->dAmn->damntoken->damntoken : $this->dAmn->damntokenz);
 		}
 		if($this->dAmn->connect()) {
 			if(DEBUG) {
@@ -104,7 +104,7 @@ class dAmn_lib extends extension {
 		$this->unhook('e_connected', 'connected');
 		$this->dAmn->connected = true;
 		$this->hook('e_login', 'login');
-		$this->dAmn->login($this->Bot->username, $this->dAmn->damntoken);
+		$this->dAmn->login($this->Bot->username, $this->dAmn->damntokenz);
 	}
 
 	function e_login($e) {
