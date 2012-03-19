@@ -120,7 +120,7 @@ class dAmn_lib extends extension {
 			$this->hook('e_damntoken', 'damntoken');
 			$this->hook('e_connected', 'connected');
 			$this->Bot->usingStored = false;
-			$this->Bot->damntokenz = '';
+			$this->Bot->damntoken = '';
 			$this->Bot->save_config();
 			$this->Console->Warning('Using stored damntoken failed!');
 			$this->Bot->network(true);
