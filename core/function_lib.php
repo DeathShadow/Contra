@@ -134,8 +134,8 @@
 			'about' => '<b>%N% %V%%S%</b> (%R% release)<br/><sub><b>Author:</b> :dev%A%:<b>; Owner:</b> :dev%O%:<b>;</b><br/><b>%D%</b></sub>',
 			'autojoin' => array()
 		);
-		foreach(array('username' => Null, 'password' => Null, 'trigger' => Null, 'owner' => Null) as $part => $s)
-			$config['info'][$part] = cmd_get_args('Bot '.$part, $s, ($part=='password'?true:false));
+		foreach(array('username' => Null, 'trigger' => Null, 'owner' => Null) as $part => $s)
+			$config['info'][$part] = cmd_get_args('Bot '.$part, $s);
 		if(strstr($config['info']['owner'], ',') || strstr($config['info']['owner'], ' '))
 			die('Contra does not support multi-owners.'.chr(10));
 		echo '> Which channels would you like your bot to join? Separate with commas.'.chr(10);
@@ -148,7 +148,6 @@
 			'info' => $config['info'],
 			'about' => $config['about'],
 			'autojoin' => $config['autojoin'],
-			'cookie' => '',
 		);
 		save_config('./storage/config.cf', $config);
 		echo '> Configuration saved!'.chr(10);
