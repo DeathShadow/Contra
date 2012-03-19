@@ -45,7 +45,6 @@ class dAmn_lib extends extension {
 
 	function e_damntoken() {
 		$this->unhook('e_damntoken', 'damntoken');
-		$this->Bot->damntoken = !$this->Bot->usingStored ? $this->dAmn->damntoken->damntoken : $this->Bot->damntoken;
 		$this->dAmn->damntoken = !$this->Bot->usingStored ? $this->dAmn->damntoken->damntoken : $this->Bot->damntoken;
 		$this->Bot->save_config();
 		if(!$this->Bot->usingStored) {
