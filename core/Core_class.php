@@ -128,7 +128,7 @@ class Bot {
 		$this->trigger = $config['info']['trigger'];
 		$this->aboutStr = $config['about'];
 		$this->autojoin = $config['autojoin'];
-		$this->damntokenz = empty($config['damntoken']) ? '' : unserialize($config['damntoken']);
+		$this->damntoken = empty($config['damntoken']) ? '' : unserialize($config['damntoken']);
 	}
 
 	function save_config() {
@@ -140,7 +140,7 @@ class Bot {
 			),
 			'about' => $this->aboutStr,
 			'autojoin' => $this->autojoin,
-			'damntoken' => empty($this->damntokenz) ? '' : serialize($this->damntokenz),
+			'damntoken' => empty($this->damntoken) ? '' : serialize($this->damntoken),
 		);
 		save_config('./storage/config.cf', $config);
 	}
@@ -148,16 +148,16 @@ class Bot {
 	function network($sec = false) {
 		if(empty($this->username) || empty($this->_password)) $this->load_config();
 		$this->Console->Notice(($sec === false ? 'Starting' : 'Restarting').' dAmn.');
-		if(!$this->damntoken) {
+		if(!$this->damntokenz) {
 			$this->Console->Notice('Retrieving dAmn Token. This may take a while...');
 			$this->dAmn->oauth(1);
 			$this->session = $this->dAmn->damntoken();
-			$this->Events->trigger('damntoken', $this->session);
 		}else{
 			$this->Console->Notice('Using stored damntoken first...');
 			$this->usingStored = true;
-			$this->session = array('status' => 1, 'damntoken' => $this->damntokenz);
+			$this->session = array('status' => 1, 'damntoken' => $this->damntoken);
 		}
+		$this->Events->trigger('damntoken', $this->session);
 	}
 
 	function run() {
