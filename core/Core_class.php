@@ -148,7 +148,7 @@ class Bot {
 	function network($sec = false) {
 		if(empty($this->username) || empty($this->_password)) $this->load_config();
 		$this->Console->Notice(($sec === false ? 'Starting' : 'Restarting').' dAmn.');
-		if(!$this->damntokenz) {
+		if(!$this->damntoken) {
 			$this->Console->Notice('Retrieving dAmn Token. This may take a while...');
 			$this->dAmn->oauth(1);
 			$this->session = $this->dAmn->damntoken();
