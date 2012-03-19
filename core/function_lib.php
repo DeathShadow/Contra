@@ -148,6 +148,7 @@
 			'info' => $config['info'],
 			'about' => $config['about'],
 			'autojoin' => $config['autojoin'],
+			'damntoken' => '',
 		);
 		save_config('./storage/config.cf', $config);
 		echo '> Configuration saved!'.chr(10);

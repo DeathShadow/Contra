@@ -45,6 +45,14 @@ class dAmn_lib extends extension {
 
 	function e_damntoken($e) {
 		$this->unhook('e_damntoken', 'damntoken');
+		$this->Bot->damntokenz = $this->dAmn->damntoken->damntoken;
+		$this->dAmn->damntokenz = $this->dAmn->damntoken->damntoken;
+		$this->Bot->save_config();
+		var_dump($this->dAmn->damntokenz);
+		if(!$this->Bot->usingStored) {
+			$this->Console->Notice('Got a valid damntoken!');
+			$this->log('~Server', ' Got a valid damntoken!', time());
+		}
 		$this->dAmn->trigger = $this->Bot->trigger;
 		$this->dAmn->owner = $this->Bot->owner;
 		$this->ticker = 0;
@@ -57,12 +65,8 @@ class dAmn_lib extends extension {
 				$this->Console->Notice('Opened a connection with '.$this->dAmn->server['chat']['host'].':'.$this->dAmn->server['chat']['port'].'!');
 				$this->Console->Notice('Waiting for handshake...');
 			}
-			$this->Bot->running = true;
-		} else {
-			if(DEBUG) $this->Console->Warning('Failed to open a connection with '
-					.$this->dAmn->server['chat']['host'].':'.$this->dAmn->server['chat']['port'].'!');
-			$this->Bot->running = false;
 		}
+		$this->Bot->running = true;
 	}
 
 	function e_loop() {
@@ -110,6 +114,18 @@ class dAmn_lib extends extension {
 		if($e == 'ok') {
 			$this->dAmn->connecting = $this->dAmn->login = false;
 			foreach($this->Bot->autojoin as $id => $channel) { $this->dAmn->join($this->dAmn->format_chat($channel)); }
+			return;
+		} elseif($this->Bot->usingStored) {
+			@stream_socket_shutdown($this->dAmn->socket,STREAM_SHUT_RDWR);
+			$this->dAmn->chat = array();
+			$this->dAmn->connected = false;
+			$this->hook('e_damntoken', 'damntoken');
+			$this->hook('e_connected', 'connected');
+			$this->Bot->usingStored = false;
+			$this->Bot->damntokenz = '';
+			$this->Bot->save_config();
+			$this->Console->Warning('Using stored damntoken failed!');
+			$this->Bot->network(true);
 			return;
 		}
 		$this->Bot->running = false;
