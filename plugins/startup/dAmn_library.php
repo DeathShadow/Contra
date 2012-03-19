@@ -48,7 +48,6 @@ class dAmn_lib extends extension {
 		$this->Bot->damntokenz = $this->dAmn->damntoken->damntoken;
 		$this->dAmn->damntokenz = $this->dAmn->damntoken->damntoken;
 		$this->Bot->save_config();
-		var_dump($this->dAmn->damntokenz);
 		if(!$this->Bot->usingStored) {
 			$this->Console->Notice('Got a valid damntoken!');
 			$this->log('~Server', ' Got a valid damntoken!', time());
