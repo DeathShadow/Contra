@@ -89,6 +89,7 @@ class dAmnPHP {
 	public $owner = 'photofroggy';
 	public $trigger = '!';
 	public $socket = Null;
+	public $cookie = Null;
 	public $connecting = Null;
 	public $login = Null;
 	public $connected = Null;
@@ -140,117 +141,135 @@ class dAmnPHP {
 	function Message($str = '', $ts = false) { echo $this->Clock($ts),' '.$str,chr(10); }
 	function Notice($str = '', $ts = false)  { $this->Message('** '.$str,$ts); }
 	function Warning($str = '', $ts = false) { $this->Message('>> '.$str,$ts); }
-	// oAuth function, mode sets silent, 0 = silent, 1 = echo
-	public function oauth($mode) {
-		//$this->os = PHP_OS; // The System OS
-		$this->CLIENT_ID = '24'; // OAuth 2.0 client_id
-		$this->CLIENT_SECRET = 'b6c81c08563888f0da7ea3f7f763c426'; // OAuth 2.0 client_secret
-
-		if(is_readable("oauth.json")){ // Checking if the file_exists
-			if($mode == 0) echo "Grabbing existing oAuth tokens..." . LBR; // Turn off if silent
-
-			// Reading config file
-			$config_file = "oauth.json";
-			if(filesize($config_file) != 0) {
-				$fh = fopen($config_file, 'r') or die("can't open file");
-
-				if($mode == 0) echo "Tokens grabbed from file..." . LBR . LBR;
-			// Setting to the oauth_tokens variable
-				$this->oauth_tokens = json_decode(fread($fh, filesize($config_file)));
-
-				if($mode == 0) echo "Checking if tokens have expired..." . LBR;
-				$placebo = json_decode($this->socket('/api/draft15/placebo?access_token='.$this->oauth_tokens->access_token));
-				if($placebo->status != "success") {
-					if($mode == 0) echo "Tokens expired, grabbing new ones..." . LBR;
-					(!is_writable($config_file)) ?: chmod($config_file, 755);
-					unlink($config_file);
-					$this->oauth(0);
-				} else {
-					if($mode == 0) echo "Tokens grabbed!" . LBR . HR;
-					fclose($fh);
-				}
-			} else {
-				if($mode == 0) echo $this->error("Your token file is empty, grabbing new ones...") . LBR;
-				(!is_writable($config_file)) ?: chmod($config_file, 755);
-				unlink($config_file);
-				$this->oauth(0);
-
-			}
-		} else {
-			if($mode == 0) echo "Grabbing the oAuth Tokens from deviantART..." . LBR; // Turn off if silent
-
-			// Opening browser based on OS
-			switch($this->os) {
-				case "Darwin": // Mac OSX uses open command
-					exec("open 'https://www.deviantart.com/oauth2/draft15/authorize?client_id=".$this->CLIENT_ID."&redirect_uri=http://damnapp.com/apicode.php&response_type=code'");
-					break;
-				case "WINNT": // Windows uses start command
-					exec('start "" "https://www.deviantart.com/oauth2/draft15/authorize?client_id=".$this->CLIENT_ID."&redirect_uri=http://damnapp.com/apicode.php&response_type=code"');
-					break;
-				case "Linux": // Linux uses browser
-					exec("xdg-open 'https://www.deviantart.com/oauth2/draft15/authorize?client_id=".$this->CLIENT_ID."&redirect_uri=http://damnapp.com/apicode.php&response_type=code'");
-					break;
-	 			default: // No browser command found so echo it out
-	 				echo "Could not open your browser to the required URL. Please load the below one!" . LBR;
-	 				echo 'https://www.deviantart.com/oauth2/draft15/authorize?client_id='.$this->CLIENT_ID.'&redirect_uri=http://damnapp.com/apicode.php&response_type=code'."\n";
-	 				break;
-	 		}
-
-			// Retreiving the code
-			echo "Enter the code:" . LBR;
-			$code = trim(fgets(STDIN)); // STDIN for reading input
-
-			// Getting the access token.
-			$tokens = $this->socket('/oauth2/draft15/token?client_id='.$this->CLIENT_ID.'&redirect_uri=http://damnapp.com//apicode.php&grant_type=authorization_code&client_secret='.$this->CLIENT_SECRET.'&code='.$code);
-
-			// Set to oauth_tokens variable
-			$this->oauth_tokens = json_decode($tokens);
-			if($this->oauth_tokens->status != "success") {
-
-				if($mode == 0) echo $this->error("For some reason, your tokens failed") . LBR . HR;
-			} else {
-				// Writing to oauth.json
-				$config_file = "oauth.json";
-
-				$fh = fopen($config_file, 'w') or die("can't open file");
-				fwrite($fh, $tokens);
-				fclose($fh);
-				if($mode == 0) echo "Tokens grabbed!" . LBR . HR;
-			}
+	function getCookie($username, $pass) {
+		// Method to get the cookie! Yeah! :D
+		// Our first job is to open an SSL connection with our host.
+		$socket = fsockopen(
+			$this->server['login']['transport'].$this->server['login']['host'],
+			$this->server['login']['port']
+		);
+		// If we didn't manage that, we need to exit!
+		if($socket === false) {
+		return array(
+			'status' => 2,
+			'error' => 'Could not open an internet connection');
 		}
+		// Fill up the form payload
+		$POST = '&username='.urlencode($username);
+		$POST.= '&password='.urlencode($pass);
+		$POST.= '&remember_me=1';
+		// And now we send our header and post data and retrieve the response.
+		$response = $this->send_headers(
+			$socket,
+			$this->server['login']['host'],
+			$this->server['login']['file'],
+			'http://www.deviantart.com/users/rockedout',
+			$POST
+		);
+
+		// Now that we have our data, we can close the socket.
+		fclose ($socket);
+		// And now we do the normal stuff, like checking if the response was empty or not.
+		if(empty($response))
+		return array(
+			'status' => 3,
+			'error' => 'No response returned from the server'
+		);
+		if(stripos($response, 'set-cookie') === false)
+		return array(
+			'status' => 4,
+			'error' => 'No cookie returned'
+		);
+		// Grab the cookies from the header
+		$response=explode("\r\n", $response);
+		$cookie_jar = array();
+		foreach ($response as $line)
+		{
+			if(strpos($line, 'Location: ') !== false)
+				if($line == 'Location: http://www.deviantart.com/users/wrong-password')
+				return array(
+					'status' => 6,
+					'error' => 'Wrong password returned'
+				);
+				if (strpos($line, 'Set-Cookie:')!== false)
+					$cookie_jar[] = substr($line, 12, strpos($line, '; ')-12);
+		}
+		// Using these cookies, we're gonna go to chat.deviantart.com and get
+		// our authtoken from the dAmn client.
+		if (($socket = @fsockopen('ssl://www.deviantart.com', 443)) == false)
+			return array(
+			'status' => 2,
+			'error' => 'Could not open an internet connection');
+
+		$response = $this->send_headers(
+			$socket,
+			'chat.deviantart.com',
+			'/chat/Botdom',
+			'http://chat.deviantart.com',
+			null,
+			$cookie_jar
+		);
+
+		// Now search for the authtoken in the response
+		$cookie = null;
+		if(($pos = strpos($response, 'dAmn_Login( ')) !== false)
+		{
+			$response = substr($response, $pos+12);
+			$cookie = substr($response, strpos($response, '", ')+4, 32);
+		}
+		elseif(($pos = strpos($response, 'Location: http://verify.deviantart.com')) !== false)
+		return array(
+			'status' => 6,
+			'error' => 'Account not verfied, check your email and verify your account first'
+		);
+		else return array(
+			'status' => 4,
+			'error' => 'No authtoken found in dAmn client'
+		);
+
+		// Because errors still happen, we need to make sure we now have an array!
+		if(!$cookie)
+		return array(
+			'status' => 5,
+			'error' => 'Malformed cookie returned'
+		);
+		// We got a valid cookie!
+		return array(
+			'status' => 1,
+			'cookie' => $cookie
+		);
 	}
 
-	// dAmntoken function
-	public function damntoken() {
-		// Check if the oauth_tokens variable is set, if not set it.
-		if(!isset($this->oauth_tokens)) {
-			$this->oauth(0);
-		}
-
-		// Grab the damntoken and set it to damntoken variable
-		$this->damntoken = json_decode($this->socket('/api/draft15/user/damntoken?access_token='.$this->oauth_tokens->access_token));
-	}
-
-		// Function to reuse the curl code.
-		private function socket($url) {
-			$fp = fsockopen("ssl://deviantart.com", 443, $errno, $errstr, 30);
-			if (!$fp) {
-			    echo "$errstr ($errno)<br />\n";
-			} else {
-			    $out = "GET ".$url." HTTP/1.1\r\n";
-			    $out .= "Host: www.deviantart.com\r\n";
-			    $out .= "Connection: Close\r\n\r\n";
-			    fwrite($fp, $out);
-			    while (!feof($fp)) {
-			        $buffer = fgets($fp, 512);
-			    }
-			    fclose($fp);
-			    return $buffer;
-			}
-		}
-
-	private function error($text) {
-		echo " \033[1;33m" . $text . "\033[0m";
+	function send_headers($socket, $host, $url, $referer, $post=null, $cookies=array())
+	{
+	    try
+	    {
+		$headers = '';
+		if (isset($post))
+			$headers .= "POST $url HTTP/1.1\r\n";
+		else $headers .= "GET $url HTTP/1.1\r\n";
+		$headers .= "Host: $host\r\n";
+		$headers .= 'User-Agent: '.$this->Agent."\r\n";
+		$headers .= "Referer: $referer\r\n";
+		if ($cookies != array())
+			$headers .= 'Cookie: '.implode("; ", $cookies)."\r\n";
+		$headers .= "Connection: close\r\n";
+		$headers .= "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*\/*;q=0.8\r\n";
+		$headers .= "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\n";
+		$headers .= "Content-Type: application/x-www-form-urlencoded\r\n";
+		if (isset($post))
+			$headers .= 'Content-Length: '.strlen($post)."\r\n\r\n$post";
+		else $headers .= "\r\n";
+		$response = '';
+		fputs($socket, $headers);
+		while (!@feof ($socket)) $response .= @fgets ($socket, 8192);
+		return $response;
+	    }
+	    catch (Exception $e)
+	    {
+		echo 'Exception occured: '.$e->getMessage()."\n";
+		return '';
+	    }
 	}
 
 	public function connect() {                     // This method creates our dAmn connection!
@@ -280,8 +299,8 @@ class dAmnPHP {
 		return false;
 	}
 
-	function login($username, $damntoken) {         // Need to send a login packet? I'm your man!
-		$this->login = ( $this->send("login $username\npk=$damntoken\n\0") ? true : true );
+	function login($username, $authtoken) {         // Need to send a login packet? I'm your man!
+		$this->login = ( $this->send("login $username\npk=$authtoken\n\0") ? true : true );
 	}
 
 	function deform_chat($chat, $discard=false) {
