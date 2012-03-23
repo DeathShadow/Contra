@@ -27,7 +27,7 @@ if not exist phpbin (
 
 for /f "eol=# delims=" %%g in (phpbin) do set phpbin=%%g
 set args=%1
-if not exist %phpbin% goto nophp
+if not exist "%phpbin%" goto nophp
 %phpbin% run.php %1
 goto loop
 
