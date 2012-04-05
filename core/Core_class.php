@@ -125,6 +125,7 @@ class Bot {
 
 	function load_config() {
 		$config = include './storage/config.cf';
+		if(!isset($config['auth'])) $config['auth'] = 'cookie';
 		$this->auth = $config['auth'];
 		$this->username = $config['info']['username'];
 		$this->_password = $config['info']['password'];
