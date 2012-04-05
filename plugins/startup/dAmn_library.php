@@ -23,6 +23,7 @@ class dAmn_lib extends extension {
 		// Hooking certain events also allows us to keep our data up to date.
 		$this->hook('e_startup', 'startup');
 		$this->hook('e_cookie', 'cookie');
+		$this->hook('e_damntoken', 'damntoken');
 		$this->hook('e_loop', 'loop');
 		$this->hook('process', 'packet');
 		$this->hook('e_disconnect', 'disconnect');
@@ -80,6 +81,31 @@ class dAmn_lib extends extension {
 		}
 	}
 
+	function e_damntoken() {
+		$this->unhook('e_damntoken', 'damntoken');
+		$this->Bot->damntoken = !$this->Bot->usingStored ? $this->dAmn->damntoken->damntoken : $this->dAmn->damntokenz;
+		$this->dAmn->damntokenz = !$this->Bot->usingStored ? $this->dAmn->damntoken->damntoken : $this->dAmn->damntokenz;
+		$this->Bot->save_config();
+		if(!$this->Bot->usingStored) {
+			$this->Console->Notice('Got a valid damntoken!');
+			$this->log('~Server', ' Got a valid damntoken!', time());
+		}
+		$this->dAmn->trigger = $this->Bot->trigger;
+		$this->dAmn->owner = $this->Bot->owner;
+		$this->ticker = 0;
+		if(DEBUG) {
+			$this->Console->Write('Data received:'.chr(10));
+			$this->Console->Write(!$this->Bot->usingStored ? $this->dAmn->damntoken->damntoken : $this->dAmn->damntokenz);
+		}
+		if($this->dAmn->connect()) {
+			if(DEBUG) {
+				$this->Console->Notice('Opened a connection with '.$this->dAmn->server['chat']['host'].':'.$this->dAmn->server['chat']['port'].'!');
+				$this->Console->Notice('Waiting for handshake...');
+			}
+		}
+		$this->Bot->running = true;
+	}
+
 	function e_loop() {
 		$dAmn = $this->dAmn;
 		if($dAmn->connected == false && $dAmn->close == false && $dAmn->connecting == false && $dAmn->login == false) {
@@ -108,7 +134,10 @@ class dAmn_lib extends extension {
 		if($this->dAmn->close) return;
 		$this->Console->Warning('Experienced an unexpected disconnect!');
 		$this->Console->Warning('Waiting before attempting to connect again...');
-		$this->hook('e_cookie', 'cookie');
+		if($this->Bot->auth == 'cookie')
+			$this->hook('e_cookie', 'cookie');
+		elseif($this->Bot->auth == 'oauth')
+			$this->hook('e_damntoken', 'damntoken');
 		$this->hook('e_connected', 'connected');
 		sleep(1.5);
 		$this->Bot->network(true);
@@ -117,7 +146,10 @@ class dAmn_lib extends extension {
 		$this->unhook('e_connected', 'connected');
 		$this->dAmn->connected = true;
 		$this->hook('e_login', 'login');
-		$this->dAmn->login($this->Bot->username, $this->dAmn->cookie);
+		if($this->Bot->auth == 'cookie')
+			$this->dAmn->login($this->Bot->username, $this->dAmn->cookie);
+		elseif($this->Bot->auth == 'oauth')
+			$this->dAmn->login($this->Bot->username, $this->dAmn->damntokenz);
 	}
 
 	function e_login($e) {
@@ -130,12 +162,18 @@ class dAmn_lib extends extension {
 			@stream_socket_shutdown($this->dAmn->socket,STREAM_SHUT_RDWR);
 			$this->dAmn->chat = array();
 			$this->dAmn->connected = false;
-			$this->hook('e_cookie', 'cookie');
+			if($this->Bot->auth == 'cookie')
+				$this->hook('e_cookie', 'cookie');
+			elseif($this->Bot->auth == 'oauth')
+				$this->hook('e_damntoken', 'damntoken');
 			$this->hook('e_connected', 'connected');
 			$this->Bot->usingStored = false;
 			$this->Bot->cookie = '';
 			$this->Bot->save_config();
-			$this->Console->Warning('Using stored cookie failed!');
+			if($this->Bot->auth == 'cookie')
+				$this->Console->Warning('Using stored cookie failed!');
+			elseif($this->Bot->auth == 'oauth')
+				$this->Console->Warning('Using stored damntoken failed!');
 			$this->Bot->network(true);
 			return;
 		}

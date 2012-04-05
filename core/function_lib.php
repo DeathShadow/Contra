@@ -145,10 +145,12 @@
 		if(empty($config['autojoin']))
 			$config['autojoin'] = array('#Botdom');
 		$config = array(
+			'auth' => 'cookie',
 			'info' => $config['info'],
 			'about' => $config['about'],
 			'autojoin' => $config['autojoin'],
 			'cookie' => '',
+			'damntoken' => '',
 		);
 		save_config('./storage/config.cf', $config);
 		echo '> Configuration saved!'.chr(10);
