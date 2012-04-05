@@ -299,8 +299,6 @@ class dAmnPHP {
 			} else {
 				if($mode == 0) echo "Grabbing the oAuth Tokens from deviantART..." . LBR; // Turn off if silent
 
-				if($mode == 0) echo "Grabbing the oAuth Tokens from deviantART..." . LBR; // Turn off if silent
-
 				// Opening browser based on OS
 				switch($this->os) {
 					case "Darwin": // Mac OSX uses open command

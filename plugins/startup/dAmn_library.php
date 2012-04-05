@@ -163,10 +163,8 @@ class dAmn_lib extends extension {
 			$this->dAmn->connected = false;
 			if($this->Bot->auth == 'cookie')
 				$this->hook('e_cookie', 'cookie');
-			elseif($this->Bot->auth == 'oauth') {
-				$this->oauth(0, true);
+			elseif($this->Bot->auth == 'oauth')
 				$this->hook('e_damntoken', 'damntoken');
-			}
 			$this->hook('e_connected', 'connected');
 			$this->Bot->usingStored = false;
 			if($this->Bot->auth == 'cookie')
