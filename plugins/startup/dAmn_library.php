@@ -84,7 +84,6 @@ class dAmn_lib extends extension {
 	function e_damntoken() {
 		$this->unhook('e_damntoken', 'damntoken');
 		$this->Bot->damntoken = !$this->Bot->usingStored ? $this->dAmn->damntoken->damntoken : $this->Bot->damntoken;
-		$this->dAmn->damntokenz = !$this->Bot->usingStored ? $this->dAmn->damntoken->damntoken : $this->Bot->damntoken;
 		$this->Bot->save_config();
 		if(!$this->Bot->usingStored) {
 			$this->Console->Notice('Got a valid damntoken!');
@@ -95,7 +94,7 @@ class dAmn_lib extends extension {
 		$this->ticker = 0;
 		if(DEBUG) {
 			$this->Console->Write('Data received:'.chr(10));
-			$this->Console->Write(!$this->Bot->usingStored ? $this->dAmn->damntoken->damntoken : $this->dAmn->damntokenz);
+			$this->Console->Write(!$this->Bot->usingStored ? $this->dAmn->damntoken->damntoken : $this->Bot->damntoken);
 		}
 		if($this->dAmn->connect()) {
 			if(DEBUG) {
@@ -149,7 +148,7 @@ class dAmn_lib extends extension {
 		if($this->Bot->auth == 'cookie')
 			$this->dAmn->login($this->Bot->username, $this->dAmn->cookie);
 		elseif($this->Bot->auth == 'oauth')
-			$this->dAmn->login($this->Bot->username, $this->dAmn->damntokenz);
+			$this->dAmn->login($this->Bot->username, $this->Bot->damntoken);
 	}
 
 	function e_login($e) {
@@ -164,11 +163,16 @@ class dAmn_lib extends extension {
 			$this->dAmn->connected = false;
 			if($this->Bot->auth == 'cookie')
 				$this->hook('e_cookie', 'cookie');
-			elseif($this->Bot->auth == 'oauth')
+			elseif($this->Bot->auth == 'oauth') {
+				$this->oauth(0, true);
 				$this->hook('e_damntoken', 'damntoken');
+			}
 			$this->hook('e_connected', 'connected');
 			$this->Bot->usingStored = false;
-			$this->Bot->cookie = '';
+			if($this->Bot->auth == 'cookie')
+				$this->Bot->cookie = '';
+			elseif($this->Bot->auth == 'oauth')
+				$this->Bot->damntoken = '';
 			$this->Bot->save_config();
 			if($this->Bot->auth == 'cookie')
 				$this->Console->Warning('Using stored cookie failed!');
