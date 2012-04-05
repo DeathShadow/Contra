@@ -241,10 +241,10 @@ class dAmnPHP {
 	}
 
 	// oAuth function, mode sets silent, 0 = silent, 1 = echo
-	public function oauth($mode) {
+	public function oauth($mode, $refresh = false) {
 		//$this->os = PHP_OS; // The System OS
-		$this->CLIENT_ID = '24'; // OAuth 2.0 client_id
-		$this->CLIENT_SECRET = 'b6c81c08563888f0da7ea3f7f763c426'; // OAuth 2.0 client_secret
+		$this->client_id = '24'; // OAuth 2.0 client_id
+		$this->client_secret = 'b6c81c08563888f0da7ea3f7f763c426'; // OAuth 2.0 client_secret
 
 		if(is_readable("oauth.json")){ // Checking if the file_exists
 			if($mode == 0) echo "Grabbing existing oAuth tokens..." . LBR; // Turn off if silent
@@ -258,67 +258,89 @@ class dAmnPHP {
 			// Setting to the oauth_tokens variable
 				$this->oauth_tokens = json_decode(fread($fh, filesize($config_file)));
 
-				if($mode == 0) echo "Checking if tokens have expired..." . LBR;
-				$placebo = json_decode($this->socket('/api/draft15/placebo?access_token='.$this->oauth_tokens->access_token));
-				if($placebo->status != "success") {
-					if($mode == 0) echo "Tokens expired, grabbing new ones..." . LBR;
+					if($refresh) {
+						// Getting the access token.
+						if($mode == 0) echo "Refreshing Token" . LBR;
+						$tokens = $this->socket('/oauth2/draft15/token?client_id='.$this->client_id.'&redirect_uri=http://damnapp.com//apicode.php&grant_type=refresh_token&client_secret='.$this->client_secret.'&refresh_token='.$this->oauth_tokens->refresh_token);
+						// Set to oauth_tokens variable
+						$this->oauth_tokens = json_decode($tokens);
+						if($this->oauth_tokens->status != "success") {
+
+							if($mode == 0) echo $this->error("For some reason, your refresh tokens failed") . LBR . HR;
+						} else {
+							// Writing to oauth.json
+							$config_file = "oauth.json";
+
+							$fh = fopen($config_file, 'w') or die("can't open file");
+							fwrite($fh, $tokens);
+							fclose($fh);
+							if($mode == 0) echo "Tokens grabbed with refreshtoken!" . LBR . HR;
+						}
+					} else {
+						if($mode == 0) echo "Checking if tokens have expired..." . LBR;
+						$placebo = json_decode($this->socket('/api/draft15/placebo?access_token='.$this->oauth_tokens->access_token));
+						if($placebo->status != "success") {
+							if($mode == 0) echo "Tokens expired, grabbing new ones..." . LBR;
+							(!is_writable($config_file)) ?: chmod($config_file, 755);
+							unlink($config_file);
+							$this->oauth(0, true);
+						} else {
+							if($mode == 0) echo "Tokens grabbed!" . LBR . HR;
+							fclose($fh);
+						}
+					}
+				} else {
+					if($mode == 0) echo $this->error("Your token file is empty, grabbing new ones...") . LBR;
 					(!is_writable($config_file)) ?: chmod($config_file, 755);
 					unlink($config_file);
 					$this->oauth(0);
-				} else {
-					if($mode == 0) echo "Tokens grabbed!" . LBR . HR;
-					fclose($fh);
+
 				}
 			} else {
-				if($mode == 0) echo $this->error("Your token file is empty, grabbing new ones...") . LBR;
-				(!is_writable($config_file)) ?: chmod($config_file, 755);
-				unlink($config_file);
-				$this->oauth(0);
+				if($mode == 0) echo "Grabbing the oAuth Tokens from deviantART..." . LBR; // Turn off if silent
 
-			}
-		} else {
-			if($mode == 0) echo "Grabbing the oAuth Tokens from deviantART..." . LBR; // Turn off if silent
+				if($mode == 0) echo "Grabbing the oAuth Tokens from deviantART..." . LBR; // Turn off if silent
 
-			// Opening browser based on OS
-			switch($this->os) {
-				case "Darwin": // Mac OSX uses open command
-					exec("open 'https://www.deviantart.com/oauth2/draft15/authorize?client_id=".$this->CLIENT_ID."&redirect_uri=http://damnapp.com/apicode.php&response_type=code'");
-					break;
-				case "WINNT": // Windows uses start command
-					exec('start "" "https://www.deviantart.com/oauth2/draft15/authorize?client_id=".$this->CLIENT_ID."&redirect_uri=http://damnapp.com/apicode.php&response_type=code"');
-					break;
-				case "Linux": // Linux uses browser
-					exec("xdg-open 'https://www.deviantart.com/oauth2/draft15/authorize?client_id=".$this->CLIENT_ID."&redirect_uri=http://damnapp.com/apicode.php&response_type=code'");
-					break;
-	 			default: // No browser command found so echo it out
-	 				echo "Could not open your browser to the required URL. Please load the below one!" . LBR;
-	 				echo 'https://www.deviantart.com/oauth2/draft15/authorize?client_id='.$this->CLIENT_ID.'&redirect_uri=http://damnapp.com/apicode.php&response_type=code'."\n";
-	 				break;
-	 		}
+				// Opening browser based on OS
+				switch($this->os) {
+					case "Darwin": // Mac OSX uses open command
+						exec("open 'https://www.deviantart.com/oauth2/draft15/authorize?client_id=".$this->client_id."&redirect_uri=http://damnapp.com/apicode.php&response_type=code'");
+						break;
+					case "WINNT": // Windows uses start command
+						exec('start "" "https://www.deviantart.com/oauth2/draft15/authorize?client_id=".$this->client_id."&redirect_uri=http://damnapp.com/apicode.php&response_type=code"');
+						break;
+					case "Linux": // Linux uses browser
+						exec("xdg-open 'https://www.deviantart.com/oauth2/draft15/authorize?client_id=".$this->client_id."&redirect_uri=http://damnapp.com/apicode.php&response_type=code'");
+						break;
+		 			default: // No browser command found so echo it out
+		 				echo "Could not open your browser to the required URL. Please load the below one!" . LBR;
+		 				echo 'https://www.deviantart.com/oauth2/draft15/authorize?client_id='.$this->client_id.'&redirect_uri=http://damnapp.com/apicode.php&response_type=code' . LBR;
+		 				break;
+		 		}
 
-			// Retreiving the code
-			echo "Enter the code:" . LBR;
-			$code = trim(fgets(STDIN)); // STDIN for reading input
+				// Retreiving the code
+				echo "Enter the code:" . LBR;
+				$code = trim(fgets(STDIN)); // STDIN for reading input
 
-			// Getting the access token.
-			$tokens = $this->socket('/oauth2/draft15/token?client_id='.$this->CLIENT_ID.'&redirect_uri=http://damnapp.com//apicode.php&grant_type=authorization_code&client_secret='.$this->CLIENT_SECRET.'&code='.$code);
+				// Getting the access token.
+				$tokens = $this->socket('/oauth2/draft15/token?client_id='.$this->client_id.'&redirect_uri=http://damnapp.com//apicode.php&grant_type=authorization_code&client_secret='.$this->client_secret.'&code='.$code);
 
-			// Set to oauth_tokens variable
-			$this->oauth_tokens = json_decode($tokens);
-			if($this->oauth_tokens->status != "success") {
+				// Set to oauth_tokens variable
+				$this->oauth_tokens = json_decode($tokens);
+				if($this->oauth_tokens->status != "success") {
 
-				if($mode == 0) echo $this->error("For some reason, your tokens failed") . LBR . HR;
-			} else {
-				// Writing to oauth.json
-				$config_file = "oauth.json";
+					if($mode == 0) echo $this->error("For some reason, your tokens failed") . LBR . HR;
+				} else {
+					// Writing to oauth.json
+					$config_file = "oauth.json";
 
-				$fh = fopen($config_file, 'w') or die("can't open file");
-				fwrite($fh, $tokens);
-				fclose($fh);
-				if($mode == 0) echo "Tokens grabbed!" . LBR . HR;
+					$fh = fopen($config_file, 'w') or die("can't open file");
+					fwrite($fh, $tokens);
+					fclose($fh);
+					if($mode == 0) echo "Tokens grabbed!" . LBR . HR;
+				}
 			}
 		}
-	}
 
 	// dAmntoken function
 	public function damntoken() {
