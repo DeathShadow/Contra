@@ -277,7 +277,7 @@ class System_commands extends extension {
 					else {
 						if($this->Bot->mod[$exn]->type === EXT_LIBRARY)
 							return $this->dAmn->say($ns, $from.': No such module.');
-						if($this->Bot->mod[$exn]->type === EXT_SYSTEM)
+						if($this->Bot->mod[$exn]->type === EXT_SYSTEM && $s == false)
 							return $this->dAmn->say($ns, $from.': System modules can\'t be turned off!');
 						if($this->Bot->mod[$exn]->status == ($s === true?false:true)) {
 							$this->Bot->mod[$exn]->status = $s;
