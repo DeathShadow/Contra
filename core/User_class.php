@@ -233,7 +233,7 @@ return '.var_export($this->list, true).';'.chr(10).'?>';
 					array_del_key($over['ban'],array_search(strtolower($cmd),$over['ban']));
 			$this->list['override']['user'][$user]['allow'][] = strtolower($cmd);
 		} else {
-			$this->list['override'][$user] = array(
+			$this->list['override']['user'][$user] = array(
 				'ban' => array(),
 				'allow' => array(strtolower($cmd)),
 			);
