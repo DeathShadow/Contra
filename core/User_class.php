@@ -226,53 +226,45 @@ return '.var_export($this->list, true).';'.chr(10).'?>';
 	public function addCmd($user, $cmd) {
 		if(!array_key_exists(strtolower($cmd), $this->Bot->Events->events['cmd'])) return false;
 		$over = $this->overrides($user);
-		if($over!==false) {
-			if(in_array(strtolower($cmd),$over['allow']))  return true;
-			if(in_array(strtolower($cmd),$over['ban']))
-				$this->list['override']['user'][$over['user']]['ban'] =
-					array_del_key($over['ban'],array_search(strtolower($cmd),$over['ban']));
-			$this->list['override']['user'][$user]['allow'][] = strtolower($cmd);
-		} else {
-			$this->list['override'][$user] = array(
-				'ban' => array(),
-				'allow' => array(strtolower($cmd)),
-			);
-		}
+		if(in_array(strtolower($cmd),$over['allow']))  return true;
+		if(in_array(strtolower($cmd),$over['ban']))
+			$this->list['override']['user'][$over['user']]['ban'] =
+				array_del_key($over['ban'],array_search(strtolower($cmd),$over['ban']));
+		$this->list['override']['user'][$user]['allow'][] = strtolower($cmd);
+		$this->list['override'][$user] = array(
+			'ban' => array(),
+			'allow' => array(strtolower($cmd)),
+		);
 		$this->UpdateList();
 		return true;
 	}
 	public function banCmd($user, $cmd) {
 		if(!array_key_exists(strtolower($cmd), $this->Bot->Events->events['cmd'])) return false;
 		$over = $this->overrides($user);
-		if($over!==false) {
-			if(in_array(strtolower($cmd),$over['ban']))  return true;
-			if(in_array(strtolower($cmd),$over['allow']))
-				$this->list['override']['user'][$over['user']]['allow'] =
-					array_del_key($over['allow'],array_search(strtolower($cmd),$over['allow']));
-			$this->list['override']['user'][$over['user']]['ban'][] = strtolower($cmd);
-		} else {
-			$this->list['override']['user'][$user] = array(
-				'ban' => array(strtolower($cmd)),
-				'allow' => array(),
-			);
-		}
+		if(in_array(strtolower($cmd),$over['ban']))  return true;
+		if(in_array(strtolower($cmd),$over['allow']))
+			$this->list['override']['user'][$over['user']]['allow'] =
+				array_del_key($over['allow'],array_search(strtolower($cmd),$over['allow']));
+		$this->list['override']['user'][$over['user']]['ban'][] = strtolower($cmd);
+		$this->list['override']['user'][$user] = array(
+			'ban' => array(strtolower($cmd)),
+			'allow' => array(),
+		);
 		$this->UpdateList();
 		return true;
 	}
 	public function remCmd($user, $cmd) {
 		if(!array_key_exists(strtolower($cmd), $this->Bot->Events->events['cmd'])) return true;
 		$over = $this->overrides($user);
-		if($over!==false) {
-			if(in_array(strtolower($cmd),$over['allow']))
-				$this->list['override']['user'][$over['user']]['allow'] =
-					array_del_key($over['allow'],array_search(strtolower($cmd),$over['allow']));
-			if(in_array(strtolower($cmd),$over['ban']))
-				$this->list['override']['user'][$over['user']]['ban'] =
-					array_del_key($over['ban'],array_search(strtolower($cmd),$over['ban']));
-			if(empty($this->list['override']['user'][$over['user']]['allow'])
-			&& empty($this->list['override']['user'][$over['user']]['ban']))
-				unset($this->list['override']['user'][$over['user']]);
-		}
+		if(in_array(strtolower($cmd),$over['allow']))
+			$this->list['override']['user'][$over['user']]['allow'] =
+				array_del_key($over['allow'],array_search(strtolower($cmd),$over['allow']));
+		if(in_array(strtolower($cmd),$over['ban']))
+			$this->list['override']['user'][$over['user']]['ban'] =
+				array_del_key($over['ban'],array_search(strtolower($cmd),$over['ban']));
+		if(empty($this->list['override']['user'][$over['user']]['allow'])
+		&& empty($this->list['override']['user'][$over['user']]['ban']))
+			unset($this->list['override']['user'][$over['user']]);
 		$this->UpdateList();
 		return true;
 	}
