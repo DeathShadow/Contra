@@ -673,18 +673,6 @@ class System_commands extends extension {
 					break;
 				}
 				break;
-				case 'BOTDEF':
-				switch($command[2]) {
-					case 'REQUEST':
-						$user = $command[3];
-						$userz = strtolower($user);
-						if(empty($user)) return;
-						if($this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] != 'PoliceBot') return;
-						if($user == $this->Bot->username && $from != $this->Bot->username)
-							$this->dAmn->npmsg('chat:datashare', "BDS:BOTDEF:RESPONSE:{$from},Contra,PHP,photofroggy,http://botdom.com/wiki/Contra,".md5(strtolower($from.'contraphotofroggy')), TRUE);
-					break;
-				}
-				break;
 			}
 		}
 	}
