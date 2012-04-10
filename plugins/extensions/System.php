@@ -92,7 +92,6 @@ class System_commands extends extension {
 		$this->hook('codsmain', 'recv_msg');
 		$this->hook('load_switches', 'startup');
 
-		$this->load_botdata();
 		$this->loadnotes();
 
 		$this->trigc1 = strtolower($this->Bot->username.': trigcheck');
@@ -457,17 +456,16 @@ class System_commands extends extension {
 		$this->botinfo['params'] = strtolower(args($message, 1));
 		$this->botinfo['ns'] = $ns;
 		$ownerz = args($message, 2);
-		$this->botdata = array_change_key_case($this->botdata, CASE_LOWER);
 
 		if($this->botinfo['params'] == '') {
 			$sb = "";
-			$this->dAmn->say($ns, "<abbr title=\"{$from}\"></abbr> You must specify the name of a bot you wish to get information for.<br /><sup>[There are ".count($this->botdata)." bots in database.]</sup>", TRUE);
-		} elseif(!array_key_exists($this->botinfo['params'], $this->botdata)) {
+			$this->dAmn->say($ns, "<abbr title=\"{$from}\"></abbr> You must specify the name of a bot you wish to get information for.", TRUE);
+		} elseif(!array_key_exists($this->botinfo['params'], $this->botinfo['bot'])) {
 			$this->dAmn->npmsg('chat:DataShare', "BDS:BOTCHECK:REQUEST:{$this->botinfo['params']}", TRUE);
 			$this->botinfo['on'] = true;
 		} else {
-			if(empty($this->botdata[$this->botinfo['params']]['bannedBy'])) {
-				$work = $this->botdata[$this->botinfo['params']];
+			if(empty($this->botinfo['bot'][$this->botinfo['params']]['bannedBy'])) {
+				$work = $this->botinfo['bot'][$this->botinfo['params']];
 				$ass = explode(';', $work['owner']);
 				foreach($ass as $poo => $pooz) {
 					$bullshit[$pooz] = array(true);
@@ -482,8 +480,9 @@ class System_commands extends extension {
 				$sb .= 'Last update on <i>'.date('n/j/Y g:i:s A', $work['lastupdate'])." UTC</i> by [<b><i>:dev{$work['requestedBy']}:</i></b>]";
 				$sb .= "</sub><abbr title=\"{$from}\"> </abbr>";
 				$this->dAmn->say($ns, $sb);
+				unset($work, $this->botinfo['bot']);
 			}else{
-				$work = $this->botdata[$this->botinfo['params']];
+				$work = $this->botinfo['bot'][$this->botinfo['params']];
 				$sb  = '<sub>';
 				$sb .= "Bot Username: [<b>:dev{$work['actualname']}:</b>]<br>";
 				$sb .= "Bot Owner: [<b>:dev{$work['owner']}:</b>]<br>";
@@ -491,13 +490,13 @@ class System_commands extends extension {
 				$sb .= 'Last update on <i>'.date('n/j/Y g:i:s A', $work['lastupdate'])." UTC</i> by [<b><i>:dev{$work['bannedBy']}:</i></b>]";
 				$sb .= "</sub><abbr title=\"{$from}\"> </abbr>";
 				$this->dAmn->say($ns, $sb);
+				unset($work, $this->botinfo['bot']);
 			}
 		}
 	}
 	function BDSBotCheck($ns, $sender, $payload) {
 		$splitted = explode(',', $payload, 6);
 		if(count($splitted) !== 6) return;
-		$store = $this->store($splitted, $sender);
 	}
 	function bds_recv($ns, $from, $message) {
 		if(strtolower($ns) == 'chat:datashare') {
@@ -509,33 +508,7 @@ class System_commands extends extension {
 	}
 	function is_bot($from) {
 		$fromz = strtolower($from);
-		return $this->botdata[$fromz]['bot'];
-	}
-	function store($data, $from) {
-		if(!$this->verify($data, $from)) return;
-		// ADD SAVING SHIT UP HERE
-
-		$strig = trim(htmlspecialchars_decode($data[5], ENT_NOQUOTES));
-
-		$user = $from;
-		$fromz = strtolower($from);
-		$versions = explode('/', $data[3], 2);
-		if(empty($versions[1])) $versions[1] = '0.1';
-		if(empty($fromz)) return;
-		$this->botdata[$fromz] = array(
-			'requestedBy'	=> $data[0],
-			'owner'		=> $data[1],
-			'trigger'	=> $strig,
-			'bottype'	=> $data[2],
-			'version'	=> $versions[0],
-			'bdsversion'	=> $versions[1],
-			'actualname'	=> $user,
-			'bot'		=> true,
-			'lastupdate'	=> time() - (int)substr(date('O'),0,3)*60*60,
-		);
-		ksort($this->botdata, SORT_STRING);
-		$this->save_botdata();
-		return true;
+		return $this->botinfo['bot'][$fromz]['bot'];
 	}
 	function verify($data, $from) {
 		if(count($data) < 6) return false;
@@ -584,7 +557,7 @@ class System_commands extends extension {
 							$botowner = $info[3];
 							$trigger = $info[4];
 
-							$this->botdata[$userz] = array(
+							$this->botinfo['bot'][$userz] = array(
 								'requestedBy'	=> $from,
 								'owner'		=> $botowner,
 								'trigger'	=> $trigger,
@@ -595,11 +568,10 @@ class System_commands extends extension {
 								'bot'		=> true,
 								'lastupdate'	=> time() - (int)substr(date('O'),0,3)*60*60,
 							);
-							ksort($this->botdata, SORT_STRING);
-							$this->save_botdata();
+							ksort($this->botinfo['bot'], SORT_STRING);
 							if(!$this->botinfo['on']) break;
-							if(empty($this->botdata[$this->botinfo['params']]['bannedBy'])) {
-								$work = $this->botdata[$this->botinfo['params']];
+							if(empty($this->botinfo['bot'][$this->botinfo['params']]['bannedBy'])) {
+								$work = $this->botinfo['bot'][$this->botinfo['params']];
 								$ass = explode(';', $work['owner']);
 								foreach($ass as $poo => $pooz) {
 									$bullshit[$pooz] = array(true);
@@ -642,7 +614,7 @@ class System_commands extends extension {
 							$lastupdate = $info[6];
 							$trigger = $info[7];
 
-							$this->botdata[$userz] = array(
+							$this->botinfo['bot'][$userz] = array(
 								'bannedBy'	=> $bannedby,
 								'owner'		=> $botowner,
 								'trigger'	=> $trigger,
@@ -654,7 +626,7 @@ class System_commands extends extension {
 								'lastupdate'	=> intval($lastupdate),
 							);
 							if(!$this->botinfo['on']) break;
-							$work = $this->botdata[$this->botinfo['params']];
+							$work = $this->botinfo['bot'][$this->botinfo['params']];
 							$sb  = '<sub>';
 							$sb .= "Bot Username: [<b>:dev{$work['actualname']}:</b>]<br>";
 							$sb .= "Bot Owner: [<b>:dev{$work['owner']}:</b>]<br>";
@@ -663,8 +635,6 @@ class System_commands extends extension {
 							$sb .= "</sub><abbr title=\"{$this->botinfo['from']}\"> </abbr>";
 							$this->dAmn->say($this->botinfo['ns'], $sb);
 							$this->botinfo['on'] = false;
-							ksort($this->botdata, SORT_STRING);
-							$this->save_botdata();
 						}
 					break;
 				}
@@ -876,15 +846,6 @@ class System_commands extends extension {
 				}
 			}
 		}
-	}
-
-	function save_botdata() { $this->Write('botdata', $this->botdata, 2); }
-	function load_botdata() {
-		$this->botdata = $this->Read('botdata', 2);
-		if($this->botdata !== false) return array();
-		$this->botdata = '';
-		$this->save_botdata();
-		$this->load_botdata();
 	}
 
 	function save_switches() {
