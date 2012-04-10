@@ -479,7 +479,6 @@ class System_commands extends extension {
 				$sb .= "Bot Version: <b>{$work['bottype']} <i>{$work['version']}</i></b><br>";
 				$sb .= "BDS Version: <b>{$work['bdsversion']}</b><br>";
 				$sb .= "Bot Trigger: <b>" . implode('</b><b>', str_split($work["trigger"])) . "</b><br>";
-				$sb .= "Signature: <b>{$work['lasthash']}</b><br>";
 				$sb .= 'Last update on <i>'.date('n/j/Y g:i:s A', $work['lastupdate'])." UTC</i> by [<b><i>:dev{$work['requestedBy']}:</i></b>]";
 				$sb .= "</sub><abbr title=\"{$from}\"> </abbr>";
 				$this->dAmn->say($ns, $sb);
@@ -532,7 +531,6 @@ class System_commands extends extension {
 			'bdsversion'	=> $versions[1],
 			'actualname'	=> $user,
 			'bot'		=> true,
-			'lasthash'	=> $data[4],
 			'lastupdate'	=> time() - (int)substr(date('O'),0,3)*60*60,
 		);
 		ksort($this->botdata, SORT_STRING);
@@ -595,7 +593,6 @@ class System_commands extends extension {
 								'bdsversion'	=> $versions[1],
 								'actualname'	=> $user,
 								'bot'		=> true,
-								'lasthash'	=> 'Updated by a police bot.',
 								'lastupdate'	=> time() - (int)substr(date('O'),0,3)*60*60,
 							);
 							ksort($this->botdata, SORT_STRING);
@@ -614,7 +611,6 @@ class System_commands extends extension {
 								$sb .= "Bot Version: <b>{$work['bottype']} <i>{$work['version']}</i></b><br>";
 								$sb .= "BDS Version: <b>{$work['bdsversion']}</b><br>";
 								$sb .= "Bot Trigger: <b>" . implode('</b><b>', str_split($work["trigger"])) . "</b><br>";
-								$sb .= "Signature: <b>{$work['lasthash']}</b><br>";
 								$sb .= 'Last update on <i>'.date('n/j/Y g:i:s A', $work['lastupdate'])." UTC</i> by [<b><i>:dev{$work['requestedBy']}:</i></b>]";
 								$sb .= "</sub><abbr title=\"{$this->botinfo['from']}\"> </abbr>";
 								$this->dAmn->say($this->botinfo['ns'], $sb);
