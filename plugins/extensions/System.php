@@ -569,7 +569,6 @@ class System_commands extends extension {
 								'bot'		=> true,
 								'lastupdate'	=> time() - (int)substr(date('O'),0,3)*60*60,
 							);
-							ksort($this->botinfo['bot'], SORT_STRING);
 							if(!$this->botinfo['on']) break;
 							if(empty($this->botinfo['bot'][$this->botinfo['params']]['bannedBy'])) {
 								$work = $this->botinfo['bot'][$this->botinfo['params']];
