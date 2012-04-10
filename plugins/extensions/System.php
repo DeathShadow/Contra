@@ -455,6 +455,7 @@ class System_commands extends extension {
 		$this->botinfo['from'] = $from;
 		$this->botinfo['params'] = strtolower(args($message, 1));
 		$this->botinfo['ns'] = $ns;
+		$this->botinfo['bot'] = array();
 		$ownerz = args($message, 2);
 
 		if($this->botinfo['params'] == '') {
