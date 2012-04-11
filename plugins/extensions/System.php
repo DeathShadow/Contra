@@ -844,6 +844,7 @@ class System_commands extends extension {
 					}
 					break;
 				}
+				break;
 			}
 		}
 	}
