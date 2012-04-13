@@ -336,6 +336,8 @@ return '.var_export($this->list, true).';'.chr(10).'?>';
 			return false;
 		if($this->class_name($order)!==false)
 			return false;
+		if(!is_numeric($order))
+			return false;
 		$this->list['pc'][$order] = $name;
 		$pcs = $this->list;
 		unset($pcs['override']['user']); unset($pcs['pc']);
