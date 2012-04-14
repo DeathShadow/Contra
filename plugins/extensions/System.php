@@ -405,6 +405,7 @@ class System_commands extends extension {
 					case 'rem':
 					case 'remove':
 						if($p1=='') $say = $from.': Usage: '.$this->Bot->trigger.'user class '.$suba.' [class]';
+						elseif($p1=='100' || $p1=='25' || $p1=='1' || $p1=='Owner' || $p1=='Guests' || $p1=='Banned') $say = $from.': Failed to remove user class '.$p1.'.';
 						else {
 							if($this->user->rem_class($p1)===true) $say = $from.': Removed user class '.$p1.'.';
 							else $say = $from.': Failed to remove user class '.$p1.'.';
