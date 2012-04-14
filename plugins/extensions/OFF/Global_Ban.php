@@ -12,8 +12,10 @@ class Global_Ban extends extension {
 	function init() {
 		$this->addCmd('gban', 'c_gban', 100);
 		$this->load_data();
-		if(!is_array($this->gban['rooms']))
+		if(!is_array($this->gban['rooms'])) {
 			$this->gban['rooms'] = array();
+			$this->save_data();
+		}
 	}
 
 	function c_gban($ns, $from, $message, $target) {
