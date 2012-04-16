@@ -150,6 +150,7 @@
 			'autojoin' => $config['autojoin'],
 			'cookie' => '',
 			'damntoken' => '',
+			'updatenotes' => true,
 		);
 		save_config('./storage/config.cf', $config);
 		echo '> Configuration saved!'.chr(10);

@@ -137,6 +137,7 @@ class Bot {
 			$this->cookie = empty($config['cookie']) ? '' : unserialize($config['cookie']);
 		elseif($config['auth'] == 'oauth')
 			$this->damntoken = empty($config['damntoken']) ? '' : unserialize($config['damntoken']);
+		$this->updatenotes = $config['updatenotes'];
 	}
 
 	function save_config() {
@@ -152,6 +153,7 @@ class Bot {
 			'autojoin' => $this->autojoin,
 			'cookie' => empty($this->cookie) ? '' : serialize($this->cookie),
 			'damntoken' => empty($this->damntoken) ? '' : serialize($this->damntoken),
+			'updatenotes' => $this->updatenotes,
 		);
 		save_config('./storage/config.cf', $config);
 	}
