@@ -233,7 +233,7 @@ return '.var_export($this->list, true).';'.chr(10).'?>';
 					array_del_key($over['ban'],array_search(strtolower($cmd),$over['ban']));
 			$this->list['override']['user'][$user]['allow'][] = strtolower($cmd);
 		} else {
-			$this->list['override'][$user] = array(
+			$this->list['override']['user'][$user] = array(
 				'ban' => array(),
 				'allow' => array(strtolower($cmd)),
 			);
@@ -335,6 +335,8 @@ return '.var_export($this->list, true).';'.chr(10).'?>';
 		if($this->class_order($name)!==false)
 			return false;
 		if($this->class_name($order)!==false)
+			return false;
+		if(!is_numeric($order))
 			return false;
 		$this->list['pc'][$order] = $name;
 		$pcs = $this->list;

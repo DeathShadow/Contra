@@ -9,3 +9,4 @@ storage/mod
 storage/config.cf
 storage/users.cf
 Connection.log
+oauth.json
