@@ -137,7 +137,7 @@ class Bot {
 			$this->cookie = empty($config['cookie']) ? '' : unserialize($config['cookie']);
 		elseif($config['auth'] == 'oauth')
 			$this->damntoken = empty($config['damntoken']) ? '' : unserialize($config['damntoken']);
-		$this->updatenotes = $config['updatenotes'];
+		$this->updatenotes = empty($config['updatenotes']) ? true : $config['updatenotes'];
 	}
 
 	function save_config() {
