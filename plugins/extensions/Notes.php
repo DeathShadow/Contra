@@ -124,7 +124,7 @@ class notes_module extends extension {
 		$notes = $this->check($user);
 		if($notes!==false) $this->clearRecvs($user);
 		$new = ($notes===false?'':'('.$notes.' new)');
-		if(empty($this->notes[$user][0])) return $user.': You don\'t have any notes.';
+		if(empty($this->notes[$user])) return $user.': You don\'t have any notes.';
 		$head = $user.': Your notes <code>'.$new.'</code><br/>'; $list = '';
 		foreach($this->notes[$user] as $id => $data) $list.= '#'.$id.', ';
 		return $head.rtrim($list,', ').'<br/><sup>Use '.$this->Bot->trigger.'note read [id] to read a note.</sup>';
@@ -182,6 +182,7 @@ class notes_module extends extension {
 			$this->notes[$user][$i]['content'] = $content;
 			$this->notes[$user][$i]['from'	 ] = 	$from;
 			$this->notes[$user][$i]['ts'	 ] =   time();
+			ksort($this->notes[$user]);
 			$this->Write('notes', $this->notes);
 			$this->loadnotes();
 			return true;

@@ -883,16 +883,17 @@ class System_commands extends extension {
 	function sendnote($to, $from, $content) {
 		if(empty($to)) return false;
 		$user = strtolower($to);
+		$this->loadnotes();
 		if(!isset($this->notes[$user]))
 			$this->notes[$user] = array();
 		if(!isset($this->receivers[$user]))
 			$this->receivers[$user] = 1;
 		else $this->receivers[$user]++;
 		$this->notewrite('receive', $this->receivers);
-		$i = count($this->notes[$user]);
-		$this->notes[$user][$i]['content'] = $content;
-		$this->notes[$user][$i]['from'	 ] = 	$from;
-		$this->notes[$user][$i]['ts'	 ] =   time();
+		$this->notes[$user][-1]['content'] = $content;
+		$this->notes[$user][-1]['from'   ] = $from;
+		$this->notes[$user][-1]['ts'     ] = time();
+		ksort($this->notes[$user]);
 		$this->notewrite('notes', $this->notes);
 		$this->loadnotes();
 		return true;
