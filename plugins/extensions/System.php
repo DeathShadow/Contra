@@ -149,15 +149,18 @@ class System_commands extends extension {
 				$func = (strtolower(args($message,1)) == 'allow' ? 'add' : (strtolower(args($message,1)) == 'ban' ? 'ban' : 'rem')).'Cmd';
 				$cmd = strtolower(args($message, 2));
 				$user = strtolower(args($message, 3));
-				$user = strlen($user)>=1?$user:$from;
 				$say = $from.': ';
-				if(strlen($cmd)>=1) {
+				if(empty($cmd))
+					$say.= $this->Bot->trigger.'command '.$subby.' [cmd] [user].';
+				elseif(empty($user))
+					$say.= $this->Bot->trigger.'command '.$subby.' [cmd] [user].';
+				else {
 					if($this->user->$func($user,$cmd)) {
 						if($func == 'addCmd') $say.= $user.' has been given access to '.$cmd.'.';
 						if($func == 'banCmd') $say.= $user.' has been disallowed access to '.$cmd.'.';
 						if($func == 'remCmd') $say.= $user.'\'s access to '.$cmd.' has been reset.';
 					} else $say.= 'Could not edit '.$user.'\'s access to '.$cmd.'.';
-				} else $say.= 'Use this command to edit a users access to a command.';
+				}
 				break;
 			case 'change':
 				$say = "$from: ";
@@ -379,6 +382,7 @@ class System_commands extends extension {
 
 		switch($act) {
 			case 'add':
+				if(empty($usrx) || empty($priv)) return $this->dAmn->say($ns, $from.': Usage: '.$this->Bot->trigger.'user add [username] [privilege class]');
                                 if($usrx == $this->Bot->username) return $this->dAmn->say($ns, $from.': Failed to add '.$usrx.' to user list.');
 				$r = $this->user->add($usrx,$priv);
 				$t = $this->user->class_name($priv);
@@ -387,6 +391,7 @@ class System_commands extends extension {
 				break;
 			case 'rem':
 			case 'remove':
+				if(empty($usrx) || empty($priv)) return $this->dAmn->say($ns, $from.': Usage: '.$this->Bot->trigger.'user '.$act.' [username] [privilege class]');
 				$r = $this->user->rem($usrx);
 				if($r=='removed') $say = $from.': Removed '.$usrx.' from the user list.';
 				else $say = $from.': Failed to remove '.$usrx.' from the user list ('.$r.')';
