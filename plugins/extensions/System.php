@@ -916,14 +916,14 @@ class System_commands extends extension {
 		if(!is_dir('./storage/mod/Notes')) mkdir('./storage/mod/Notes', 0755);
 		$file = strtolower($file);
 		if(!file_exists('./storage/mod/Notes/'.$file.'.bsv')) return false;
-		return unserialize(file_get_contents('./storage/mod/Notes/'.$file.'.bsv'));
+		return unserialize(base64_decode(file_get_contents('./storage/mod/Notes/'.$file.'.bsv')));
 	}
 	final protected function notewrite($file, $data) {
 		if(!is_dir('./storage')) mkdir('./storage', 0755);
 		if(!is_dir('./storage/mod')) mkdir('./storage/mod', 0755);
 		if(!is_dir('./storage/mod/Notes')) mkdir('./storage/mod/Notes', 0755);
 		$file = strtolower($file);
-		file_put_contents('./storage/mod/Notes/'.$file.'.bsv', serialize($data));
+		file_put_contents('./storage/mod/Notes/'.$file.'.bsv', base64_encode(serialize($data)));
 	}
 }
 

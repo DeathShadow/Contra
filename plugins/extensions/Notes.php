@@ -294,6 +294,22 @@ class notes_module extends extension {
 	function say($ns, $from, $message, $DATASHARE = FALSE) {
 		$this->dAmn->say($ns, '<abbr title="'.$from.' -away"></abbr>'.$message);
 	}
+
+	final protected function noteread($file) {
+		if(!is_dir('./storage')) mkdir('./storage', 0755);
+		if(!is_dir('./storage/mod')) mkdir('./storage/mod', 0755);
+		if(!is_dir('./storage/mod/Notes')) mkdir('./storage/mod/Notes', 0755);
+		$file = strtolower($file);
+		if(!file_exists('./storage/mod/Notes/'.$file.'.bsv')) return false;
+		return unserialize(base64_decode(file_get_contents('./storage/mod/Notes/'.$file.'.bsv')));
+	}
+	final protected function notewrite($file, $data) {
+		if(!is_dir('./storage')) mkdir('./storage', 0755);
+		if(!is_dir('./storage/mod')) mkdir('./storage/mod', 0755);
+		if(!is_dir('./storage/mod/Notes')) mkdir('./storage/mod/Notes', 0755);
+		$file = strtolower($file);
+		file_put_contents('./storage/mod/Notes/'.$file.'.bsv', base64_encode(serialize($data)));
+	}
 }
 
 new notes_module($core);
