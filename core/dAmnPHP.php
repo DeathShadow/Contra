@@ -290,7 +290,6 @@ class dAmnPHP {
 					}
 				} else {
 					if($mode == 0) echo $this->error("Your token file is empty, grabbing new ones...") . LBR;
-					(!is_writable($config_file)) ?: chmod($config_file, 755);
 					unlink($config_file);
 					$this->oauth(0);
 
