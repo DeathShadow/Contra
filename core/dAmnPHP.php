@@ -281,7 +281,6 @@ class dAmnPHP {
 						$placebo = json_decode($this->socket('/api/draft15/placebo?access_token='.$this->oauth_tokens->access_token));
 						if($placebo->status != "success") {
 							if($mode == 0) echo "Tokens expired, grabbing new ones..." . LBR;
-							(!is_writable($config_file)) ?: chmod($config_file, 755);
 							unlink($config_file);
 							$this->oauth(0, true);
 						} else {
