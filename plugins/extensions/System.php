@@ -520,6 +520,8 @@ class System_commands extends extension {
 	function verify($data, $from) {
 		if(count($data) < 6) return false;
 
+		$this->dAmn->send("pong\n\0");
+
 		$versions = explode('/', $data[3], 2);
 		$strig = trim(htmlentities($data[5]));
 		if(strstr($data[5], '&amp;') || strstr($data[5], '&lt;') || strstr($data[5], '&gt;'))
@@ -529,6 +531,8 @@ class System_commands extends extension {
 			$strig = trim(str_replace(' ', '', $strig));
 		if($strig == trim(htmlentities($data[5])))
 			$strig = trim($data[5]);
+
+		$this->dAmn->send("pong\n\0");
 
 		// Now, we have to recreate the hash
 		$sig = md5(strtolower($strig.$data[0].$from));
@@ -564,6 +568,8 @@ class System_commands extends extension {
 							$botowner = $info[3];
 							$trigger = $info[4];
 
+							$this->dAmn->send("pong\n\0");
+
 							$this->botinfo['bot'][$userz] = array(
 								'requestedBy'	=> $from,
 								'owner'		=> $botowner,
@@ -575,6 +581,7 @@ class System_commands extends extension {
 								'bot'		=> true,
 								'lastupdate'	=> time() - (int)substr(date('O'),0,3)*60*60,
 							);
+							$this->dAmn->send("pong\n\0");
 							if(!$this->botinfo['on']) break;
 							if(empty($this->botinfo['bot'][$this->botinfo['params']]['bannedBy'])) {
 								$work = $this->botinfo['bot'][$this->botinfo['params']];
@@ -594,6 +601,7 @@ class System_commands extends extension {
 								$this->dAmn->say($this->botinfo['ns'], $sb);
 							}
 							$this->botinfo['on'] = false;
+							$this->dAmn->send("pong\n\0");
 						}
 					break;
 					case 'NODATA':
@@ -604,6 +612,7 @@ class System_commands extends extension {
 							$this->dAmn->say($this->botinfo['ns'], "Sorry, {$this->botinfo['from']}, there is no information on <b>{$this->botinfo['params']}</b> in the database.");
 							$this->botinfo['on'] = false;
 						}
+						$this->dAmn->send("pong\n\0");
 					break;
 					case 'BADBOT':
 						if($this->dAmn->chat[$ns]['member'][$from]['pc'] != 'PoliceBot') return;
@@ -620,6 +629,8 @@ class System_commands extends extension {
 							$lastupdate = $info[6];
 							$trigger = $info[7];
 
+							$this->dAmn->send("pong\n\0");
+
 							$this->botinfo['bot'][$userz] = array(
 								'bannedBy'	=> $bannedby,
 								'owner'		=> $botowner,
@@ -631,6 +642,7 @@ class System_commands extends extension {
 								'bot'		=> true,
 								'lastupdate'	=> intval($lastupdate),
 							);
+							$this->dAmn->send("pong\n\0");
 							if(!$this->botinfo['on']) break;
 							$work = $this->botinfo['bot'][$this->botinfo['params']];
 							$sb  = '<sub>';
@@ -641,6 +653,7 @@ class System_commands extends extension {
 							$sb .= "</sub><abbr title=\"{$this->botinfo['from']}\"> </abbr>";
 							$this->dAmn->say($this->botinfo['ns'], $sb);
 							$this->botinfo['on'] = false;
+							$this->dAmn->send("pong\n\0");
 						}
 					break;
 				}
