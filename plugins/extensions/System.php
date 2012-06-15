@@ -470,35 +470,6 @@ class System_commands extends extension {
 		} elseif(!array_key_exists($this->botinfo['params'], $this->botinfo['bot'])) {
 			$this->dAmn->npmsg('chat:DataShare', "BDS:BOTCHECK:REQUEST:{$this->botinfo['params']}", TRUE);
 			$this->botinfo['on'] = true;
-		} else {
-			if(empty($this->botinfo['bot'][$this->botinfo['params']]['bannedBy'])) {
-				$work = $this->botinfo['bot'][$this->botinfo['params']];
-				$ass = explode(';', $work['owner']);
-				foreach($ass as $poo => $pooz) {
-					$bullshit[$pooz] = array(true);
-				}
-				$asshole = '[<b>:dev' . implode(array_keys($bullshit), ':</b>], [<b>:dev') . ':</b>]';
-				$sb  = '<sub>';
-				$sb .= "Bot Username: [<b>:dev{$work['actualname']}:</b>]<br>";
-				$sb .= "Bot Owner: {$asshole}<br>";
-				$sb .= "Bot Version: <b>{$work['bottype']} <i>{$work['version']}</i></b><br>";
-				$sb .= "BDS Version: <b>{$work['bdsversion']}</b><br>";
-				$sb .= "Bot Trigger: <b>" . implode('</b><b>', str_split($work["trigger"])) . "</b><br>";
-				$sb .= 'Last update on <i>'.date('n/j/Y g:i:s A', $work['lastupdate'])." UTC</i> by [<b><i>:dev{$work['requestedBy']}:</i></b>]";
-				$sb .= "</sub><abbr title=\"{$from}\"> </abbr>";
-				$this->dAmn->say($ns, $sb);
-				unset($work, $this->botinfo['bot']);
-			}else{
-				$work = $this->botinfo['bot'][$this->botinfo['params']];
-				$sb  = '<sub>';
-				$sb .= "Bot Username: [<b>:dev{$work['actualname']}:</b>]<br>";
-				$sb .= "Bot Owner: [<b>:dev{$work['owner']}:</b>]<br>";
-				$sb .= "Bot Status: <b>{$work['status']}</b><br>";
-				$sb .= 'Last update on <i>'.date('n/j/Y g:i:s A', $work['lastupdate'])." UTC</i> by [<b><i>:dev{$work['bannedBy']}:</i></b>]";
-				$sb .= "</sub><abbr title=\"{$from}\"> </abbr>";
-				$this->dAmn->say($ns, $sb);
-				unset($work, $this->botinfo['bot']);
-			}
 		}
 	}
 	function BDSBotCheck($ns, $sender, $payload) {
@@ -562,14 +533,16 @@ class System_commands extends extension {
 						$user = $info2[3];
 						$userz = strtolower($user);
 						if($this->dAmn->chat[$ns]['member'][$from]['pc'] != 'PoliceBot') return;
+						if(!$this->botinfo['on']) return;
 						elseif(strtolower($from) != strtolower($this->Bot->username)){
 							$bottype = $info[1];
 							$versions = explode('/', $info[2], 2);
 							$botowner = $info[3];
 							$trigger = $info[4];
 
-							$this->dAmn->send("pong\n\0");
+							if(strstr($trigger, '&amp;') || strstr($trigger, '&lt;') || strstr($trigger, '&gt;')) $trigger = trim(htmlspecialchars_decode($trigger, ENT_NOQUOTES));
 
+							$this->dAmn->send("pong\n\0");
 							$this->botinfo['bot'][$userz] = array(
 								'requestedBy'	=> $from,
 								'owner'		=> $botowner,
@@ -582,7 +555,6 @@ class System_commands extends extension {
 								'lastupdate'	=> time() - (int)substr(date('O'),0,3)*60*60,
 							);
 							$this->dAmn->send("pong\n\0");
-							if(!$this->botinfo['on']) break;
 							if(empty($this->botinfo['bot'][$this->botinfo['params']]['bannedBy'])) {
 								$work = $this->botinfo['bot'][$this->botinfo['params']];
 								$ass = explode(';', $work['owner']);
@@ -616,34 +588,27 @@ class System_commands extends extension {
 					break;
 					case 'BADBOT':
 						if($this->dAmn->chat[$ns]['member'][$from]['pc'] != 'PoliceBot') return;
+						if(!$this->botinfo['on']) return;
 						elseif(strtolower($from) != strtolower($this->Bot->username)) {
 							$info = explode(',', $message, 8);
 							$info2 = explode(':', $info[0], 4);
 							$user = $info2[3];
 							$userz = strtolower($user);
-							$bottype = $info[2];
-							$version = $info[3];
 							$status = $info[4];
 							$botowner = $info[1];
 							$bannedby = $info[5];
 							$lastupdate = $info[6];
-							$trigger = $info[7];
 
 							$this->dAmn->send("pong\n\0");
-
 							$this->botinfo['bot'][$userz] = array(
 								'bannedBy'	=> $bannedby,
 								'owner'		=> $botowner,
-								'trigger'	=> $trigger,
-								'bottype'	=> $bottype,
-								'version'	=> $version,
 								'status'	=> $status,
 								'actualname'	=> $user,
 								'bot'		=> true,
 								'lastupdate'	=> intval($lastupdate),
 							);
 							$this->dAmn->send("pong\n\0");
-							if(!$this->botinfo['on']) break;
 							$work = $this->botinfo['bot'][$this->botinfo['params']];
 							$sb  = '<sub>';
 							$sb .= "Bot Username: [<b>:dev{$work['actualname']}:</b>]<br>";
