@@ -488,31 +488,6 @@ class System_commands extends extension {
 		$fromz = strtolower($from);
 		return $this->botinfo['bot'][$fromz]['bot'];
 	}
-	function verify($data, $from) {
-		if(count($data) < 6) return false;
-
-		$this->dAmn->send("pong\n\0");
-
-		$versions = explode('/', $data[3], 2);
-		$strig = trim(htmlentities($data[5]));
-		if(strstr($data[5], '&amp;') || strstr($data[5], '&lt;') || strstr($data[5], '&gt;'))
-			if($data[2] == 'Komodo' && $versions[0] == '2.58' || $data[2] != 'Komodo')
-				$strig = trim(htmlspecialchars_decode($data[5], ENT_NOQUOTES));
-		if($data[2] == 'Komodo' && $versions[0] >= '2.58' && strstr($data[5], ' '))
-			$strig = trim(str_replace(' ', '', $strig));
-		if($strig == trim(htmlentities($data[5])))
-			$strig = trim($data[5]);
-
-		$this->dAmn->send("pong\n\0");
-
-		// Now, we have to recreate the hash
-		$sig = md5(strtolower($strig.$data[0].$from));
-
-		if($sig !== $data[4]) return false;
-
-		// Hash check passed.
-		return true;
-	}
 	function bdsmain($ns, $from, $message) {
 		if($ns == 'chat:DataShare' && substr($message, 0, 4) == 'BDS:') {
 			$command = explode(':', $message, 4);
