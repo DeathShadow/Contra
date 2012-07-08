@@ -165,7 +165,7 @@ class dAmnPHP {
 						// Set to oauth_tokens variable
 						$this->oauth_tokens = json_decode($tokens);
 						if($this->oauth_tokens->status != "success") {
-							if($mode == 0) echo $this->error("For some reason, your refresh tokens failed") . LBR . HR;
+							if($mode == 0) echo $this->error("For some reason, your refresh tokens failed") . LBR;
 						} else {
 							// Writing to oauth.json
 							$config_file = "oauth.json";
@@ -173,7 +173,7 @@ class dAmnPHP {
 							$fh = fopen($config_file, 'w') or die("can't open file");
 							fwrite($fh, $tokens);
 							fclose($fh);
-							if($mode == 0) echo "Tokens grabbed with refreshtoken!" . LBR . HR;
+							if($mode == 0) echo "Tokens grabbed with refreshtoken!" . LBR;
 						}
 					} else {
 						if($mode == 0) echo "Checking if tokens have expired..." . LBR;
@@ -182,7 +182,7 @@ class dAmnPHP {
 							if($mode == 0) echo "Tokens expired, grabbing new ones..." . LBR;
 							$this->oauth(0, true);
 						} else {
-							if($mode == 0) echo "Tokens grabbed!" . LBR . HR;
+							if($mode == 0) echo "Tokens grabbed!" . LBR;
 							fclose($fh);
 						}
 					}
@@ -190,7 +190,6 @@ class dAmnPHP {
 					if($mode == 0) echo $this->error("Your token file is empty, grabbing new ones...") . LBR;
 					unlink($config_file);
 					$this->oauth(0);
-
 				}
 			} else {
 				if($mode == 0) echo "Grabbing the oAuth Tokens from deviantART..." . LBR; // Turn off if silent
@@ -222,8 +221,7 @@ class dAmnPHP {
 				// Set to oauth_tokens variable
 				$this->oauth_tokens = json_decode($tokens);
 				if($this->oauth_tokens->status != "success") {
-
-					if($mode == 0) echo $this->error("For some reason, your tokens failed") . LBR . HR;
+					if($mode == 0) echo $this->error("For some reason, your tokens failed") . LBR;
 				} else {
 					// Writing to oauth.json
 					$config_file = "oauth.json";
@@ -231,7 +229,7 @@ class dAmnPHP {
 					$fh = fopen($config_file, 'w') or die("can't open file");
 					fwrite($fh, $tokens);
 					fclose($fh);
-					if($mode == 0) echo "Tokens grabbed!" . LBR . HR;
+					if($mode == 0) echo "Tokens grabbed!" . LBR;
 				}
 			}
 		}
@@ -367,7 +365,6 @@ class dAmnPHP {
 	*               understanding the packets, just imagine that the
 	*               "LBR"s are actually "\n"s, because they are...
 	*/
-
 	function join($channel) { $this->send('join '.$channel.LBR); }
 	function part($channel) {
 		if(strtolower($channel) == 'chat:datashare') return;
