@@ -26,13 +26,11 @@ class Bot {
 		'bdsversion' => '0.3',
 	);
 	public $username;
-	protected $_password;
 	public $owner;
 	public $trigger;
 	public $aboutStr;
 	public $autojoin;
         public $session;
-	public $cookie;
 	public $damntoken;
 	public $usingStored = false;
 	public $Console;
@@ -125,33 +123,24 @@ class Bot {
 
 	function load_config() {
 		$config = include './storage/config.cf';
-		if(!isset($config['auth'])) $config['auth'] = 'cookie';
-		$this->auth = $config['auth'];
 		$this->username = $config['info']['username'];
-		$this->_password = $config['info']['password'];
 		$this->owner = $config['info']['owner'];
 		$this->trigger = $config['info']['trigger'];
 		$this->aboutStr = $config['about'];
 		$this->autojoin = $config['autojoin'];
-		if($config['auth'] == 'cookie')
-			$this->cookie = empty($config['cookie']) ? '' : unserialize($config['cookie']);
-		elseif($config['auth'] == 'oauth')
-			$this->damntoken = empty($config['damntoken']) ? '' : unserialize($config['damntoken']);
+		$this->damntoken = empty($config['damntoken']) ? '' : unserialize($config['damntoken']);
 		$this->updatenotes = empty($config['updatenotes']) ? true : $config['updatenotes'];
 	}
 
 	function save_config() {
 		$config = array(
-			'auth' => $this->auth,
 			'info' => array(
 				'username' => $this->username,
-				'password' => $this->_password,
 				'trigger' => $this->trigger,
 				'owner' => $this->owner,
 			),
 			'about' => $this->aboutStr,
 			'autojoin' => $this->autojoin,
-			'cookie' => empty($this->cookie) ? '' : serialize($this->cookie),
 			'damntoken' => empty($this->damntoken) ? '' : serialize($this->damntoken),
 			'updatenotes' => $this->updatenotes,
 		);
@@ -159,29 +148,18 @@ class Bot {
 	}
 
 	function network($sec = false) {
-		if(empty($this->username) || empty($this->_password)) $this->load_config();
+		if(empty($this->username)) $this->load_config();
 		$this->Console->Notice(($sec === false ? 'Starting' : 'Restarting').' dAmn.');
-		if(!$this->cookie && $this->auth == 'cookie') {
-			$this->Console->Notice('Retrieving cookie. This may take a while...');
-                        $this->session = $this->dAmn->getCookie($this->username, $this->_password);
-		} elseif($this->cookie && $this->auth == 'cookie') {
-			$this->Console->Notice('Using stored cookie first...');
-			$this->usingStored = true;
-			$this->session = array('status' => 1, 'cookie' => $this->cookie);
-		}
-		if(!$this->damntoken && $this->auth == 'oauth') {
+		if(!$this->damntoken) {
 			$this->Console->Notice('Retrieving dAmn Token. This may take a while...');
 			$this->dAmn->oauth(1);
 			$this->session = $this->dAmn->damntoken();
-		}elseif($this->damntoken && $this->auth == 'oauth') {
+		}elseif($this->damntoken) {
 			$this->Console->Notice('Using stored damntoken first...');
 			$this->usingStored = true;
 			$this->session = array('status' => 1, 'damntoken' => $this->damntoken);
 		}
-		if($this->auth == 'cookie')
-			$this->Events->trigger('cookie', $this->session);
-		elseif($this->auth == 'oauth')
-			$this->Events->trigger('damntoken', $this->session);
+		$this->Events->trigger('damntoken', $this->session);
 	}
 
 	function run() {
