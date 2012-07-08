@@ -192,13 +192,19 @@ class dAmnPHP {
 				switch($this->os) {
 					case "Darwin": // Mac OSX uses open command
 						exec("open 'https://www.deviantart.com/oauth2/draft15/authorize?client_id=".$this->client_id."&redirect_uri=http://damnapp.com/apicode.php&response_type=code'");
+		 				echo "Open your browser to the required URL. Please load the link below!" . LBR;
+		 				echo 'https://www.deviantart.com/oauth2/draft15/authorize?client_id='.$this->client_id.'&redirect_uri=http://damnapp.com/apicode.php&response_type=code' . LBR;
 						break;
 					case "WINNT": // Windows uses start command
 						exec('start "" "https://www.deviantart.com/oauth2/draft15/authorize?client_id=".$this->client_id."&redirect_uri=http://damnapp.com/apicode.php&response_type=code"');
+		 				echo "Open your browser to the required URL. Please load the link below!" . LBR;
+		 				echo 'https://www.deviantart.com/oauth2/draft15/authorize?client_id='.$this->client_id.'&redirect_uri=http://damnapp.com/apicode.php&response_type=code' . LBR;
 						break;
-					/*case "Linux": // Linux uses browser
+					case "Linux": // Linux uses browser
 						exec("xdg-open 'https://www.deviantart.com/oauth2/draft15/authorize?client_id=".$this->client_id."&redirect_uri=http://damnapp.com/apicode.php&response_type=code'");
-						break;*/
+		 				echo "Open your browser to the required URL. Please load the link below!" . LBR;
+		 				echo 'https://www.deviantart.com/oauth2/draft15/authorize?client_id='.$this->client_id.'&redirect_uri=http://damnapp.com/apicode.php&response_type=code' . LBR;
+						break;
 		 			default: // No browser command found so echo it out
 		 				echo "Could not open your browser to the required URL. Please load the link below!" . LBR;
 		 				echo 'https://www.deviantart.com/oauth2/draft15/authorize?client_id='.$this->client_id.'&redirect_uri=http://damnapp.com/apicode.php&response_type=code' . LBR;
