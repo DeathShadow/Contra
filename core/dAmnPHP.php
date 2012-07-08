@@ -77,12 +77,6 @@ class dAmnPHP {
 			'version' => '0.3',
 			'port' => 3900,
 		),
-		'login' => array(
-			'transport' => 'ssl://',
-			'host' => 'www.deviantart.com',
-			'file' => '/users/login',
-			'port' => 443,
-		),
 	);
 	public $Client = 'dAmnPHP';
 	public $Agent = 'dAmnPHP/5';
