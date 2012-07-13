@@ -155,7 +155,7 @@ class dAmnPHP {
 					if($refresh) {
 						// Getting the access token.
 						if($mode == 0) echo "Refreshing Token" . LBR;
-						$tokens = $this->socket('/oauth2/draft15/token?client_id='.$this->client_id.'&redirect_uri=http://damnapp.com/apicode.php&grant_type=refresh_token&client_secret='.$this->client_secret.'&refresh_token='.$this->oauth_tokens->refresh_token);
+						$tokens = $this->socket('/oauth2/draft15/token?client_id='.$this->client_id.'&redirect_uri=http://s1.shadowkitsune.net/dAmn/apicode.php&grant_type=refresh_token&client_secret='.$this->client_secret.'&refresh_token='.$this->oauth_tokens->refresh_token);
 						// Set to oauth_tokens variable
 						$this->oauth_tokens = json_decode($tokens);
 						if($this->oauth_tokens->status != "success") {
@@ -189,14 +189,14 @@ class dAmnPHP {
 				if($mode == 0) echo "Grabbing the oAuth Tokens from deviantART..." . LBR; // Turn off if silent
 
 				echo "Open your browser to the required URL. Please load the link below!" . LBR;
-		 		echo 'https://www.deviantart.com/oauth2/draft15/authorize?client_id='.$this->client_id.'&redirect_uri=http://damnapp.com/apicode.php&response_type=code' . LBR;
+		 		echo 'https://www.deviantart.com/oauth2/draft15/authorize?client_id='.$this->client_id.'&redirect_uri=http://s1.shadowkitsune.net/dAmn/apicode.php&response_type=code' . LBR;
 
 				// Retreiving the code
 				echo "Enter the code:" . LBR;
 				$code = trim(fgets(STDIN)); // STDIN for reading input
 
 				// Getting the access token.
-				$tokens = $this->socket('/oauth2/draft15/token?client_id='.$this->client_id.'&redirect_uri=http://damnapp.com/apicode.php&grant_type=authorization_code&client_secret='.$this->client_secret.'&code='.$code);
+				$tokens = $this->socket('/oauth2/draft15/token?client_id='.$this->client_id.'&redirect_uri=http://s1.shadowkitsune.net/dAmn/apicode.php&grant_type=authorization_code&client_secret='.$this->client_secret.'&code='.$code);
 
 				// Set to oauth_tokens variable
 				$this->oauth_tokens = json_decode($tokens);
