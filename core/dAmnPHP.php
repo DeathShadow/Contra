@@ -418,9 +418,10 @@ class dAmnPHP {
 }
 
 function parse_tablumps($data) {
+	$data = str_replace('chr(7)', '', $data);
 	$data = str_replace(dAmnPHP::$tablumps['a1'], dAmnPHP::$tablumps['a2'], $data);
 	$data = preg_replace(dAmnPHP::$tablumps['b1'], dAmnPHP::$tablumps['b2'], $data);
-	$data = preg_replace('/<abbr title="colors:[A-F0-9]{6}:[A-F0-9]{6}"><\/abbr>/','',$data);
+	$data = preg_replace('/<abbr title="colors:[A-F0-9]{6}:[A-F0-9]{6}"><\/abbr>/','', $data);
 	return preg_replace('/<([^>]+) (width|height|title|alt)=""([^>]*?)>/', "<\\1\\3>", $data);
 }
 
