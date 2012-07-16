@@ -112,8 +112,12 @@ class System_commands extends extension {
 				break;
 			case 'uptime':
 				$about = '<abbr title="'.$from.'"></abbr>Bot Uptime: '.time_length(time()-$this->Bot->start);
-				if(PHP_OS == 'Linux')
-					$about.= '<br />Server Uptime: '.`uptime`;
+				if(PHP_OS == 'Linux') {
+					$uptime = `cat /proc/uptime | awk '{print $1}'`;
+					$uptime = preg_replace('/\.[0-9][0-9]/', '', $uptime);
+					preg_match('/load average: [0-9].*/', `uptime`, $uptime2);
+					$about.= '<br />Server Uptime: '.time_length($uptime).', '.$uptime2[0];
+				}
 				elseif((PHP_OS == 'WIN32' || PHP_OS == 'WINNT' || PHP_OS == 'Windows') && system('uptime') != false) {
 					$uptime = system('uptime');
 					$uptime = explode(': ', $uptime);
