@@ -753,7 +753,7 @@ class System_commands extends extension {
 			}elseif($this->botversion['latest'] == false && empty($confim))
 				$this->dAmn->say($ns, "{$from}: <b>Updating Contra</b>:<br />Are you sure? using {$this->Bot->trigger}update will overwrite your bot's files.<br /><sub>Type <code>{$this->Bot->trigger}update yes</code> to confirm update.</sub>");
 			elseif($this->botversion['latest'] == true)
-				$this->dAmn->say($ns, "{$from}: Your Contra version is already the latest.");
+				$this->dAmn->say($ns, "{$from}: Your Contra version is already up-to-date.");
 		}
 	}
 
