@@ -128,6 +128,8 @@ class Bot {
 		$this->trigger = $config['info']['trigger'];
 		$this->aboutStr = $config['about'];
 		$this->autojoin = $config['autojoin'];
+		if(isset($config['cookie']))
+			$this->damntoken = unserialize($config['cookie']);
 		$this->damntoken = empty($config['damntoken']) ? '' : unserialize($config['damntoken']);
 		$this->updatenotes = empty($config['updatenotes']) ? true : $config['updatenotes'];
 	}
