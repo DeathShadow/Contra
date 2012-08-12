@@ -44,10 +44,18 @@ class Event_System {
 		$p8 = false,
 		$p9 = false) {
 		// There currently aren't any events which have this many args, but 10 spaces are available just in case.
-		if(array_key_exists($event, $this->events['evt']))
-			foreach($this->events['evt'][$event] as $id => $data)
-				if($this->core->mod[$data['m']]->status == true)
-					$this->core->mod[$data['m']]->$data['f']($p0, $p1, $p2, $p3, $p4, $p5, $p6, $p7, $p8, $p9);
+		if(array_key_exists($event, $this->events['evt'])) {
+			foreach($this->events['evt'][$event] as $id => $data) {
+				if($this->core->mod[$data['m']]->status == true){
+					if (is_callable($data['f'])) {
+						// it's a callback function
+						$data['f']($p0, $p1, $p2, $p3, $p4, $p5, $p6, $p7, $p8, $p9);
+					} else {
+						$this->core->mod[$data['m']]->$data['f']($p0, $p1, $p2, $p3, $p4, $p5, $p6, $p7, $p8, $p9);
+					}
+				}
+			}
+		}
 	}
 	
 	public function trigger_mod($mod, $event,
@@ -63,9 +71,16 @@ class Event_System {
 		$p9 = false) {
 	
 		if(!array_key_exists($event, $this->events['evt'])) return false;
-		foreach($this->events['evt'][$event] as $id => $data)
-			if($data['m'] == $mod && $this->core->mod[$data['m']]->status == true)
-				$this->core->mod[$data['m']]->$data['f']($p0, $p1, $p2, $p3, $p4, $p5, $p6, $p7, $p8, $p9);
+		foreach($this->events['evt'][$event] as $id => $data) {
+			if($data['m'] == $mod && $this->core->mod[$data['m']]->status == true) {
+				if (is_callable($data['f'])) {
+					// it's a callback function
+					$data['f']($p0, $p1, $p2, $p3, $p4, $p5, $p6, $p7, $p8, $p9);
+				} else {
+					$this->core->mod[$data['m']]->$data['f']($p0, $p1, $p2, $p3, $p4, $p5, $p6, $p7, $p8, $p9);
+				}
+			}
+		}
 		return true;
 	}
 	

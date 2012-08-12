@@ -62,10 +62,13 @@ class extension {
 
 	function init() {}
 	final function hook($meth, $event) {
-		if(!method_exists($this, $meth)) return;
-		$hook = $this->Bot->Events->hook($this->name, $meth, $event);
-		if(isset($this->loading)) $this->evts[$event][] = $meth;
-		return $hook;
+		if(is_callable($meth) || method_exists($this, $meth)) {
+			$hook = $this->Bot->Events->hook($this->name, $meth, $event);
+			if(isset($this->loading)) $this->evts[$event][] = $meth;
+			return $hook;
+		} else {
+			return;
+		}
 	}
 
 	final function unhook($meth, $event) { return $this->Bot->Events->unhook($this->name, $meth, $event); }
