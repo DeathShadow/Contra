@@ -81,10 +81,12 @@ class System_commands extends extension {
 		);
 
 		$this->hook('e_trigcheck', 'recv_msg');
-		$this->hook('codsmain', 'recv_msg');
 		$this->hook('load_switches', 'startup');
 
 		$this->hookBDS('e_botcheck', 'BDS:BOTCHECK:(DIRECT|ALL|NODATA)');
+		$this->hookBDS('e_botcheck', 'CODS:BOTCHECK:ALL');
+
+		$this->hookBDS('e_codsnotify', 'CODS:VERSION:NOTIFY');
 
 		$this->loadnotes();
 
@@ -529,7 +531,7 @@ class System_commands extends extension {
 		if ($parts[2] === 'DIRECT') {
 			if (!strstr(strtolower($parts[3]), strtolower($this->Bot->username))) return;
 		} else if ($parts[2] === 'ALL') {
-			if ($this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] !== 'PoliceBot') return;
+			if ($parts[0] !== 'CODS' && $this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] !== 'PoliceBot') return;
 		} else if ($parts[2] === 'NODATA') {
 			if (strtolower($parts[3]) !== strtolower($this->Bot->username)) return;
 		}
@@ -686,71 +688,67 @@ class System_commands extends extension {
 		$this->Bot->Events->command($what, $ns, $who, $msg);
 	}
 
-	function c_update($ns, $from, $message) {
-		if(strtolower($from) == strtolower($this->Bot->owner)) {
-			$confirm = args($message, 1);
-			if($this->botversion['latest'] == false && $confirm == 'yes') {
-				$this->dAmn->npmsg('chat:DataShare', "CODS:VERSION:UPDATEME:{$this->Bot->username},{$this->Bot->info['version']}", TRUE);
-				$this->dAmn->say($ns, "{$from}: Now updating. Bot will be shutdown after update is complete.");
-			}elseif($this->botversion['latest'] == false && empty($confim))
-				$this->dAmn->say($ns, "{$from}: <b>Updating Contra</b>:<br />Are you sure? using {$this->Bot->trigger}update will overwrite your bot's files.<br /><sub>Type <code>{$this->Bot->trigger}update yes</code> to confirm update.</sub>");
-			elseif($this->botversion['latest'] == true)
-				$this->dAmn->say($ns, "{$from}: Your Contra version is already up-to-date.");
-		}
+	function c_update($ns, $requestor, $message) {
+		if (strtolower($from) !== strtolower($this->Bot->owner)) return;
+
+		if ($this->botversion['latest'] === true)
+			$this->dAmn->say($ns, "{$requestor}: Your Contra version is already up-to-date.");
+
+		if (strtolower(args($message, 1)) !== 'yes')
+			$this->dAmn->say($ns, "{$requestor}: <b>Updating Contra</b>:<br /><i>Are you sure?</i> Using {$this->Bot->trigger}update will overwrite your bot's files.<br /><sub>Type <code>{$this->Bot->trigger}update yes</code> to confirm update.</sub>");
+
+		// Everything seems to be in order, let's update!~
+		$this->dAmn->say($ns, "{$requestor}: Now updating. Bot will be shutdown after update is complete.");
+		$this->dAmn->npmsg('chat:DataShare', "CODS:VERSION:UPDATEME:{$this->Bot->username},{$this->Bot->info['version']}", true);
+
+		$dAmn = $this->dAmn;
+
+		$this->hookOnceBDS(function ($parts, $from, $message) use ($ns, $requestor, $dAmn) {
+			// CODS:VERSION:UPDATE:RoleyMoley,5.5.1,http://download.botdom.com/uk0g6/Contra_5.5.1_public_auto.zip
+
+			$payload = explode(',', $message, 5);
+			$version = $payload[1];
+			$downloadlink = $payload[2];
+
+			if (strtolower($payload[0]) !== strtolower($this->Bot->username)) return;
+			if (empty($version) || empty($downloadlink)) return;
+			if ($version <= $this->Bot->info['version']) return;
+			if ($from !== 'Botdom') return;
+
+			$download = file_get_contents($downloadlink);
+			$filename = explode('/', $downloadlink)[4];
+
+			$file = fopen($filename, 'w+');
+			fwrite($file, $download);
+			fclose($moo);
+
+			$zip = new ZipArchive;
+			if($zip->open($filename) === TRUE) {
+				$zip->extractTo('./');
+				$zip->close();
+			}
+
+			unlink($filename);
+
+			$this->Bot->shutdownStr[0] = 'Bot has been updated.';
+			$this->dAmn->close = true;
+			$this->dAmn->disconnect();
+		}, 'CODS:VERSION:UPDATE');
 	}
 
-	function codsmain($ns, $from, $message) {
-		if($ns == 'chat:DataShare' && substr($message, 0, 5) == 'CODS:') {
-			$command = explode(':', $message, 5);
-			switch($command[1]) {
-				case 'BOTCHECK':
-				switch($command[2]) {
-					case 'ALL':
-					$this->dAmn->npmsg('chat:datashare', 'CODS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', htmlspecialchars_decode($this->Bot->trigger, ENT_NOQUOTES)).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
-					break;
-				}
-				case 'VERSION':
-				switch($command[2]) {
-					case 'NOTIFY':
-					$command2 = explode(',', $message, 5);
-					$version = $command2[1];
-					$released = $command2[2];
-					if(empty($version) || empty($released)) return;
-					if(stristr($command2[0], $this->Bot->username) || strstr($command2[0], 'ALL')) {
-						if($version > $this->Bot->info['version'] && $from == 'Botdom') {
-							$this->botversion['latest'] = false;
-							if(!isset($this->Bot->updatenotes) || $this->Bot->updatenotes == true)
-								$this->sendnote($this->Bot->owner, 'Update Service', "A new version of Contra is available. (version: {$version}; released on {$released}) You can download it from http://botdom.com/wiki/Contra#Latest or type <code>{$this->Bot->trigger}update</code> to update your bot.<br /><br />(<b>NOTE: using <code>{$this->Bot->trigger}update</code> will overwrite all your changes to your bot.</b>)<br /><br /><sub>To disable this update note in the future, set 'updatenotes' in config.cf to false.</sub>");
-							$this->Console->Alert("Contra {$version} has been released on {$released}. Get it at http://botdom.com/wiki/Contra#Latest");
-						}
-					}
-					break;
-					case 'UPDATE':
-					$command2 = explode(',', $message, 5);
-					$version = $command2[1];
-					$downloadlink = $command2[2];
-					if(stristr($command[3], $this->Bot->username)) {
-						if(empty($version) || empty($downloadlink)) return;
-						if($version > $this->Bot->info['version'] && $from == 'Botdom') {
-							$file = file_get_contents($downloadlink);
-							$link = explode('/', $downloadlink);
-							$moo = fopen($link[4], 'w+');
-							$moo2 = fwrite($moo, $file);
-							fclose($moo);
-							$zip = new ZipArchive;
-							if($zip->open($link[4]) === TRUE) {
-								$zip->extractTo('./');
-								$zip->close();
-							}
-							unlink($link[4]);
-							$this->Bot->shutdownStr[0] = 'Bot has been updated.';
-							$this->dAmn->close=true;
-							$this->dAmn->disconnect();
-						}
-					}
-					break;
-				}
-				break;
+	function e_codsnotify($parts, $from, $message) {
+		$payload = explode(',', $message, 5);
+		$version = $payload[1];
+		$released = $payload[2];
+
+		if(empty($version) || empty($released)) return;
+
+		if(stristr($payload[0], $this->Bot->username) || strstr($payload[0], 'ALL')) {
+			if($version > $this->Bot->info['version'] && $from == 'Botdom') {
+				$this->botversion['latest'] = false;
+				if(!isset($this->Bot->updatenotes) || $this->Bot->updatenotes == true)
+					$this->sendnote($this->Bot->owner, 'Update Service', "A new version of Contra is available. (version: {$version}; released on {$released}) You can download it from http://botdom.com/wiki/Contra#Latest or type <code>{$this->Bot->trigger}update</code> to update your bot.<br /><br />(<b>NOTE: using <code>{$this->Bot->trigger}update</code> will overwrite all your changes to your bot.</b>)<br /><br /><sub>To disable this update note in the future, set 'updatenotes' in config.cf to false.</sub>");
+				$this->Console->Alert("Contra {$version} has been released on {$released}. Get it at http://botdom.com/wiki/Contra#Latest");
 			}
 		}
 	}
