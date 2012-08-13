@@ -347,9 +347,16 @@ class System_commands extends extension {
 						$evts = '';
 						foreach($this->Bot->Events->events['evt'] as $evt => $evta) {
 							$tagging = '<abbr title="%meths%">'.$evt.'</abbr>, '; $captcha = '';
-							foreach($evta as $id => $data)
-								if($data['m'] == $exi->name) $captcha.= $data['f'].'; ';
-							$evts.= empty($captcha) ? '' : str_replace('%meths%', rtrim($captcha, '; '), $tagging);
+							foreach($evta as $id => $data) {
+								if($data['m'] == $exi->name) {
+									if (is_callable($data['f'])) {
+										$captcha .= 'anonymous function; ';
+									} else {
+										$captcha .= $data['f'].'; ';
+									}
+								}
+							}
+							$evts .= empty($captcha) ? '' : str_replace('%meths%', rtrim($captcha, '; '), $tagging);
 						}
 						if(!empty($evts)) $evts = '<br/><b>Active events:</b><br/><sub>- '.rtrim($evts,', ').'</sub>';
 						$say = $head.$cmds.$evts;
@@ -716,7 +723,8 @@ class System_commands extends extension {
 			if ($from !== 'Botdom') return;
 
 			$download = file_get_contents($downloadlink);
-			$filename = explode('/', $downloadlink)[4];
+			$splodey = explode('/', $downloadlink);
+			$filename = $splodey[4];
 
 			$file = fopen($filename, 'w+');
 			fwrite($file, $download);
