@@ -723,7 +723,8 @@ class System_commands extends extension {
 			if ($from !== 'Botdom') return;
 
 			$download = file_get_contents($downloadlink);
-			$filename = explode('/', $downloadlink)[4];
+			$splodey = explode('/', $downloadlink);
+			$filename = $splodey[4];
 
 			$file = fopen($filename, 'w+');
 			fwrite($file, $download);
