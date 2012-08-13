@@ -18,7 +18,8 @@ class Event_System {
 	protected $core;
 	protected $events = array(
 		'evt' => array(),
-		'cmd' => array()
+		'cmd' => array(),
+		'BDS' => array()
 	);
 	
 	public function __get($var) { return $this->$var; }
@@ -84,6 +85,26 @@ class Event_System {
 		return true;
 	}
 	
+	public function triggerBDS($message, $from) {
+		foreach ($this->events['BDS'] as $regex => $arr) {
+			echo $regex . "\r\n" . $message . "\r\n";
+			if (preg_match($regex, $message) === 1) {
+				echo "success\r\n";
+				foreach ($arr as $i => $data) {
+					if ($this->core->mod[$data['m']]->status == true) {
+						$parts = explode(':', $message, 4);
+						if (is_callable($data['f'])) {
+							// it's a callback function
+							$data['f']($parts, $from, $message);
+						} else {
+							$this->core->mod[$data['m']]->$data['f']($parts, $from, $message);
+						}
+					}
+				}
+			}
+		}
+	}
+
 	public function command($command, $ns, $from, $message) {
 		/*
 		*		This is where the magic happens!
@@ -142,6 +163,37 @@ class Event_System {
 		return true;
 	}
 	
+	private function regexify ($path) {
+		$parts = explode(':', $path, 4);
+		$count = count($parts);
+		if ($count < 4)
+			for ($i = 4 - $count; $i > 0; $i--)
+				$path .= ':*';
+
+		$path = str_replace('*', '.*', $path);
+		$path = '/' . $path . '/';
+		return $path;
+	}
+
+	public function hookBDS ($mod, $meth, $path) {
+		$regex = $this->regexify($path);
+		if(!array_key_exists($regex, $this->events['BDS'])) $this->events['BDS'][$regex] = array();
+		$this->events['BDS'][$regex][] = array(
+			'm' => $mod,
+			'f' => $meth,
+		);
+		return true;
+	}
+
+	public function unhookBDS ($mod, $meth, $path) {
+		$regex = $this->regexify($path);
+		$hook = $this->is_hookedBDS($mod, $meth, $regex);
+		if($hook === false) return true;
+		array_splice($this->events['BDS'][$regex], $hook, 1);
+		if(empty($this->events['BDS'][$regex])) unset($this->events['BDS'][$regex]);
+		return true;
+	}
+
 	public function add_command($mod, $cmd, $meth, $p = 25, $s = true) {
 		if(array_key_exists(strtolower($cmd), $this->events['cmd'])) return 'command in use';
 		$this->events['cmd'][strtolower($cmd)] = array(

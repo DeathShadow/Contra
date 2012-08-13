@@ -37,6 +37,7 @@ class extension {
 	public $version = Null;
 	public $loading = Null;
 	public $evts = array();
+	public $bds = array();
 	public $cmds = array();
 
 	final function __construct($Bot) {
@@ -72,6 +73,19 @@ class extension {
 	}
 
 	final function unhook($meth, $event) { return $this->Bot->Events->unhook($this->name, $meth, $event); }
+
+	final function hookBDS($meth, $path) {
+		if(is_callable($meth) || method_exists($this, $meth)) {
+			$hook = $this->Bot->Events->hookBDS($this->name, $meth, $path);
+			if(isset($this->loading)) $this->bds[$path][] = $meth;
+			return $hook;
+		} else {
+			return;
+		}
+	}
+	
+	final function unhookBDS($meth, $path) { return $this->Bot->Events->unhookBDS($this->name, $meth, $path); }
+
 	final function addCmd($cmd, $meth, $p = 25, $s = true) {
 		if(is_array($cmd)) {
 			foreach($cmd as $id => $scmd) { $this->addCmd($scmd, $meth, $p, $s); }
