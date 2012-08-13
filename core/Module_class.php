@@ -72,6 +72,14 @@ class extension {
 		}
 	}
 
+	final function hookOnce($meth, $event) {
+		if(is_callable($meth) || method_exists($this, $meth)) {
+			return $this->Bot->Events->hookOnce($this->name, $meth, $event);
+		} else {
+			return;
+		}
+	}
+
 	final function unhook($meth, $event) { return $this->Bot->Events->unhook($this->name, $meth, $event); }
 
 	final function hookBDS($meth, $path) {
@@ -84,6 +92,14 @@ class extension {
 		}
 	}
 	
+	final function hookOnceBDS($meth, $path) {
+		if(is_callable($meth) || method_exists($this, $meth)) {
+			return $this->Bot->Events->hookOnce($this->name, $meth, $path);
+		} else {
+			return;
+		}
+	}
+
 	final function unhookBDS($meth, $path) { return $this->Bot->Events->unhookBDS($this->name, $meth, $path); }
 
 	final function addCmd($cmd, $meth, $p = 25, $s = true) {
