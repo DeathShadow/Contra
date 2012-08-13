@@ -94,7 +94,7 @@ class extension {
 	
 	final function hookOnceBDS($meth, $path) {
 		if(is_callable($meth) || method_exists($this, $meth)) {
-			return $this->Bot->Events->hookOnce($this->name, $meth, $path);
+			return $this->Bot->Events->hookOnceBDS($this->name, $meth, $path);
 		} else {
 			return;
 		}

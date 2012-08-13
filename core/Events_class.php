@@ -153,9 +153,6 @@ class Event_System {
 	}
 
 	public function hookOnce($mod, $meth, $event) {
-		if(!array_key_exists($event, $this->events['evt'])) $this->events['evt'][$event] = array();
-		if($this->is_hooked($mod, $meth, $event) !== false) return true;
-
 		$that = $this;
 
 		$cb = function($p0, $p1, $p2, $p3, $p4, $p5, $p6, $p7, $p8, $p9) use (&$cb, $mod, $meth, $event, $that) {
@@ -214,20 +211,15 @@ class Event_System {
 	}
 	
 	public function hookOnceBDS($mod, $meth, $path) {
-		if(!array_key_exists($event, $this->events['evt'])) $this->events['evt'][$event] = array();
-		if($this->is_hookedBDS($mod, $meth, $path) !== false) return true;
-
-		$regex = $this->regexify($path);
-
 		$that = $this;
 
-		$cb = function($p0, $p1, $p2, $p3, $p4, $p5, $p6, $p7, $p8, $p9) use (&$cb, $mod, $meth, $event, $that) {
+		$cb = function($parts, $from, $message) use (&$cb, $mod, $meth, $path, $that) {
 			if($that->core->mod[$mod]->status == true){
 				if (is_callable($meth)) {
 					// it's a callback function
-					$meth($p0, $p1, $p2, $p3, $p4, $p5, $p6, $p7, $p8, $p9);
+					$meth($parts, $from, $message);
 				} else {
-					$that->core->mod[$mod]->$meth($p0, $p1, $p2, $p3, $p4, $p5, $p6, $p7, $p8, $p9);
+					$that->core->mod[$mod]->$meth($parts, $from, $message);
 				}
 			}
 			$that->unhook($mod, $cb, $path);
