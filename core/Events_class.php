@@ -172,7 +172,16 @@ class Event_System {
 		$path = '/' . $path . '/';
 		return $path;
 	}
-
+	
+	public function is_hookedBDS($mod, $meth, $path) {
+		// This returns the event hook number on success, False on failure. Use === when comparing.
+		$regex = $this->regexify($path);
+		if(!array_key_exists($regex, $this->events['evt'])) return false;
+		foreach($this->events['evt'][$regex] as $id => $info)
+			if($info['m'] == $mod && $info['f'] == $meth) return $id;
+		return false;
+	}
+	
 	public function hookBDS ($mod, $meth, $path) {
 		$regex = $this->regexify($path);
 		if(!array_key_exists($regex, $this->events['BDS'])) $this->events['BDS'][$regex] = array();
