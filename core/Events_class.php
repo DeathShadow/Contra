@@ -87,9 +87,7 @@ class Event_System {
 	
 	public function triggerBDS($message, $from) {
 		foreach ($this->events['BDS'] as $regex => $arr) {
-			echo $regex . "\r\n" . $message . "\r\n";
 			if (preg_match($regex, $message) === 1) {
-				echo "success\r\n";
 				foreach ($arr as $i => $data) {
 					if ($this->core->mod[$data['m']]->status == true) {
 						$parts = explode(':', $message, 4);

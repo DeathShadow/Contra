@@ -141,7 +141,6 @@ class dAmn_lib extends extension {
 
 	function e_check_bds($ns, $from, $msg) {
 		if(strtolower($ns) == 'chat:datashare') {
-			echo '[BDS]' . $from . '> ' . $msg . "\r\n";
 			$this->Bot->Events->triggerBDS($msg, $from);
 		}
 	}
