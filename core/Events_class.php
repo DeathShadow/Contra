@@ -182,8 +182,8 @@ class Event_System {
 	private function regexify ($path) {
 		$parts = explode(':', $path, 4);
 		$count = count($parts);
-		if ($count < 4)
-			for ($i = 4 - $count; $i > 0; $i--)
+		if ($count < 3)
+			for ($i = 3 - $count; $i > 0; $i--)
 				$path .= ':*';
 
 		$path = str_replace('*', '.*', $path);
