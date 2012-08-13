@@ -29,6 +29,7 @@ class dAmn_lib extends extension {
 		$this->hook('e_connected', 'connected');
 		$this->hook('e_ping', 'ping');
 		$this->hook('e_check_msg', 'recv_msg');
+		$this->hook('e_check_bds', 'recv_msg');
 		$this->hook('e_join', 'join');
 		$this->hook('e_join2', 'login');
 		$this->hook('e_recv_join', 'recv_join');
@@ -135,6 +136,12 @@ class dAmn_lib extends extension {
 		if(substr($msg, 0, strlen($trig)) == $trig) {
 			$msg = substr($msg, strlen($trig));
 			$this->Bot->Events->command(args($msg,0),$ns,$from,htmlspecialchars_decode($msg));
+		}
+	}
+
+	function e_check_bds($ns, $from, $msg) {
+		if(strtolower($ns) == 'chat:datashare') {
+			$this->Bot->Events->triggerBDS($msg, $from);
 		}
 	}
 
