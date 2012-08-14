@@ -712,13 +712,14 @@ class System_commands extends extension {
 			// CODS:VERSION:UPDATE:RoleyMoley,5.5.1,http://download.botdom.com/uk0g6/Contra_5.5.1_public_auto.zip
 
 			$payload = explode(',', $message, 5);
+			$pay = explode(',', $parts[3], 2);
 			$version = $payload[1];
 			$downloadlink = $payload[2];
 
-			if (strtolower($payload[0]) !== strtolower($this->Bot->username)) return;
-			if (empty($version) || empty($downloadlink)) return;
-			if ($version <= $this->Bot->info['version']) return;
-			if ($from !== 'Botdom') return;
+			if(strtolower($pay[0]) !== strtolower($this->Bot->username)) return;
+			if(empty($version) || empty($downloadlink)) return;
+			if($version <= $this->Bot->info['version']) return;
+			if($from !== 'Botdom') return;
 
 			$download = file_get_contents($downloadlink);
 			$splodey = explode('/', $downloadlink);
