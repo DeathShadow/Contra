@@ -477,9 +477,9 @@ class System_commands extends extension {
 				if ($parts[2] === 'INFO' || $parts[2] === 'BADBOT') {
 					// BDS:BOTCHECK:INFO:roleymoley,Contra,5.4.7/0.3,nuckchorris0,$
 					// BDS:BOTCHECK:BADBOT:Ateaw,DeathShadow--666,Contra,5.4.8,BANNED 7/9/2012 9:40:24 AM - Test ban,DeathShadow--666,1341852024,☣
-					
+
 					$banned = ($parts[2] === 'BADBOT');
-					
+
 					$data = explode(',', $parts[3], $banned ? 8 : 5);
 
 					if (!$banned) {
@@ -543,15 +543,15 @@ class System_commands extends extension {
 			if (strtolower($parts[3]) !== strtolower($this->Bot->username)) return;
 		}
 
-		$response = 'BDS:BOTCHECK:RESPONSE:' . $from . ',' . 
-						$this->Bot->owner . ',' . 
-						$this->Bot->info['name'] . ',' . 
-						$this->Bot->info['version'] . '/' . $this->Bot->info['bdsversion'] . ',' . 
+		$response = 'BDS:BOTCHECK:RESPONSE:' . $from . ',' .
+						$this->Bot->owner . ',' .
+						$this->Bot->info['name'] . ',' .
+						$this->Bot->info['version'] . '/' . $this->Bot->info['bdsversion'] . ',' .
 						md5(strtolower(
-							str_replace(' ', '', htmlspecialchars_decode($this->Bot->trigger, ENT_NOQUOTES)) . 
-							$from . 
+							str_replace(' ', '', htmlspecialchars_decode($this->Bot->trigger, ENT_NOQUOTES)) .
+							$from .
 							$this->Bot->username
-						)) . ',' . 
+						)) . ',' .
 						$this->Bot->trigger;
 
 		$this->dAmn->npmsg('chat:datashare', $response, TRUE);
@@ -696,13 +696,11 @@ class System_commands extends extension {
 	}
 
 	function c_update($ns, $requestor, $message) {
-		if (strtolower($from) !== strtolower($this->Bot->owner)) return;
-
-		if ($this->botversion['latest'] === true)
-			$this->dAmn->say($ns, "{$requestor}: Your Contra version is already up-to-date.");
-
-		if (strtolower(args($message, 1)) !== 'yes')
-			$this->dAmn->say($ns, "{$requestor}: <b>Updating Contra</b>:<br /><i>Are you sure?</i> Using {$this->Bot->trigger}update will overwrite your bot's files.<br /><sub>Type <code>{$this->Bot->trigger}update yes</code> to confirm update.</sub>");
+		if(strtolower($from) !== strtolower($this->Bot->owner)) return;
+		elseif($this->botversion['latest'] === true)
+			return $this->dAmn->say($ns, "{$requestor}: Your Contra version is already up-to-date.");
+		elseif(strtolower(args($message, 1)) !== 'yes')
+			return $this->dAmn->say($ns, "{$requestor}: <b>Updating Contra</b>:<br /><i>Are you sure?</i> Using {$this->Bot->trigger}update will overwrite your bot's files.<br /><sub>Type <code>{$this->Bot->trigger}update yes</code> to confirm update.</sub>");
 
 		// Everything seems to be in order, let's update!~
 		$this->dAmn->say($ns, "{$requestor}: Now updating. Bot will be shutdown after update is complete.");
