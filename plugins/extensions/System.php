@@ -696,7 +696,7 @@ class System_commands extends extension {
 	}
 
 	function c_update($ns, $requestor, $message) {
-		if(strtolower($from) !== strtolower($this->Bot->owner)) return;
+		if(strtolower($requestor) !== strtolower($this->Bot->owner)) return;
 		elseif($this->botversion['latest'] === true)
 			return $this->dAmn->say($ns, "{$requestor}: Your Contra version is already up-to-date.");
 		elseif(strtolower(args($message, 1)) !== 'yes')
@@ -744,13 +744,14 @@ class System_commands extends extension {
 
 	function e_codsnotify($parts, $from, $message) {
 		$payload = explode(',', $message, 5);
+		$pay = explode(',', $parts[3], 2);
 		$version = $payload[1];
 		$released = $payload[2];
 
 		if(empty($version) || empty($released)) return;
 
-		if(stristr($payload[0], $this->Bot->username) || strstr($payload[0], 'ALL')) {
-			if($version > $this->Bot->info['version'] && $from == 'Botdom') {
+		if($pay[0] == $this->Bot->username || strstr($pay[0], 'ALL')) {
+			if($this->Bot->info['version'] < $version && $from == 'Botdom') {
 				$this->botversion['latest'] = false;
 				if(!isset($this->Bot->updatenotes) || $this->Bot->updatenotes == true)
 					$this->sendnote($this->Bot->owner, 'Update Service', "A new version of Contra is available. (version: {$version}; released on {$released}) You can download it from http://botdom.com/wiki/Contra#Latest or type <code>{$this->Bot->trigger}update</code> to update your bot.<br /><br />(<b>NOTE: using <code>{$this->Bot->trigger}update</code> will overwrite all your changes to your bot.</b>)<br /><br /><sub>To disable this update note in the future, set 'updatenotes' in config.cf to false.</sub>");
