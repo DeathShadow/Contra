@@ -567,6 +567,7 @@ class System_commands extends extension {
 						)) . ',' .
 						$this->Bot->trigger;
 		}
+		$this->dAmn->npmsg('chat:datashare', $response, TRUE);
 	}
 
 	function c_autojoin($ns, $from, $message, $target) {
