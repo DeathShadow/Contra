@@ -537,9 +537,11 @@ class System_commands extends extension {
 		if($parts[2] === 'DIRECT')
 			if(!strstr(strtolower($parts[3]), strtolower($this->Bot->username))) return;
 		if($parts[2] === 'ALL')
-			if($parts[0] !== 'CODS' && $this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] !== 'PoliceBot' || $parts[0] === 'CODS' && $from !== 'Botdom') return;
+			if($this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] !== 'PoliceBot') return;
+			if($from !== 'Botdom') return;
 		if($parts[2] === 'NODATA')
-			if($this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] !== 'PoliceBot' || strtolower($parts[3]) !== strtolower($this->Bot->username)) return;
+			if($this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] !== 'PoliceBot') return;
+			if(strtolower($parts[3]) !== strtolower($this->Bot->username)) return;
 
 			$response = $parts[0].':BOTCHECK:RESPONSE:' . $from . ',' .
 						$this->Bot->owner . ',' .
