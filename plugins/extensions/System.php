@@ -625,7 +625,7 @@ class System_commands extends extension {
 				$say = $from.': Trigger changed to <code>'.$trig.'</code>!';
 				$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', htmlspecialchars_decode($this->Bot->trigger, ENT_NOQUOTES)).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
 			} else $say = $from.': Are you sure you want to change your trigger? (Type '.$this->Bot->trigger.'ctrig '.$trig.' yes)';
-		} elseif($trig==$this->Bot->trigger) $say = $from.': Why change the bot\'s trigger to the same as current?';
+		} elseif($trig==$this->Bot->trigger) $say = $from.': Cannot change trigger to the same as current';
 		else $say = $from.': Use this command to change your trigger.';
 		$this->dAmn->say($target, $say);
 	}
@@ -634,7 +634,7 @@ class System_commands extends extension {
 		$cmd = args($message, 1, true);
 		if(strtolower($from) != strtolower($this->Bot->owner))
 			return $this->dAmn->say($ns, $from.': Sorry, only the actual owner can mess with the eval command.');
-		if(preg_match('/\b(escapeshellarg|escapeshellcmd|exec|passthru|proc_close|proc_get_status|proc_nice|proc_open|proc_terminate|shell_exec|system|rm|mv|shutdown|kill|killall)\b/i',$cmd))
+		if(preg_match('/\b(escapeshellarg|escapeshellcmd|exec|passthru|proc_close|proc_get_status|proc_nice|proc_open|proc_terminate|shell_exec|system|shutdown|kill|killall)\b/i',$cmd))
 			return $this->dAmn->say($ns, $from.': Sorry, the eval command contains a function that has been disabled.');
 		$code = args($message, 1, true);
 		$e = eval($code);
@@ -700,7 +700,9 @@ class System_commands extends extension {
 		if(empty($what))
 			return $this->dAmn->say($ns, $from.': You need to determine the command to execute.');
 		if($what == 'eval')
-			return $this->dAmn->say($ns, $from.': Eval can not be used with the "sudo" command.');
+			return $this->dAmn->say($ns, $from.': eval command cannot be used with the "sudo" command.');
+		if($what == 'note')
+			return $this->dAmn->say($ns, $from.': note command cannot be used with the "sudo" command.');
 		if($who == $this->Bot->owner)
 			return $this->dAmn->say($ns, $from.': Cannot execute commands as bot owner.');
 		if($who == $this->Bot->username)
