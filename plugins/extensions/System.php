@@ -535,13 +535,13 @@ class System_commands extends extension {
 	}
 
 	function e_botcheck($parts, $from, $message) {
-		if ($parts[2] === 'DIRECT') {
-			if (!strstr(strtolower($parts[3]), strtolower($this->Bot->username))) return;
-		} else if ($parts[2] === 'ALL') {
-			if ($parts[0] !== 'CODS' && $this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] !== 'PoliceBot') return;
-		} else if ($parts[2] === 'NODATA') {
-			if (strtolower($parts[3]) !== strtolower($this->Bot->username)) return;
-		}
+		if($parts[2] === 'DIRECT')
+			if(!strstr(strtolower($parts[3]), strtolower($this->Bot->username))) return;
+		elseif($parts[2] === 'ALL') {
+			if($parts[0] !== 'CODS' && $this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] !== 'PoliceBot') return;
+			if($parts[0] == 'CODS' && $from != 'Botdom') return;
+		} elseif($parts[2] === 'NODATA')
+			if(strtolower($parts[3]) !== strtolower($this->Bot->username)) return;
 
 		$response = 'BDS:BOTCHECK:RESPONSE:' . $from . ',' .
 						$this->Bot->owner . ',' .
