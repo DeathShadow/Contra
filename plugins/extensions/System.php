@@ -466,7 +466,7 @@ class System_commands extends extension {
 	function c_botinfo($ns, $requestor, $message) {
 		$bot = strtolower(args($message, 1));
 
-		if (!$bot) {
+		if(!$bot) {
 			$this->dAmn->say($ns, "<abbr title=\"{$requestor}\"></abbr> You must specify the name of a bot you wish to get information for.");
 		} else {
 			$this->dAmn->npmsg('chat:DataShare', "BDS:BOTCHECK:REQUEST:{$bot}", true);
@@ -474,7 +474,7 @@ class System_commands extends extension {
 			$dAmn = $this->dAmn;
 
 			$this->hookOnceBDS(function ($parts, $from, $message) use ($ns, $requestor, $dAmn) {
-				if ($parts[2] === 'INFO' || $parts[2] === 'BADBOT') {
+				if($parts[2] === 'INFO' || $parts[2] === 'BADBOT') {
 					// BDS:BOTCHECK:INFO:roleymoley,Contra,5.4.7/0.3,nuckchorris0,$
 					// BDS:BOTCHECK:BADBOT:Ateaw,DeathShadow--666,Contra,5.4.8,BANNED 7/9/2012 9:40:24 AM - Test ban,DeathShadow--666,1341852024,☣
 
@@ -482,7 +482,7 @@ class System_commands extends extension {
 
 					$data = explode(',', $parts[3], $banned ? 8 : 5);
 
-					if (!$banned) {
+					if(!$banned) {
 						$versions = explode('/', $data[2]);
 						$owners = explode(';', $data[3]);
 
@@ -527,9 +527,8 @@ class System_commands extends extension {
 					$sb .= "</sub><abbr title=\"{$requestor}\"> </abbr>";
 
 					$dAmn->say($ns, $sb);
-				} else if ($parts[2] === 'NODATA') {
+				} elseif($parts[2] === 'NODATA')
 					$dAmn->say($ns, "Sorry, {$requestor}, there is no information on <b>{$bot}</b> in the database.");
-				}
 			}, 'BDS:BOTCHECK:(NODATA|INFO|BADBOT):' . $bot . '*');
 		}
 	}
