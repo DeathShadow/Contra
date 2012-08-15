@@ -536,16 +536,12 @@ class System_commands extends extension {
 	function e_botcheck($parts, $from, $message) {
 		if($parts[2] === 'DIRECT')
 			if(!strstr(strtolower($parts[3]), strtolower($this->Bot->username))) return;
-		if($parts[2] === 'ALL') {
-			if($parts[0] !== 'CODS' && $this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] !== 'PoliceBot') return;
-			if($parts[0] === 'CODS' && $from !== 'Botdom') return;
-		}
+		if($parts[2] === 'ALL')
+			if($parts[0] !== 'CODS' && $this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] !== 'PoliceBot' || $parts[0] === 'CODS' && $from !== 'Botdom') return;
 		if($parts[2] === 'NODATA')
-			if($this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] !== 'PoliceBot') return;
-			if(strtolower($parts[3]) !== strtolower($this->Bot->username)) return;
+			if($this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] !== 'PoliceBot' || strtolower($parts[3]) !== strtolower($this->Bot->username)) return;
 
-		if($parts[0] === 'BDS') {
-			$response = 'BDS:BOTCHECK:RESPONSE:' . $from . ',' .
+			$response = $parts[0].':BOTCHECK:RESPONSE:' . $from . ',' .
 						$this->Bot->owner . ',' .
 						$this->Bot->info['name'] . ',' .
 						$this->Bot->info['version'] . '/' . $this->Bot->info['bdsversion'] . ',' .
@@ -555,18 +551,6 @@ class System_commands extends extension {
 							$this->Bot->username
 						)) . ',' .
 						$this->Bot->trigger;
-		} elseif($parts[0] === 'CODS') {
-			$response = 'CODS:BOTCHECK:RESPONSE:' . $from . ',' .
-						$this->Bot->owner . ',' .
-						$this->Bot->info['name'] . ',' .
-						$this->Bot->info['version'] . '/' . $this->Bot->info['bdsversion'] . ',' .
-						md5(strtolower(
-							str_replace(' ', '', htmlspecialchars_decode($this->Bot->trigger, ENT_NOQUOTES)) .
-							$from .
-							$this->Bot->username
-						)) . ',' .
-						$this->Bot->trigger;
-		}
 		$this->dAmn->npmsg('chat:datashare', $response, TRUE);
 	}
 
