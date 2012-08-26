@@ -130,7 +130,7 @@ class Bot {
 		$this->autojoin = $config['autojoin'];
 		if(isset($config['cookie']))
 			$this->damntoken = unserialize($config['cookie']);
-		$this->damntoken = empty($config['damntoken']) ? '' : unserialize($config['damntoken']);
+		else $this->damntoken = empty($config['damntoken']) ? '' : unserialize($config['damntoken']);
 		$this->updatenotes = empty($config['updatenotes']) ? true : $config['updatenotes'];
 	}
 
