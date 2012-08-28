@@ -73,7 +73,7 @@ goto confirm
 
 :continue
 echo ===============================================================================
-%phpbin% run.php %1
+"%phpbin%" run.php %1
 goto loop
 
 :stop
