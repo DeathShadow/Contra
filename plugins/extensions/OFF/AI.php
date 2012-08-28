@@ -17,7 +17,7 @@ class Brain extends extension {
 	public $author = 'photofroggy';
 
 	function init() {
-		$this->addCmd('ai', 'c_ai', 25);
+		$this->addCmd('ai', 'c_ai', 75);
 		$this->switch_board();
 	}
 
