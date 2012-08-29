@@ -472,11 +472,14 @@ class System_commands extends extension {
 			$this->dAmn->npmsg('chat:DataShare', "BDS:BOTCHECK:REQUEST:{$bot}", true);
 
 			$dAmn = $this->dAmn;
+			$this->botinfo[$ns]['on'] = true;
 
 			$this->hookOnceBDS(function ($parts, $from, $message) use ($ns, $requestor, $dAmn) {
 				if($parts[2] === 'INFO' || $parts[2] === 'BADBOT') {
 					// BDS:BOTCHECK:INFO:roleymoley,Contra,5.4.7/0.3,nuckchorris0,$
 					// BDS:BOTCHECK:BADBOT:Ateaw,DeathShadow--666,Contra,5.4.8,BANNED 7/9/2012 9:40:24 AM - Test ban,DeathShadow--666,1341852024,☣
+
+					if($this->botinfo[$ns]['on'] == false) return;
 
 					$banned = ($parts[2] === 'BADBOT');
 
@@ -527,8 +530,11 @@ class System_commands extends extension {
 					$sb .= "</sub><abbr title=\"{$requestor}\"> </abbr>";
 
 					$dAmn->say($ns, $sb);
-				} elseif($parts[2] === 'NODATA')
+					$this->botinfo[$ns]['on'] = false;
+				} elseif($parts[2] === 'NODATA' && $this->botinfo[$ns]['on'] == true) {
 					$dAmn->say($ns, "Sorry, {$requestor}, there is no information on <b>{$bot}</b> in the database.");
+					$this->botinfo[$ns]['on'] = false;
+				}
 			}, 'BDS:BOTCHECK:(NODATA|INFO|BADBOT):' . $bot . '*');
 		}
 	}
