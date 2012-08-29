@@ -114,7 +114,7 @@ class notes_module extends extension {
 				}
 				break;
 			default:
-				if(empty($note)||empty($com1)) return;
+				if(empty($note)||empty($com1)||$com1 == $this->Bot->username) return;
 				if($this->sendnote($com1, $from, $note, $ns)) $this->say($ns, $from, 'Note sent!');
 				break;
 		}
