@@ -805,7 +805,6 @@ class System_commands extends extension {
 			$this->notes[$user] = array();
 		if(!isset($this->receivers[$user]))
 			$this->receivers[$user] = 1;
-		else $this->receivers[$user]++;
 		$this->notewrite('receive', $this->receivers);
 		$this->notes[$user][-1]['content'] = $content;
 		$this->notes[$user][-1]['from'   ] = $from;
