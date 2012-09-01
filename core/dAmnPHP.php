@@ -192,7 +192,7 @@ class dAmnPHP {
 		 		echo 'https://www.deviantart.com/oauth2/draft15/authorize?client_id='.$this->client_id.'&redirect_uri=http://damn.shadowkitsune.net/apicode/&response_type=code' . LBR;
 
 				// Retreiving the code
-				echo "Enter the code:" . LBR;
+				echo "Enter the code given by above link:" . LBR;
 				$code = trim(fgets(STDIN)); // STDIN for reading input
 
 				// Getting the access token.
