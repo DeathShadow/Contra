@@ -7,6 +7,6 @@
 storage/logs
 storage/mod
 storage/config.cf
+storage/oauth.json
 storage/users.cf
 Connection.log
-oauth.json
