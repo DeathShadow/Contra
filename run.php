@@ -19,6 +19,8 @@
 	chdir(dirname(realpath(__FILE__)));
 	// Get rid of this file... it helps...
 	if(file_exists('./storage/bat/restart.bcd'))  unlink('./storage/bat/restart.bcd' );
+
+	// Move oauth.json from main folder to storage folder.
 	if(file_exists('oauth.json')) rename('oauth.json', './storage/oauth.json');
 
 	// This functions contains a loop to include files from a directory.
