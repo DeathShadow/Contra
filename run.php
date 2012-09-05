@@ -19,6 +19,7 @@
 	chdir(dirname(realpath(__FILE__)));
 	// Get rid of this file... it helps...
 	if(file_exists('./storage/bat/restart.bcd'))  unlink('./storage/bat/restart.bcd' );
+	if(file_exists('oauth.json')) rename('oauth.json', './storage/oauth.json');
 
 	// This functions contains a loop to include files from a directory.
 	function inc_files($dir, $ext = false, $vars = array()) {

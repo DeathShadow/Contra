@@ -140,11 +140,11 @@ class dAmnPHP {
 		$this->client_id = '24'; // OAuth 2.0 client_id
 		$this->client_secret = 'b6c81c08563888f0da7ea3f7f763c426'; // OAuth 2.0 client_secret
 
-		if(is_readable("oauth.json")){ // Checking if the file_exists
+		if(is_readable("./storage/oauth.json")){ // Checking if the file_exists
 			if($mode == 0) echo "Grabbing existing oAuth tokens..." . LBR; // Turn off if silent
 
 			// Reading config file
-			$config_file = "oauth.json";
+			$config_file = "./storage/oauth.json";
 			if(filesize($config_file) != 0) {
 				$fh = fopen($config_file, 'r') or die("can't open file");
 
@@ -162,7 +162,7 @@ class dAmnPHP {
 							if($mode == 0) echo $this->error("For some reason, your refresh tokens failed") . LBR;
 						} else {
 							// Writing to oauth.json
-							$config_file = "oauth.json";
+							$config_file = "./storage/oauth.json";
 
 							$fh = fopen($config_file, 'w') or die("can't open file");
 							fwrite($fh, $tokens);
@@ -204,7 +204,7 @@ class dAmnPHP {
 					if($mode == 0) echo $this->error("For some reason, your tokens failed") . LBR;
 				} else {
 					// Writing to oauth.json
-					$config_file = "oauth.json";
+					$config_file = "./storage/oauth.json";
 
 					$fh = fopen($config_file, 'w') or die("can't open file");
 					fwrite($fh, $tokens);
