@@ -734,7 +734,7 @@ class System_commands extends extension {
 
 			$file = fopen($filename, 'w+');
 			fwrite($file, $download);
-			fclose($moo);
+			fclose($file);
 
 			$zip = new ZipArchive;
 			if($zip->open($filename) === TRUE) {
