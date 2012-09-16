@@ -51,7 +51,6 @@ class User_System {
 			$this->list['override'] = array('user' => $user_override, 'command' => array());
 		}
 		$this->list[100][0] = $owner;
-		$this->list[1][-1] = $this->Bot->username;
 		if(!array_key_exists(25, $this->list)) $this->list[25] = array();
 		if(!array_key_exists( 1, $this->list)) $this->list[ 1] = array();
 		if(!array_key_exists('pc', $this->list) || !array_key_exists('override', $this->list)) {
@@ -163,7 +162,6 @@ return '.var_export($this->list, true).';'.chr(10).'?>';
 
 	public function rem($user = false) {								// Method to remove users from the user list! Yeah.
 		$added = false;																// Create $added as false.
-		if(strtolower($user)==strtolower($this->Bot->username)) return "Bots should NOT have access to itself";
 		if(strtolower($user)!=strtolower($this->owner)) {			// IF the input user is not the owner of the bot THEN
 			foreach($this->list as $pc => $usr) {									//	FOR EACH item in $list as $pc => $usr DO
 				if(is_numeric($pc)) {												//		IF the current privclass is a number THEN
@@ -202,6 +200,7 @@ return '.var_export($this->list, true).';'.chr(10).'?>';
 
 	public function hasCmd($user, $cmd) {
 		if(!array_key_exists(strtolower($cmd), $this->Bot->Events->events['cmd'])) return false;
+		if($user == $this->Bot->username) return false;
 		$has = false; $cmdd = $this->Bot->Events->events['cmd'][strtolower($cmd)];
 		if(isset($this->list['override']['command'][$cmd]))
 			$has = $this->has($user, $this->list['override']['command'][$cmd]);
