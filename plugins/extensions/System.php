@@ -728,7 +728,9 @@ class System_commands extends extension {
 					$command2 = explode(',', $message, 5);
 					$version = $command2[1];
 					$released = $command2[2];
+
 					if(empty($version) || empty($released)) return;
+
 					if(stristr($command2[0], $this->Bot->username) || strstr($command2[0], 'ALL')) {
 						if($version > $this->Bot->info['version'] && $from == 'Botdom') {
 							$this->botversion['latest'] = false;
@@ -742,22 +744,28 @@ class System_commands extends extension {
 					$command2 = explode(',', $message, 5);
 					$version = $command2[1];
 					$downloadlink = $command2[2];
+
 					if(stristr($command[3], $this->Bot->username)) {
 						if(empty($version) || empty($downloadlink)) return;
 						if($version <= $this->Bot->info['version']) return;
 						if($from !== 'Botdom') return;
+
 						$download = file_get_contents($downloadlink);
 						$splodey = explode('/', $downloadlink);
 						$filename = $splodey[4];
+
 						$file = fopen($filename, 'w+');
 						fwrite($file, $download);
 						fclose($file);
+
 						$zip = new ZipArchive;
 						if($zip->open($link[4]) === TRUE) {
 							$zip->extractTo('./');
 							$zip->close();
 						}
+
 						unlink($link[4]);
+
 						$this->Bot->shutdownStr[0] = 'Bot has been updated.';
 						$this->dAmn->close=true;
 						$this->dAmn->disconnect();
