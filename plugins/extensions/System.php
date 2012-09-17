@@ -696,8 +696,6 @@ class System_commands extends extension {
 			return $this->dAmn->say($ns, $from.': note command cannot be used with the "sudo" command.');
 		if($who == $this->Bot->owner)
 			return $this->dAmn->say($ns, $from.': Cannot execute commands as bot owner.');
-		if($who == $this->Bot->username)
-			return $this->dAmn->say($ns, $from.': Cannot execute commands as bot.');
 		$this->Bot->Events->command($what, $ns, $who, $msg);
 	}
 
