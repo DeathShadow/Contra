@@ -745,11 +745,12 @@ class System_commands extends extension {
 					if(stristr($command[3], $this->Bot->username)) {
 						if(empty($version) || empty($downloadlink)) return;
 						if($version > $this->Bot->info['version'] && $from == 'Botdom') {
-							$file = file_get_contents($downloadlink);
-							$link = explode('/', $downloadlink);
-							$moo = fopen($link[4], 'w+');
-							$moo2 = fwrite($moo, $file);
-							fclose($moo);
+							$download = file_get_contents($downloadlink);
+							$splodey = explode('/', $downloadlink);
+							$filename = $splodey[4];
+							$file = fopen($filename, 'w+');
+							fwrite($file, $download);
+							fclose($file);
 							$zip = new ZipArchive;
 							if($zip->open($link[4]) === TRUE) {
 								$zip->extractTo('./');
