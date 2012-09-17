@@ -744,23 +744,23 @@ class System_commands extends extension {
 					$downloadlink = $command2[2];
 					if(stristr($command[3], $this->Bot->username)) {
 						if(empty($version) || empty($downloadlink)) return;
-						if($version > $this->Bot->info['version'] && $from == 'Botdom') {
-							$download = file_get_contents($downloadlink);
-							$splodey = explode('/', $downloadlink);
-							$filename = $splodey[4];
-							$file = fopen($filename, 'w+');
-							fwrite($file, $download);
-							fclose($file);
-							$zip = new ZipArchive;
-							if($zip->open($link[4]) === TRUE) {
-								$zip->extractTo('./');
-								$zip->close();
-							}
-							unlink($link[4]);
-							$this->Bot->shutdownStr[0] = 'Bot has been updated.';
-							$this->dAmn->close=true;
-							$this->dAmn->disconnect();
+						if($version <= $this->Bot->info['version']) return;
+						if($from !== 'Botdom') return;
+						$download = file_get_contents($downloadlink);
+						$splodey = explode('/', $downloadlink);
+						$filename = $splodey[4];
+						$file = fopen($filename, 'w+');
+						fwrite($file, $download);
+						fclose($file);
+						$zip = new ZipArchive;
+						if($zip->open($link[4]) === TRUE) {
+							$zip->extractTo('./');
+							$zip->close();
 						}
+						unlink($link[4]);
+						$this->Bot->shutdownStr[0] = 'Bot has been updated.';
+						$this->dAmn->close=true;
+						$this->dAmn->disconnect();
 					}
 					break;
 				}
