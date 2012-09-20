@@ -478,7 +478,8 @@ class System_commands extends extension {
 					// BDS:BOTCHECK:INFO:roleymoley,Contra,5.4.7/0.3,nuckchorris0,$
 					// BDS:BOTCHECK:BADBOT:Ateaw,DeathShadow--666,Contra,5.4.8,BANNED 7/9/2012 9:40:24 AM - Test ban,DeathShadow--666,1341852024,☣
 
-					if($dAmn->chat['chat:DataShare']['member'][$from]['pc'] !== 'PoliceBot' || !isset($this->botinfo[$ns])) {
+					if(!isset($this->botinfo[$ns])) return;
+					if($dAmn->chat['chat:DataShare']['member'][$from]['pc'] !== 'PoliceBot') {
 						unset($this->botinfo[$ns]);
 						return;
 					}
