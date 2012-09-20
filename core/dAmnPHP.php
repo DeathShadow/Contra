@@ -247,7 +247,7 @@ class dAmnPHP {
 		echo " \033[1;33m" . $text . "\033[0m";
 	}
 
-	function send_headers($socket, $host, $url, $referer, $post=null)
+	function send_headers($socket, $host, $url, $referer, $post=null, $cookies=array())
 	{
 	    try
 	    {
