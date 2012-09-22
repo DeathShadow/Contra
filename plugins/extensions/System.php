@@ -466,7 +466,7 @@ class System_commands extends extension {
 		$bot = strtolower(args($message, 1));
 
 		if(phpversion() < '5.4')
-			return $this->dAmn->say($ns, "<abbr title=\"{{$requestor}\"></abbr> Sorry, this command is bugged in PHP 5.3.x versions.");
+			return $this->dAmn->say($ns, "<abbr title=\"{{$requestor}\"></abbr> Sorry, this command is bugged in PHP ".phpversion().".");
 
 		if(!$bot) {
 			$this->dAmn->say($ns, "<abbr title=\"{$requestor}\"></abbr> You must specify the name of a bot you wish to get information for.");
