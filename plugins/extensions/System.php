@@ -473,7 +473,7 @@ class System_commands extends extension {
 			$dAmn = $this->dAmn;
 			$this->botinfo[$ns]['on'] = true;
 
-			$this->hookOnceBDS(function ($parts, $from, $message) use ($ns, $requestor, $dAmn) {
+			$this->hookOnceBDS(function ($parts, $from, $message) use ($ns, $requestor, $dAmn, $bot) {
 				if($parts[2] === 'INFO' || $parts[2] === 'BADBOT') {
 					// BDS:BOTCHECK:INFO:roleymoley,Contra,5.4.7/0.3,nuckchorris0,$
 					// BDS:BOTCHECK:BADBOT:Ateaw,DeathShadow--666,Contra,5.4.8,BANNED 7/9/2012 9:40:24 AM - Test ban,DeathShadow--666,1341852024,☣
@@ -520,7 +520,7 @@ class System_commands extends extension {
 					$sb  = '<sub>';
 					$sb .= "Bot Username: [<b>:dev{$info['username']}:</b>]<br>";
 					$sb .= "Bot Owner: [<b>:dev" . implode($info["owners"], ":</b>], [<b>:dev") . ":</b>]<br>";
-					if (!$banned) {
+					if(!$banned) {
 						$sb .= "Bot Version: <b>{$info['bottype']} <i>{$info['botversion']}</i></b><br>";
 						$sb .= "BDS Version: <b>{$info['bdsversion']}</b><br>";
 						$sb .= "Bot Trigger: <b>" . implode("</b><b>", str_split($info["trigger"])) . "</b><br>";
