@@ -465,20 +465,18 @@ class System_commands extends extension {
 	function c_botinfo($ns, $requestor, $message) {
 		$bot = strtolower(args($message, 1));
 
-		if(phpversion() < '5.4')
-			return $this->dAmn->say($ns, "<abbr title=\"{{$requestor}\"></abbr> Sorry, this command is bugged in PHP ".phpversion().".");
-
 		if(!$bot) {
 			$this->dAmn->say($ns, "<abbr title=\"{$requestor}\"></abbr> You must specify the name of a bot you wish to get information for.");
 		} else {
 			$this->dAmn->npmsg('chat:DataShare', "BDS:BOTCHECK:REQUEST:{$bot}", true);
 
 			$dAmn = $this->dAmn;
+			$self = $this;
 			$this->botinfo[$ns] = true;
 
-			$this->hookOnceBDS(function ($parts, $from, $message) use ($ns, $requestor, $dAmn, $bot) {
-				if(!isset($this->botinfo[$ns])) return;
-				unset($this->botinfo[$ns]);
+			$this->hookOnceBDS(function ($parts, $from, $message) use ($ns, $requestor, $dAmn, $bot, $self) {
+				if(!isset($self->botinfo[$ns])) return;
+				unset($self->botinfo[$ns]);
 				if($parts[2] === 'INFO' || $parts[2] === 'BADBOT') {
 					// BDS:BOTCHECK:INFO:roleymoley,Contra,5.4.7/0.3,nuckchorris0,$
 					// BDS:BOTCHECK:BADBOT:Ateaw,DeathShadow--666,Contra,5.4.8,BANNED 7/9/2012 9:40:24 AM - Test ban,DeathShadow--666,1341852024,☣
