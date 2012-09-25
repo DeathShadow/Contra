@@ -136,7 +136,6 @@ class dAmnPHP {
 	function Warning($str = '', $ts = false) { $this->Message('>> '.$str,$ts); }
 	// oAuth function, mode sets silent, 0 = silent, 1 = echo
 	public function oauth($mode, $refresh = false) {
-		$this->os = PHP_OS; // The System OS
 		$this->client_id = '24'; // OAuth 2.0 client_id
 		$this->client_secret = 'b6c81c08563888f0da7ea3f7f763c426'; // OAuth 2.0 client_secret
 
@@ -160,6 +159,7 @@ class dAmnPHP {
 						$this->oauth_tokens = json_decode($tokens);
 						if($this->oauth_tokens->status != "success") {
 							if($mode == 0) echo $this->error("For some reason, your refresh tokens failed") . LBR;
+							unlink($config_file);
 						} else {
 							// Writing to oauth.json
 							$config_file = "./storage/oauth.json";
@@ -188,7 +188,7 @@ class dAmnPHP {
 			} else {
 				if($mode == 0) echo "Grabbing the oAuth Tokens from deviantART..." . LBR; // Turn off if silent
 
-				echo "Open your browser to the required URL. Please load the link below! (Make sure to login the accoun you're using for bot first.)" . LBR;
+				echo "Open your browser to the required URL. Please load the link below! (Make sure to login the account you're using for bot first.)" . LBR;
 		 		echo 'https://www.deviantart.com/oauth2/draft15/authorize?client_id='.$this->client_id.'&redirect_uri=http://damn.shadowkitsune.net/apicode/&response_type=code' . LBR;
 
 				// Retreiving the code
