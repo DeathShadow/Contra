@@ -142,14 +142,14 @@ class dAmnPHP {
 		if(is_readable("./storage/oauth.json")){ // Checking if the file_exists
 			if($mode == 0) echo "Grabbing existing oAuth tokens..." . LBR; // Turn off if silent
 
-			// Reading config file
-			$config_file = "./storage/oauth.json";
-			if(filesize($config_file) != 0) {
-				$fh = fopen($config_file, 'r') or die("can't open file");
+			// Reading oauth file
+			$oauth_file = "./storage/oauth.json";
+			if(filesize($oauth_file) != 0) {
+				$fh = fopen($oauth_file, 'r') or die("can't open file");
 
 				if($mode == 0) echo "Tokens grabbed from file..." . LBR . LBR;
 			// Setting to the oauth_tokens variable
-				$this->oauth_tokens = json_decode(fread($fh, filesize($config_file)));
+				$this->oauth_tokens = json_decode(fread($fh, filesize($oauth_file)));
 
 					if($refresh) {
 						// Getting the access token.
@@ -159,12 +159,12 @@ class dAmnPHP {
 						$this->oauth_tokens = json_decode($tokens);
 						if($this->oauth_tokens->status != "success") {
 							if($mode == 0) echo $this->error("For some reason, your refresh tokens failed") . LBR;
-							unlink($config_file);
+							unlink($oauth_file);
 						} else {
 							// Writing to oauth.json
-							$config_file = "./storage/oauth.json";
+							$oauth_file = "./storage/oauth.json";
 
-							$fh = fopen($config_file, 'w') or die("can't open file");
+							$fh = fopen($oauth_file, 'w') or die("can't open file");
 							fwrite($fh, $tokens);
 							fclose($fh);
 							if($mode == 0) echo "Tokens grabbed with refreshtoken!" . LBR;
@@ -182,7 +182,7 @@ class dAmnPHP {
 					}
 				} else {
 					if($mode == 0) echo $this->error("Your token file is empty, grabbing new ones...") . LBR;
-					unlink($config_file);
+					unlink($oauth_file);
 					$this->oauth(0);
 				}
 			} else {
@@ -204,9 +204,9 @@ class dAmnPHP {
 					if($mode == 0) echo $this->error("For some reason, your tokens failed") . LBR;
 				} else {
 					// Writing to oauth.json
-					$config_file = "./storage/oauth.json";
+					$oauth_file = "./storage/oauth.json";
 
-					$fh = fopen($config_file, 'w') or die("can't open file");
+					$fh = fopen($oauth_file, 'w') or die("can't open file");
 					fwrite($fh, $tokens);
 					fclose($fh);
 					if($mode == 0) echo "Tokens grabbed!" . LBR;
