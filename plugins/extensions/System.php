@@ -702,10 +702,12 @@ class System_commands extends extension {
 
 	function c_update($ns, $requestor, $message) {
 		if(strtolower($requestor) !== strtolower($this->Bot->owner)) return;
-		elseif($this->botversion['latest'] === true)
-			return $this->dAmn->say($ns, "{$requestor}: Your Contra version is already up-to-date.");
-		elseif(strtolower(args($message, 1)) !== 'yes')
+		if($this->botversion['latest'] === true && strtolower(args($message, 1, true)) !== 'reset yes')
+			return $this->dAmn->say($ns, "{$requestor}: Your Contra version is already up-to-date.<br /><sub>You can reset update by using <code>{$this->Bot->trigger}update reset yes</code></sub>");
+		elseif(strtolower(args($message, 1)) !== 'yes' && strtolower(args($message, 1, true)) !== 'reset yes')
 			return $this->dAmn->say($ns, "{$requestor}: <b>Updating Contra</b>:<br /><i>Are you sure?</i> Using {$this->Bot->trigger}update will overwrite your bot's files.<br /><sub>Type <code>{$this->Bot->trigger}update yes</code> to confirm update.</sub>");
+		elseif(strtolower(args($message, 1, true)) === 'reset yes')
+			$this->botversion['reset'] = true;
 
 		// Everything seems to be in order, let's update!~
 		$this->dAmn->say($ns, "{$requestor}: Now updating. Bot will be shutdown after update is complete.");
@@ -724,7 +726,7 @@ class System_commands extends extension {
 
 			if(strtolower($pay[0]) !== strtolower($self->Bot->username)) return;
 			if(empty($version) || empty($downloadlink)) return;
-			if($version <= $self->Bot->info['version']) return;
+			if($self->botversion['reset'] != true && $version <= $self->Bot->info['version']) return;
 			if($from !== 'Botdom') return;
 
 			$download = file_get_contents($downloadlink);
