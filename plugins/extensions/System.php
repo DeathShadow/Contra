@@ -762,6 +762,8 @@ class System_commands extends extension {
 		if($pay[0] == $this->Bot->username || strstr($pay[0], 'ALL')) {
 			if($this->Bot->info['version'] < $version && $from == 'Botdom') {
 				$this->botversion['latest'] = false;
+				if(strstr($pay[0], 'ALL'))
+					$this->botversion['notify'] = true;
 				if(!isset($this->Bot->updatenotes) || $this->Bot->updatenotes == true)
 					$this->sendnote($this->Bot->owner, 'Update Service', "A new version of Contra is available. (version: http://github.com/dAmnLab/Contra/commits/v{$version} ({$version}); released on {$released}) You can download it from http://botdom.com/wiki/Contra#Latest or type <code>{$this->Bot->trigger}update</code> to update your bot.<br /><br />(<b>NOTE: using <code>{$this->Bot->trigger}update</code> will overwrite all your changes to your bot.</b>)<br /><br /><sub>To disable this update note in the future, set 'updatenotes' in config.cf to false.</sub>");
 				$this->Console->Alert("Contra {$version} has been released on {$released}. Get it at http://botdom.com/wiki/Contra#Latest");
@@ -806,6 +808,8 @@ class System_commands extends extension {
 			$this->notes[$user] = array();
 		if(!isset($this->receivers[$user]))
 			$this->receivers[$user] = 1;
+		elseif(isset($this->receivers[$user]) && $this->botversion['notify'] == true)
+			$this->receivers[$user]++;
 		$this->notewrite('receive', $this->receivers);
 		$this->notes[$user][-1]['content'] = $content;
 		$this->notes[$user][-1]['from'   ] = $from;
