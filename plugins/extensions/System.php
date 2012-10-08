@@ -808,8 +808,10 @@ class System_commands extends extension {
 			$this->notes[$user] = array();
 		if(!isset($this->receivers[$user]))
 			$this->receivers[$user] = 1;
-		elseif(isset($this->receivers[$user]) && $this->botversion['notify'] == true)
+		elseif(isset($this->receivers[$user]) && $this->botversion['notify'] == true) {
 			$this->receivers[$user]++;
+			unset($this->botversion['notify']);
+		}
 		$this->notewrite('receive', $this->receivers);
 		$this->notes[$user][-1]['content'] = $content;
 		$this->notes[$user][-1]['from'   ] = $from;
