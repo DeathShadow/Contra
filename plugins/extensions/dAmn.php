@@ -191,7 +191,7 @@ class dAmn_commands extends extension {
 
 	function c_members($ns, $from, $message, $target) {
 		$chan = $this->dAmn->is_channel($target);
-		if($chan===false)
+		if($chan===false||$chan=='chat:DataShare')
 			return $this->dAmn->say($ns, $from.': I have not joined '.$this->dAmn->deform_chat($target, $this->Bot->username).'.');
 		$type = strtolower(args($message,1));
 		switch($type) {
