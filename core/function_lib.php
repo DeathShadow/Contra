@@ -143,12 +143,18 @@
 			if(strlen(trim($room)) > 0) $config['autojoin'][] = trim($room);
 		if(empty($config['autojoin']))
 			$config['autojoin'] = array('#Botdom');
+		if(!ini_get('date.timezone')) {
+			echo '> Enter your timezone. See http://php.net/manual/en/timezones.php for list of supported timezones.'.chr(10);
+			$config['timezone'] = cmd_in('> ', true);
+		}elseif(ini_get('date.timezone'))
+			$config['timezone'] = ini_get('date.timezone');
 		$config = array(
 			'info' => $config['info'],
 			'about' => $config['about'],
 			'autojoin' => $config['autojoin'],
 			'damntoken' => '',
 			'updatenotes' => true,
+			'timezone' => $config['timezone'],
 		);
 		save_config('./storage/config.cf', $config);
 		echo '> Configuration saved!'.chr(10);
