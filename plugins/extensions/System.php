@@ -41,9 +41,9 @@ class System_commands extends extension {
 		$this->addCmd('uptime', 'c_about');
 		$this->addCmd($cmds, 'c_commands');
 		$this->addCmd($cmd, 'c_command', 99);
-		$this->addCmd($mods, 'c_modules');
+		$this->addCmd($mods, 'c_modules', 50);
 		$this->addCmd($mod, 'c_module', 99);
-		$this->addCmd('users', 'c_users');
+		$this->addCmd('users', 'c_users', 50);
 		$this->addCmd('user', 'c_user', 100);
 		$this->addCmd($aj, 'c_autojoin', 99);
 		$this->addCmd('ctrig', 'c_trigger', 100);
