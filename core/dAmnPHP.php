@@ -187,7 +187,7 @@ class dAmnPHP {
 				if($mode == 0) echo "Grabbing the oAuth Tokens from deviantART..." . LBR; // Turn off if silent
 
 				echo "Open your browser to the required URL. Please load the link below! (Make sure to login the account you're using for bot first.)" . LBR;
-		 		echo 'https://www.deviantart.com/oauth2/draft15/authorize?client_id='.$this->client_id.'&redirect_uri=http://damn.shadowkitsune.net/apicode/&response_type=code' . LBR;
+		 		echo 'http://bit.ly/WI6u6y' . LBR;
 
 				// Retreiving the code
 				echo "Enter the code given by above link:" . LBR;
