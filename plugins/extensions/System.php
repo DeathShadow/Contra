@@ -543,12 +543,12 @@ class System_commands extends extension {
 		if(!isset($parts[3])) return;
 		if(isset($parts[0]) && $parts[0] !== 'BDS' && $parts[0] !== 'CODS') return;
 		if($parts[1] == "BOTCHECK" && $parts[2] === 'DIRECT')
-			if($parts[3] === strtolower($this->Bot->username)) return;
+			if(strtolower($parts[3]) !== strtolower($this->Bot->username)) return;
 		if($parts[1] == "BOTCHECK" && $parts[2] === 'ALL')
 			if($this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] !== 'PoliceBot') return;
 		if($parts[1] == "BOTCHECK" && $parts[2] === 'NODATA' && isset($parts[3])) {
 			if($this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] !== 'PoliceBot') return;
-			if($parts[3] === strtolower($this->Bot->username)) return;
+			if(strtolower($parts[3]) !== strtolower($this->Bot->username)) return;
 		}
 
 			$response = $parts[0].':BOTCHECK:RESPONSE:' . $from . ',' .
