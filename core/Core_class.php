@@ -126,8 +126,14 @@ class Bot {
 		$config = include './storage/config.cf';
 		$this->username = $config['info']['username'];
 		$this->owner = $config['info']['owner'];
-		// Note: This may require the PHP extension 'mbstring', someone should look into this on Windows.
-		$this->trigger = mb_convert_encoding($config['info']['trigger'], 'HTML-ENTITIES', 'UTF-8');
+		if (strlen($config['info']['trigger']) > 1) {
+			$this->trigger = $config['info']['trigger'];
+			
+		} else {
+			// Fix for issue #14
+			require_once('./core/Extras.php');
+			$this->trigger = hexentity(html_entity_decode($config['info']['trigger']));
+		}
 		$this->aboutStr = $config['about'];
 		$this->autojoin = $config['autojoin'];
 		if(isset($config['cookie']))

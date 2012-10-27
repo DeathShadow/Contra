@@ -132,10 +132,12 @@ class dAmn_lib extends extension {
 
 	function e_check_msg($ns, $from, $msg) {
 		if(!$this->Bot->user->has($from, 25)) return;
+		$msg_clean = htmlspecialchars_decode($msg);
 		$trig = $this->Bot->trigger;
-		if(substr($msg, 0, strlen($trig)) == $trig) {
-			$msg = substr($msg, strlen($trig));
-			$this->Bot->Events->command(args($msg,0),$ns,$from,htmlspecialchars_decode($msg));
+			
+		if(substr($msg_clean, 0, strlen($trig)) == $trig) {
+			$msg_clean = substr($msg_clean, strlen($trig));
+			$this->Bot->Events->command(args($msg_clean,0),$ns,$from,$msg_clean);
 		}
 	}
 
