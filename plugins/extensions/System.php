@@ -610,15 +610,12 @@ class System_commands extends extension {
 	}
 
 	function c_trigger($ns, $from, $message, $target) {
-		$trig = args($message,1);
-		$conf = strtolower(args($message,2));
+		$trig = args($message,1, true);
 		if($trig!=''&&$trig!=$this->Bot->trigger) {
-			if($conf!=''&&$conf=='yes') {
-				$this->Bot->trigger = $trig;
-				$this->Bot->save_config();
-				$say = $from.': Trigger changed to <code>'.$trig.'</code>!';
-				$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', htmlspecialchars_decode($this->Bot->trigger, ENT_NOQUOTES)).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
-			} else $say = $from.': Are you sure you want to change your trigger? (Type '.$this->Bot->trigger.'ctrig '.$trig.' yes)';
+			$this->Bot->trigger = $trig;
+			$this->Bot->save_config();
+			$say = $from.': Trigger changed to <code>'.$trig.'</code>!';
+			$this->dAmn->npmsg('chat:datashare', 'BDS:BOTCHECK:RESPONSE:'.$from.','.$this->Bot->owner.','.$this->Bot->info['name'].','.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].','.md5(strtolower(str_replace(' ', '', htmlspecialchars_decode($this->Bot->trigger, ENT_NOQUOTES)).$from.$this->Bot->username)).','.$this->Bot->trigger, TRUE);
 		} elseif($trig==$this->Bot->trigger) $say = $from.': Cannot change trigger to the same as current';
 		else $say = $from.': Use this command to change your trigger.';
 		$this->dAmn->say($target, $say);
