@@ -126,7 +126,7 @@ class Bot {
 		$config = include './storage/config.cf';
 		$this->username = $config['info']['username'];
 		$this->owner = $config['info']['owner'];
-		$this->trigger = $config['info']['trigger'];
+		$this->trigger = mb_convert_encoding($config['info']['trigger'], 'HTML-ENTITIES', 'UTF-8');;
 		$this->aboutStr = $config['about'];
 		$this->autojoin = $config['autojoin'];
 		if(isset($config['cookie']))
