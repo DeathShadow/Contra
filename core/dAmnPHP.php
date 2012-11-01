@@ -132,85 +132,140 @@ class dAmnPHP {
 	function Message($str = '', $ts = false) { echo $this->Clock($ts),' '.$str,chr(10); }
 	function Notice($str = '', $ts = false)  { $this->Message('** '.$str,$ts); }
 	function Warning($str = '', $ts = false) { $this->Message('>> '.$str,$ts); }
-	// oAuth function, mode sets silent, 0 = silent, 1 = echo
+	
+	// oAuth function, Modes are 0 = Silent, 1 = Echo
 	public function oauth($mode, $refresh = false) {
-		$this->client_id = '24'; // OAuth 2.0 client_id
-		$this->client_secret = 'b6c81c08563888f0da7ea3f7f763c426'; // OAuth 2.0 client_secret
+		$this->client_id     = '24';
+		$this->client_secret = 'b6c81c08563888f0da7ea3f7f763c426';
+		$oauth_file          = './storage/oauth.json';
 
-		if(is_readable("./storage/oauth.json")){ // Checking if the file_exists
-			if($mode == 0) echo "Grabbing existing oAuth tokens..." . LBR; // Turn off if silent
+		// First off, check if the oAuth file exists and is available for reading.
+		if(is_readable($oauth_file)) {
+			
+			// If we're not in silent mode.
+			if($mode == 0) {
+				echo 'Grabbing existing oAuth tokens...' . LBR; // Turn off if silent
+			}
 
 			// Reading oauth file
-			$oauth_file = "./storage/oauth.json";
 			if(filesize($oauth_file) != 0) {
-				$fh = fopen($oauth_file, 'r') or die("can't open file");
-
-				if($mode == 0) echo "Tokens grabbed from file..." . LBR . LBR;
-			// Setting to the oauth_tokens variable
+				$fh = fopen($oauth_file, 'r') or die('Failed to open oAuth file for reading.');
+				
+				// If we're not in silent mode.
+				if($mode == 0) {
+					echo 'Tokens grabbed from file...' . LBR . LBR;
+				}
+				
+				// Take the token(s) from the file and store them.
 				$this->oauth_tokens = json_decode(fread($fh, filesize($oauth_file)));
 
-					if($refresh) {
-						// Getting the access token.
-						if($mode == 0) echo "Refreshing Token" . LBR;
-						$tokens = $this->socket('/oauth2/draft15/token?client_id='.$this->client_id.'&redirect_uri=http://damn.shadowkitsune.net/apicode/&grant_type=refresh_token&client_secret='.$this->client_secret.'&refresh_token='.$this->oauth_tokens->refresh_token);
-						// Set to oauth_tokens variable
-						$this->oauth_tokens = json_decode($tokens);
-						if($this->oauth_tokens->status != "success") {
-							if($mode == 0) echo $this->error("For some reason, your refresh tokens failed") . LBR;
-							unlink($oauth_file);
-						} else {
-							// Writing to oauth.json
-							$oauth_file = "./storage/oauth.json";
-
-							$fh = fopen($oauth_file, 'w') or die("can't open file");
-							fwrite($fh, $tokens);
-							fclose($fh);
-							if($mode == 0) echo "Tokens grabbed with refreshtoken!" . LBR;
+				// Do we need a new token?
+				if($refresh) {
+					
+					// If we're not in silent mode.
+					if($mode == 0) {
+						echo 'Refreshing Token' . LBR;
+					}
+					
+					// Grab the JSON data from the server.
+					$tokens = $this->socket("/oauth2/draft15/token?client_id={$this->client_id}&redirect_uri=http://damn.shadowkitsune.net/apicode/&grant_type=refresh_token&client_secret={$this->client_secret}&refresh_token={$this->oauth_tokens->refresh_token}");
+					
+					// Decode it and store it.
+					$this->oauth_tokens = json_decode($tokens);
+					
+					// Check if the request was considered a success
+					if($this->oauth_tokens->status != "success") {
+						// Nope, something went wrong.
+						if($mode == 0) {
+							echo $this->error('Something went wrong while trying to grab a token! Error: ' . $this->oauth_tokens->error_description) . LBR;
+							echo 'Let\'s try and grab a new token...' . LBR;
 						}
+						unlink($oauth_file);
+						$this->oauth(0, true);
 					} else {
-						if($mode == 0) echo "Checking if tokens have expired..." . LBR;
-						$placebo = json_decode($this->socket('/api/draft15/placebo?access_token='.$this->oauth_tokens->access_token));
-						if($placebo->status != "success") {
-							if($mode == 0) echo "Tokens expired, grabbing new ones..." . LBR;
-							$this->oauth(0, true);
-						} else {
-							if($mode == 0) echo "Tokens grabbed!" . LBR;
-							fclose($fh);
+						// It was OK, let's store it.
+						$fh = fopen($oauth_file, 'w') or die('Failed to open oAuth file for writing.');
+						fwrite($fh, $tokens);
+						fclose($fh);
+						
+						// If not in silent mode.
+						if($mode == 0) {
+							echo 'We got a new token!' . LBR;
 						}
 					}
 				} else {
-					if($mode == 0) echo $this->error("Your token file is empty, grabbing new ones...") . LBR;
-					unlink($oauth_file);
-					$this->oauth(0);
+					// If not in silent mode.
+					if($mode == 0) {
+						echo 'Checking if tokens have expired...' . LBR;
+					}
+					
+					// Place a placebo call to check if the token has expired.
+					$placebo = json_decode($this->socket("/api/draft15/placebo?access_token={$this->oauth_tokens->access_token}"));
+					
+					// Is the token OK?
+					if($placebo->status != "success") {
+						// Nope, it expired.
+						if($mode == 0) {
+							echo $this->error('It appears that your token has expired! Let\'s grab a new one.') . LBR;
+						}
+						$this->oauth(0, true);
+					} else {
+						// We're done!
+						if($mode == 0) {
+							echo 'We got a new token!' . LBR;
+						}
+						fclose($fh);
+					}
 				}
 			} else {
-				if($mode == 0) echo "Grabbing the oAuth Tokens from deviantART..." . LBR; // Turn off if silent
+				// We need a new token!
+				if($mode == 0) {
+					echo $this->error('Your token file is empty, grabbing new tokens...') . LBR;
+				}
+				unlink($oauth_file);
+				$this->oauth(0);
+			}
+		} else {
+			// We need a token!
+			if($mode == 0) {
+				echo 'Grabbing the oAuth Tokens from deviantART...' . LBR;
+			}
 
-				echo "Open your browser to the required URL. Please load the link below! (Make sure to login the account you're using for bot first.)" . LBR;
-		 		echo 'https://bit.ly/WI6u6y' . LBR;
+			// Request that the user authorize the request.
+			echo 'We need to authorize a new token. Log into your bot\'s account and then open this link in your web browser:' . LBR;
+			echo 'https://bit.ly/WI6u6y' . LBR;
 
-				// Retreiving the code
-				echo "Enter the code given by above link:" . LBR;
-				$code = trim(fgets(STDIN)); // STDIN for reading input
+			// Retreiving the code
+			echo 'Enter the code given by the above link:' . LBR;
+			$code = trim(fgets(STDIN)); // STDIN for reading input
 
-				// Getting the access token.
-				$tokens = $this->socket('/oauth2/draft15/token?client_id='.$this->client_id.'&redirect_uri=http://damn.shadowkitsune.net/apicode/&grant_type=authorization_code&client_secret='.$this->client_secret.'&code='.$code);
+			// Getting the access token.
+			$tokens = $this->socket("/oauth2/draft15/token?client_id={$this->client_id}&redirect_uri=http://damn.shadowkitsune.net/apicode/&grant_type=authorization_code&client_secret={$this->client_secret}&code={$code}");
 
-				// Set to oauth_tokens variable
-				$this->oauth_tokens = json_decode($tokens);
-				if($this->oauth_tokens->status != "success") {
-					if($mode == 0) echo $this->error("For some reason, your tokens failed") . LBR;
-				} else {
-					// Writing to oauth.json
-					$oauth_file = "./storage/oauth.json";
-
-					$fh = fopen($oauth_file, 'w') or die("can't open file");
-					fwrite($fh, $tokens);
-					fclose($fh);
-					if($mode == 0) echo "Tokens grabbed!" . LBR;
+			// Store the token(s)
+			$this->oauth_tokens = json_decode($tokens);
+			
+			// Was it a success?
+			if($this->oauth_tokens->status != 'success') {
+				if($mode == 0) {
+					echo $this->error('Something went wrong while trying to grab a token! Error: ' . $this->oauth_tokens->error_description) . LBR;
+					echo 'Did you log into your bot\'s account and go to the link above?' . LBR;
+				}
+				unlink($oauth_file);
+				$this->oauth(0);
+			} else {
+				// Woo, got a token!
+				$fh = fopen($oauth_file, 'w') or die('Failed to open the oAuth file for writing.');
+				fwrite($fh, $tokens);
+				fclose($fh);
+				
+				// If we're not in silent mode.
+				if($mode == 0) {
+					echo 'We got a token!' . LBR;
 				}
 			}
 		}
+	}
 
 	// dAmntoken function
 	public function damntoken() {
