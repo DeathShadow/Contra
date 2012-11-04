@@ -156,7 +156,7 @@ class dAmn_lib extends extension {
 			while($i > 0) {
 				unset($ajn[array_search(strtolower($ns), $ajn)]);
 				sort($ajn);
-				$this->Bot->autojoin = $ajn;
+				$this->Bot->autojoin = $this->dAmn->deform_chat($ajn);
 				$i--;
 				$this->Bot->save_config();
 				$this->dAmn->part($ns);
