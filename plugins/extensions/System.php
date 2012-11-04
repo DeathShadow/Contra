@@ -570,6 +570,8 @@ class System_commands extends extension {
 			case 'add':
 				$ans = args($message,2);
 				if($ans=='') $ans = $target;
+				if(in_array(strtolower($this->dAmn->format_chat($ans)), $this->Bot->njc))
+					return $this->dAmn->say($ns, $from.': Cannot add '.$this->dAmn->deform_chat($ans).' to autojoin.');
 				$ansid = false;
 				foreach($this->Bot->autojoin as $id => $channel)
 					if(strtolower($this->dAmn->deform_chat($channel,$this->Bot->username)) == strtolower($this->dAmn->deform_chat($ans,$this->Bot->username)))
