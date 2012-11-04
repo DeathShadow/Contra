@@ -55,7 +55,8 @@ class Bot {
 		'chat:irpg',
 		'chat:trivia',
 		'chat:photographers',
-		'chat:daunderworldrpg'
+		'chat:daunderworldrpg',
+		'chat:seniors'
 	);
 
 	function __construct() {

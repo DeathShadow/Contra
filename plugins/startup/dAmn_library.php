@@ -134,7 +134,7 @@ class dAmn_lib extends extension {
 		if(!$this->Bot->user->has($from, 25)) return;
 		$msg_clean = htmlspecialchars_decode($msg);
 		$trig = $this->Bot->trigger;
-			
+
 		if(substr($msg_clean, 0, strlen($trig)) == $trig) {
 			$msg_clean = substr($msg_clean, strlen($trig));
 			$this->Bot->Events->command(args($msg_clean,0),$ns,$from,$msg_clean);
@@ -149,6 +149,19 @@ class dAmn_lib extends extension {
 
 	function e_join($ns, $e) {
 		if($e!='ok') return;
+		$ajn = array_map('strtolower',$this->Bot->autojoin);
+		if(in_array(strtolower($ns), $this->Bot->njc)) {
+			$ajn = array_map('dAmnPHP::format_chat',$ajn);
+			$i=count(array_keys($ajn, $ns));
+			while($i > 0) {
+				unset($ajn[array_search(strtolower($ns), $ajn)]);
+				sort($ajn);
+				$this->Bot->autojoin = $ajn;
+				$i--;
+				$this->Bot->save_config();
+				$this->dAmn->part($ns);
+			}
+		}
 		$this->dAmn->chat[$ns] = array(
 			'joined' => time(),
 			'title' => array(),
