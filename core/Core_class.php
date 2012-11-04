@@ -45,6 +45,18 @@ class Bot {
 		'Bot has quit.',
 		'Bye bye!'
 	);
+	public $njc = array(
+		'chat:devart',
+		'chat:devious',
+		'chat:fella',
+		'chat:help',
+		'chat:mnadmin',
+		'chat:idlerpg',
+		'chat:irpg',
+		'chat:trivia',
+		'chat:photographers',
+		'chat:daunderworldrpg'
+	);
 
 	function __construct() {
 
@@ -128,7 +140,7 @@ class Bot {
 		$this->owner = $config['info']['owner'];
 		if (strlen($config['info']['trigger']) > 1) {
 			$this->trigger = $config['info']['trigger'];
-			
+
 		} else {
 			// Fix for issue #14
 			require_once('./core/Extras.php');
