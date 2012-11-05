@@ -126,13 +126,27 @@ class dAmnPHP {
 			"<abbr title=\"\\1\">"
 		),
 	);
+	public $njc = array(
+		'chat:devart',
+		'chat:devious',
+		'chat:fella',
+		'chat:help',
+		'chat:mnadmin',
+		'chat:idlerpg',
+		'chat:irpg',
+		'chat:trivia',
+		'chat:photographers',
+		'chat:daunderworldrpg',
+		'chat:seniors',
+		'chat:test'
+	);
 
 	function Time($ts=false) { return date('H:i:s', ($ts===false?time():$ts)); }
 	function Clock($ts=false) {     return '['.$this->Time($ts).']'; }
 	function Message($str = '', $ts = false) { echo $this->Clock($ts),' '.$str,chr(10); }
 	function Notice($str = '', $ts = false)  { $this->Message('** '.$str,$ts); }
 	function Warning($str = '', $ts = false) { $this->Message('>> '.$str,$ts); }
-	
+
 	// oAuth function, Modes are 0 = Silent, 1 = Echo
 	public function oauth($mode, $refresh = false) {
 		$this->client_id     = '24';
@@ -141,7 +155,7 @@ class dAmnPHP {
 
 		// First off, check if the oAuth file exists and is available for reading.
 		if(is_readable($oauth_file)) {
-			
+
 			// If we're not in silent mode.
 			if($mode == 0) {
 				echo 'Grabbing existing oAuth tokens...' . LBR; // Turn off if silent
@@ -150,29 +164,29 @@ class dAmnPHP {
 			// Reading oauth file
 			if(filesize($oauth_file) != 0) {
 				$fh = fopen($oauth_file, 'r') or die('Failed to open oAuth file for reading.');
-				
+
 				// If we're not in silent mode.
 				if($mode == 0) {
 					echo 'Tokens grabbed from file...' . LBR . LBR;
 				}
-				
+
 				// Take the token(s) from the file and store them.
 				$this->oauth_tokens = json_decode(fread($fh, filesize($oauth_file)));
 
 				// Do we need a new token?
 				if($refresh) {
-					
+
 					// If we're not in silent mode.
 					if($mode == 0) {
 						echo 'Refreshing Token' . LBR;
 					}
-					
+
 					// Grab the JSON data from the server.
 					$tokens = $this->socket("/oauth2/draft15/token?client_id={$this->client_id}&redirect_uri=http://damn.shadowkitsune.net/apicode/&grant_type=refresh_token&client_secret={$this->client_secret}&refresh_token={$this->oauth_tokens->refresh_token}");
-					
+
 					// Decode it and store it.
 					$this->oauth_tokens = json_decode($tokens);
-					
+
 					// Check if the request was considered a success
 					if($this->oauth_tokens->status != "success") {
 						// Nope, something went wrong.
@@ -187,7 +201,7 @@ class dAmnPHP {
 						$fh = fopen($oauth_file, 'w') or die('Failed to open oAuth file for writing.');
 						fwrite($fh, $tokens);
 						fclose($fh);
-						
+
 						// If not in silent mode.
 						if($mode == 0) {
 							echo 'We got a new token!' . LBR;
@@ -198,10 +212,10 @@ class dAmnPHP {
 					if($mode == 0) {
 						echo 'Checking if tokens have expired...' . LBR;
 					}
-					
+
 					// Place a placebo call to check if the token has expired.
 					$placebo = json_decode($this->socket("/api/draft15/placebo?access_token={$this->oauth_tokens->access_token}"));
-					
+
 					// Is the token OK?
 					if($placebo->status != "success") {
 						// Nope, it expired.
@@ -244,7 +258,7 @@ class dAmnPHP {
 
 			// Store the token(s)
 			$this->oauth_tokens = json_decode($tokens);
-			
+
 			// Was it a success?
 			if($this->oauth_tokens->status != 'success') {
 				if($mode == 0) {
@@ -258,7 +272,7 @@ class dAmnPHP {
 				$fh = fopen($oauth_file, 'w') or die('Failed to open the oAuth file for writing.');
 				fwrite($fh, $tokens);
 				fclose($fh);
-				
+
 				// If we're not in silent mode.
 				if($mode == 0) {
 					echo 'We got a token!' . LBR;
@@ -400,7 +414,10 @@ class dAmnPHP {
 	*               understanding the packets, just imagine that the
 	*               "LBR"s are actually "\n"s, because they are...
 	*/
-	function join($channel) { $this->send('join '.$channel.LBR); }
+	function join($channel) {
+		if(in_array(strtolower($channel), $this->njc)) return;
+		$this->send('join '.$channel.LBR);
+	}
 	function part($channel) {
 		if(strtolower($channel) == 'chat:datashare') return;
 		$this->send('part '.$channel.LBR);

@@ -45,19 +45,6 @@ class Bot {
 		'Bot has quit.',
 		'Bye bye!'
 	);
-	public $njc = array(
-		'chat:devart',
-		'chat:devious',
-		'chat:fella',
-		'chat:help',
-		'chat:mnadmin',
-		'chat:idlerpg',
-		'chat:irpg',
-		'chat:trivia',
-		'chat:photographers',
-		'chat:daunderworldrpg',
-		'chat:seniors'
-	);
 
 	function __construct() {
 
