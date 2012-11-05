@@ -99,7 +99,7 @@ class dAmn_commands extends extension {
 		$chans = array_filter($chans);
 		$njck = $this->dAmn->format_chat(args($message, 1));
 		if($njck == 'chat:') unset($njck);
-		if(in_array(strtolower($target), $this->Bot->njc) || in_array(strtolower($njck), $this->Bot->njc))
+		if(in_array(strtolower($target), $this->dAmn->njc) || in_array(strtolower($njck), $this->dAmn->njc))
 			if(isset($njck))
 				return $this->dAmn->say($ns, $from.': Cannot join '.$this->dAmn->deform_chat($njck).'.');
 			else return $this->dAmn->say($ns, $from.': Cannot join '.$this->dAmn->deform_chat($target).'.');
