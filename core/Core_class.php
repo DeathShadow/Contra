@@ -92,16 +92,15 @@ class Bot {
 		// Load our dAmn interface.
 		$this->dAmn = new dAmnPHP;
 
-        // Check against non joinable channels.
-        foreach($this->autojoin as $key => $chan) {
-	    $chan = $this->dAmn->deform_chat($chan);
-            if(in_array(strtolower(str_replace('#', 'chat:', $chan)), $this->dAmn->njc)) {
-                $this->Console->Notice('Channel '.$chan.' is not allowed, and has been removed.');
-                unset($this->autojoin[$key]);
-            }
-        }
-
-        $this->save_config();
+		// Check against non joinable channels.
+		foreach($this->autojoin as $key => $chan) {
+			$chan = $this->dAmn->deform_chat($chan);
+			if(in_array(strtolower(str_replace('#', 'chat:', $chan)), $this->dAmn->njc)) {
+				$this->Console->Notice('Channel '.$chan.' is not allowed, and has been removed.');
+				unset($this->autojoin[$key]);
+			}
+		}
+		$this->save_config();
 
 		// Give the interface a client string.
 		$this->dAmn->Client = $client;
