@@ -18,6 +18,7 @@ class notes_module extends extension {
 
 	protected $receivers = array();
 	protected $notes = array();
+    protected $read = array();
 
 	function init() {
 		$this->addCmd('note', 'c_note');
@@ -25,7 +26,7 @@ class notes_module extends extension {
 			'note',
 			'Send notes to people via this bot!<br/><sup>'
 				.$this->Bot->trigger.'note [user] [message]<br/>'
-				.$this->Bot->trigger.'note list<br/>'
+				.$this->Bot->trigger.'note list [new]<br/>'
 				.$this->Bot->trigger.'note read [id]<br/>'
 				.$this->Bot->trigger.'note clear [id]<br/></sup>'
 		);
@@ -66,6 +67,20 @@ class notes_module extends extension {
 			case 'read':
 				$call = strtolower($com1)=='list'?'getList':'getNote';
 				$check = strtolower($from);
+                if (strtolower($com1)=='list'&&isset($com2)&&strtolower($com2)=='new') {
+                    foreach($this->notes as $user => $nn) {
+                        if($user == $check) {
+                            if (count($this->notes[$user])==count($this->read[$user])) {
+                                $this->say($ns, $from, 'You have no notes.');
+                                return;
+                            }
+                            $this->say($ns, $from, $this->getNewList($user, false));
+                            return;
+                        }
+                    }
+                    $this->say($ns, $from, 'You have no new notes.');
+                    return;
+                }
 				foreach($this->notes as $user => $nn) {
 					if($user == $check) {
 						$this->say($ns, $from, $this->$call($user, ($call=='getList'?false:$com2)));
@@ -126,8 +141,25 @@ class notes_module extends extension {
 		$new = ($notes===false?'':'('.$notes.' new)');
 		if(empty($this->notes[$user])) return $user.': You don\'t have any notes.';
 		$head = $user.': Your notes <code>'.$new.'</code><br/>'; $list = '';
-		foreach($this->notes[$user] as $id => $data) $list.= '#'.$id.', ';
-		return $head.rtrim($list,', ').'<br/><sup>Use '.$this->Bot->trigger.'note read [id] to read a note.</sup>';
+		foreach($this->notes[$user] as $id => $data) {
+            if (isset($this->read[$user][$id]))
+                $list.= '#'.$id.', ';
+            else
+                $list.= '<b>#'.$id.'</b>, ';
+        }
+		return $head.rtrim($list,', ').'<br/><br/><sup><b>Bold</b> notes have not yet been read.<br/>Use '.$this->Bot->trigger.'note read [id] to read a note.</sup>';
+	}
+
+	protected function getNewList($user) {
+		$notes = $this->check($user);
+		if($notes!==false) $this->clearRecvs($user);
+		if(empty($this->notes[$user])||count($this->notes[$user])==count($this->read[$user])) return $user.': You don\'t have any notes.';
+		$head = $user.': Your notes<br/>'; $list = '';
+		foreach($this->notes[$user] as $id => $data) {
+            if (!isset($this->read[$user][$id]))
+                $list.= '#'.$id.', ';
+        }
+		return $head.rtrim($list,', ').'<br/><br/><sup>Use '.$this->Bot->trigger.'note read [id] to read a note.</sup>';
 	}
 
 	protected function getNote($user, $id) {
@@ -136,6 +168,8 @@ class notes_module extends extension {
 		if($id=='') return $user.': You must provide a note ID number.';
 		if(!isset($this->notes[$user][$id])) return $user.': Note #'.$id.' not found.';
 		$note = $this->notes[$user][$id];
+        $this->read[$user][$id] = true;
+		$this->Write('read', $this->read);
 		return '<br/><b>To:</b> '.$user.'<b>; From:</b> '.$note['from'].'<b>; Date received</b>: '.gmdate('r', $note['ts']).'<b>;'.'<br/>Message:</b> '.$note['content'].'<br/><sub>Use "'.$this->Bot->trigger.'note clear" to delete all notes or "'.$this->Bot->trigger.'note delete '.$id.'" to delete this note.</sub>';
 	}
 
@@ -145,7 +179,10 @@ class notes_module extends extension {
 		if($id=='') return $user.': You must provide a note ID number.';
 		if(!isset($this->notes[$user][$id])) return $user.': Note #'.$id.' not found.';
 		$this->notes[$user] = array_del_key($this->notes[$user], $id);
+        if (isset($this->read[$user][$id]))
+            unset($this->read[$user][$id]);
 		$this->Write('notes', $this->notes);
+		$this->Write('read', $this->read);
 		return $user.': Deleted note #'.$id.'.';
 	}
 
@@ -154,6 +191,8 @@ class notes_module extends extension {
 		$this->notes = ($notes === false ? array() : $notes);
 		$rec = $this->Read('receive');
 		$this->receivers = ($rec === false ? array() : $rec);
+		$read = $this->Read('read');
+		$this->read = ($read === false ? array() : $read);
 	}
 
 	protected function sendnote($to, $from, $content, $ns) {
@@ -184,6 +223,7 @@ class notes_module extends extension {
 			$this->notes[$user][$i]['ts'	 ] =   time();
 			ksort($this->notes[$user]);
 			$this->Write('notes', $this->notes);
+            $this->Write('read', $this->read);
 			$this->loadnotes();
 			return true;
 		}
@@ -208,6 +248,9 @@ class notes_module extends extension {
 			else $this->Write('receive', $this->receivers);
 			$notes = $this->Read('notes');
 			$rec   = $this->Read('receive');
+            if (isset($this->read[$user]))
+                unset($this->read[$user]);
+            $this->Write('read', $this->read);
 			$this->notes     = ($notes === false) ? array() : $notes;
 			$this->receivers = (  $rec === false) ? array() :   $rec;
 			if(isset($this->notes[$user])) return 'error';
@@ -239,6 +282,9 @@ class notes_module extends extension {
 			else $this->Write('receive', $this->receivers);
 			$notes = $this->Read('notes');
 			$rec   = $this->Read('receive');
+            if (isset($this->read[$dev]))
+                unset($this->read[$dev]);
+            $this->Write('read', $this->read);
 			$this->notes     = ($notes === false) ? array() : $notes;
 			$this->receivers = (  $rec === false) ? array() :   $rec;
 			$say 			 = $admin.': Deleted '.$dev.'\'s notes.';
