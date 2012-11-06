@@ -137,8 +137,7 @@ class dAmnPHP {
 		'chat:trivia',
 		'chat:photographers',
 		'chat:daunderworldrpg',
-		'chat:seniors',
-		'chat:test'
+		'chat:seniors'
 	);
 
 	function Time($ts=false) { return date('H:i:s', ($ts===false?time():$ts)); }
