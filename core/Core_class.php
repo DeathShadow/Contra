@@ -91,6 +91,17 @@ class Bot {
 		if(DEBUG) $this->Console->Notice('Loading dAmnPHP, client string is "'.$client.'"');
 		// Load our dAmn interface.
 		$this->dAmn = new dAmnPHP;
+        
+        // Check against non joinable channels.
+        foreach ($this->autojoin as $key => $chan) {
+            if (in_array(strtolower(str_replace('#', 'chat:', $chan)), $this->dAmn->njc)) {
+                $this->Console->Notice('Channel '.$chan.' is not allowed, and has been removed.');
+                unset($this->autojoin[$key]);
+            }
+        }
+        
+        $this->save_config();
+        
 		// Give the interface a client string.
 		$this->dAmn->Client = $client;
 		// And an Agent string.
