@@ -231,6 +231,7 @@ class Welcome extends extension {
 	function load_data() {
 		$this->welcome = $this->Read('wdata', 2);
 		$this->welcome = $this->welcome === false ? array() : $this->welcome;
+		$this->welcome = array_change_key_case($this->welcome, CASE_LOWER);
 		if(!empty($this->welcome)) $this->hook('e_welcome', 'recv_join');
 		else $this->unhook('e_welcome', 'recv_join');
 	}
