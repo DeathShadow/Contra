@@ -35,6 +35,7 @@ class Responses extends extension {
 		$subcom = strtolower(args($message, 1));
 		$ar = args($message, 2);
 		$say = $from.': ';
+		$channel = strtolower($target);
 		switch($subcom) {
 			case 'add':
 				if(isset($this->response[$ar])) {
@@ -46,6 +47,10 @@ class Responses extends extension {
 				$re = $ara[2];
 				if(empty($re)) {
 					$say.= 'You need to give a response to be used!';
+					break;
+				}
+				if($channel == "chat:botdom") {
+					$say.='Responses are not allowed in #Botdom.';
 					break;
 				}
 				$this->response[$ar] = $re;
@@ -63,22 +68,26 @@ class Responses extends extension {
 				$say.= 'Removed autoresponse for '.$ar.'.';
 				break;
 			case 'on':
-				$key = array_search($target, $this->rooms);
-				if($target == "chat:Botdom") {
-					$say.='Responses are not allowed in #Botdom.';
-					$this->rooms[] = $target;
+				$key = array_search($channel, $this->rooms);
+				if($key !== false) {
+					$say.='Responses are already enabled in '.$this->dAmn->deform_chat($target, $this->Bot->username).'.';
 					break;
 				}
+				if($channel == "chat:botdom") {
+					$say.='Responses are not allowed in #Botdom.';
+					break;
+				}
+				$this->rooms[] = $channel;
 				unset($this->rooms[$key]);
 				$say.= 'Responses enabled for '.$this->dAmn->deform_chat($target, $this->Bot->username).'!';
 				break;
 			case 'off':
-				$key = array_search($target, $this->rooms);
+				$key = array_search($channel, $this->rooms);
 				if($key !== false) {
 					$say.= 'Responses are already disabled in '.$this->dAmn->deform_chat($target, $this->Bot->username).'.';
 					break;
 				}
-				$this->rooms[] = $target;
+				$this->rooms[] = $channel;
 				$say.= 'Responses disabled in '.$this->dAmn->deform_chat($target, $this->Bot->username).'!';
 				break;
 			case 'list':
@@ -194,6 +203,7 @@ class Responses extends extension {
 		$this->response = $this->response === false ? array() : $this->response;
 		$this->rooms = $this->Read('rooms', 2);
 		$this->rooms = $this->rooms === false ? array() : $this->rooms;
+		$this->rooms = array_change_key_case($this->rooms, CASE_LOWER);
 		if(!empty($this->response)) $this->hook('e_respond', 'recv_msg');
 		else $this->unhook('e_respond', 'recv_msg');
 	}
