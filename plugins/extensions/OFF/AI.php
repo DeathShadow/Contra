@@ -33,6 +33,7 @@ class Brain extends extension {
 					$dAmn->say($ns, $from.': AI can\'t be turned on in #Botdom.');
 					break;
 				}
+				if($this->$kw('e_msg', 'recv_msg')) $dAmn->say($ns, $from.': AI turned '.$com.'!');
 				$this->switch_board($com);
 				break;
 			default:
