@@ -767,7 +767,6 @@ class System_commands extends extension {
 		if($pay[0] == $this->Bot->username || strstr($pay[0], 'ALL')) {
 			if($this->Bot->info['version'] < $version && $from == 'Botdom') {
 				$this->botversion['latest'] = false;
-				var_dump($this->Bot->autoupdate);
 				if($this->Bot->autoupdate == false) {
 					if(strstr($pay[0], 'ALL'))
 						$this->botversion['notify'] = true;
