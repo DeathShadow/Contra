@@ -712,12 +712,16 @@ class System_commands extends extension {
 
 		// Everything seems to be in order, let's update!~
 		$this->dAmn->say($ns, "{$requestor}: Now updating. Bot will be shutdown after update is complete.");
+		$this->doupdate($requestor, $message);
+	}
+
+	function doupdate($requestor, $message) {
 		$this->dAmn->npmsg('chat:DataShare', "CODS:VERSION:UPDATEME:{$this->Bot->username},{$this->Bot->info['version']}", true);
 
 		$dAmn = $this->dAmn;
 		$self = $this;
 
-		$this->hookOnceBDS(function ($parts, $from, $message) use ($ns, $requestor, $dAmn, $self) {
+		$this->hookOnceBDS(function ($parts, $from, $message) use ($requestor, $dAmn, $self) {
 			// CODS:VERSION:UPDATE:RoleyMoley,5.5.1,http://download.botdom.com/uk0g6/Contra_5.5.1_public_auto.zip
 
 			$payload = explode(',', $message, 5);
@@ -763,11 +767,15 @@ class System_commands extends extension {
 		if($pay[0] == $this->Bot->username || strstr($pay[0], 'ALL')) {
 			if($this->Bot->info['version'] < $version && $from == 'Botdom') {
 				$this->botversion['latest'] = false;
-				if(strstr($pay[0], 'ALL'))
-					$this->botversion['notify'] = true;
-				if(!isset($this->Bot->updatenotes) || $this->Bot->updatenotes == true)
-					$this->sendnote($this->Bot->owner, 'Update Service', "A new version of Contra is available. (version: http://github.com/dAmnLab/Contra/commits/v{$version} ({$version}); released on {$released}) You can download it from http://botdom.com/wiki/Contra#Latest or type <code>{$this->Bot->trigger}update</code> to update your bot.<br /><br />(<b>NOTE: using <code>{$this->Bot->trigger}update</code> will overwrite all your changes to your bot.</b>)<br /><br /><sub>To disable this update note in the future, set 'updatenotes' in config.cf to false.</sub>");
-				$this->Console->Alert("Contra {$version} has been released on {$released}. Get it at http://botdom.com/wiki/Contra#Latest");
+				var_dump($this->Bot->autoupdate);
+				if($this->Bot->autoupdate == false) {
+					if(strstr($pay[0], 'ALL'))
+						$this->botversion['notify'] = true;
+					if(!isset($this->Bot->updatenotes) || $this->Bot->updatenotes == true)
+						$this->sendnote($this->Bot->owner, 'Update Service', "A new version of Contra is available. (version: http://github.com/dAmnLab/Contra/commits/v{$version} ({$version}); released on {$released}) You can download it from http://botdom.com/wiki/Contra#Latest or type <code>{$this->Bot->trigger}update</code> to update your bot.<br /><br />(<b>NOTE: using <code>{$this->Bot->trigger}update</code> will overwrite all your changes to your bot.</b>)<br /><br /><sub>To disable this update note in the future, set 'updatenotes' in config.cf to false.</sub>");
+					$this->Console->Alert("Contra {$version} has been released on {$released}. Get it at http://botdom.com/wiki/Contra#Latest");
+				}elseif($this->Bot->autoupdate == true)
+					$this->doupdate($requestor, $message);
 			}
 		}
 	}
