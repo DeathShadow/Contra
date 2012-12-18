@@ -684,7 +684,7 @@ class System_commands extends extension {
 	}
 
 	function c_sudo($ns, $from, $message, $target) {
-		$who = args($message, 1);
+		$who = strtolower(args($message, 1));
 		$what = strtolower(args($message, 2));
 		$msg = args($message, 2, true);
 		$msg = empty($msg) ? false : $msg;
@@ -696,7 +696,7 @@ class System_commands extends extension {
 			return $this->dAmn->say($ns, $from.': eval command cannot be used with the "sudo" command.');
 		if($what == 'note')
 			return $this->dAmn->say($ns, $from.': note command cannot be used with the "sudo" command.');
-		if($who == $this->Bot->owner)
+		if($who == strtolower($this->Bot->owner))
 			return $this->dAmn->say($ns, $from.': Cannot execute commands as bot owner.');
 		$this->Bot->Events->command($what, $ns, $who, $msg);
 	}
