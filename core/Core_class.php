@@ -19,7 +19,7 @@ class Bot {
 	public $start;
 	public $info = array(
 		'name' => 'Contra',
-		'version' => '5.5.8',
+		'version' => '5.5.9',
 		'status' => '',
 		'release' => 'public',
 		'author' => 'photofroggy',
