@@ -685,7 +685,7 @@ class System_commands extends extension {
 
 	function c_sudo($ns, $from, $message, $target) {
 		$who = args($message, 1);
-		$what = args($message, 2);
+		$what = strtolower(args($message, 2));
 		$msg = args($message, 2, true);
 		$msg = empty($msg) ? false : $msg;
 		if(empty($who))
