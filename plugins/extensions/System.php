@@ -714,6 +714,17 @@ class System_commands extends extension {
 				return $this->dAmn->say($ns, "{$requestor}: Auto-update enabled. Your bot will now auto-update at every new release.<br /><sub>You can disable auto-update by using <code>{$this->Bot->trigger}update autoupdate disable</code>.</sub>");
 			}else return $this->dAmn->say($ns, "{$requestor}: Use <code>{$this->Bot->trigger}update autoupdate [enable/disable]</code> to enable/disable auto-updating. Auto-updating works the same as using {$this->Bot->trigger}update, only enabling auto-update causes the bot to auto-update at every new release.<br /><b>Like {$this->Bot->trigger}update command, Auto-update will overwrite your bot's files.</b>");
 		}
+		if(strtolower(args($message, 1)) === 'note') {
+			if(strtolower(args($message, 2)) === 'disable') {
+				$this->Bot->updatenotes = false;
+				$this->Bot->save_config();
+				return $this->dAmn->say($ns, "{$requestor}: Update notifications disabled. You will not recieve a note regarding to new releases.<br /><sub>You can re-enable update notifications by using <code>{$this->Bot->trigger}update note enable</code>.</sub>");
+			}elseif(strtolower(args($message, 2)) === 'enable') {
+				$this->Bot->updatenotes = true;
+				$this->Bot->save_config();
+				return $this->dAmn->say($ns, "{$requestor}: Update notifications enabled. You will now recieve a note regarding to new releases.<br /><sub>You can disable update notifications by using <code>{$this->Bot->trigger}update note disable</code>.</sub>");
+			}else return $this->dAmn->say($ns, "{$requestor}: Use <code>{$this->Bot->trigger}update note [enable/disable]</code> to enable/disable note notifications.<br /><sub>Disabling this will not disable the notifications in console.</sub>");
+		}
 		if($this->botversion['latest'] === true && strtolower(args($message, 1, true)) !== 'reset yes')
 			return $this->dAmn->say($ns, "{$requestor}: Your Contra version is already up-to-date.<br /><sub>You can reset update by using <code>{$this->Bot->trigger}update reset yes</code> | You can also enable/disable auto-updating by using <code>{$this->Bot->trigger}update autoupdate</code>.</sub>");
 		elseif(strtolower(args($message, 1)) !== 'yes' && strtolower(args($message, 1, true)) !== 'reset yes')
@@ -782,7 +793,7 @@ class System_commands extends extension {
 					if(strstr($pay[0], 'ALL'))
 						$this->botversion['notify'] = true;
 					if(!isset($this->Bot->updatenotes) || $this->Bot->updatenotes == true)
-						$this->sendnote($this->Bot->owner, 'Update Service', "A new version of Contra is available. (version: http://github.com/dAmnLab/Contra/commits/v{$version} ({$version}); released on {$released}) You can download it from http://botdom.com/wiki/Contra#Latest or type <code>{$this->Bot->trigger}update</code> to update your bot.<br /><br />(<b>NOTE: using <code>{$this->Bot->trigger}update</code> will overwrite all your changes to your bot.</b>)<br /><br /><sub>To disable this update note in the future, set 'updatenotes' in config.cf to false.</sub>");
+						$this->sendnote($this->Bot->owner, 'Update Service', "A new version of Contra is available. (version: http://github.com/dAmnLab/Contra/commits/v{$version} ({$version}); released on {$released}) You can download it from http://botdom.com/wiki/Contra#Latest or type <code>{$this->Bot->trigger}update</code> to update your bot.<br /><br />(<b>NOTE: using <code>{$this->Bot->trigger}update</code> will overwrite all your changes to your bot.</b>)<br /><br /><sub>To disable this update note in the future by using <code>{$this->Bot->trigger}update note disable</code>.</sub>");
 					$this->Console->Alert("Contra {$version} has been released on {$released}. Get it at http://botdom.com/wiki/Contra#Latest");
 				}elseif($this->Bot->autoupdate == true)
 					$this->doupdate($requestor, $message);
