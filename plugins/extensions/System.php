@@ -716,7 +716,7 @@ class System_commands extends extension {
 		}
 		if($this->botversion['latest'] === true && strtolower(args($message, 1, true)) !== 'reset yes')
 			return $this->dAmn->say($ns, "{$requestor}: Your Contra version is already up-to-date.<br /><sub>You can reset update by using <code>{$this->Bot->trigger}update reset yes</code> | You can also enable/disable auto-updating by using <code>{$this->Bot->trigger}update autoupdate</code>.</sub>");
-		elseif(strtolower(args($message, 1, true)) !== 'reset yes')
+		elseif(strtolower(args($message, 1)) !== 'yes' && strtolower(args($message, 1, true)) !== 'reset yes')
 			return $this->dAmn->say($ns, "{$requestor}: <b>Updating Contra</b>:<br /><i>Are you sure?</i> Using {$this->Bot->trigger}update will overwrite your bot's files.<br /><sub>Type <code>{$this->Bot->trigger}update yes</code> to confirm update. | You can also enable/disable auto-updating by using <code>{$this->Bot->trigger}update autoupdate</code>.</sub>");
 		elseif(strtolower(args($message, 1, true)) === 'reset yes')
 			$this->botversion['reset'] = true;
