@@ -703,10 +703,21 @@ class System_commands extends extension {
 
 	function c_update($ns, $requestor, $message) {
 		if(strtolower($requestor) !== strtolower($this->Bot->owner)) return;
+		if(strtolower(args($message, 1)) === 'autoupdate') {
+			if(strtolower(args($message, 2)) === 'disable') {
+				$this->Bot->autoupdate = false;
+				$this->Bot->save_config();
+				return $this->dAmn->say($ns, "{$requestor}: Auto-update disabled. Use <code>{$this->Bot->trigger}update</code> to update your bot.<br /><sub>You can re-enable auto-update by using <code>{$this->Bot->trigger}update autoupdate enable</code>.</sub>");
+			}elseif(strtolower(args($message, 2)) === 'enable') {
+				$this->Bot->autoupdate = true;
+				$this->Bot->save_config();
+				return $this->dAmn->say($ns, "{$requestor}: Auto-update enabled. Your bot will now auto-update at every new release.<br /><sub>You can disable auto-update by using <code>{$this->Bot->trigger}update autoupdate disable</code>.</sub>");
+			}else return $this->dAmn->say($ns, "{$requestor}: Use <code>{$this->Bot->trigger}update autoupdate [enable/disable]</code> to enable/disable auto-updating. Auto-updating works the same as using {$this->Bot->trigger}update, only enabling auto-update causes the bot to auto-update at every new release.<br /><b>Like {$this->Bot->trigger}update command, Auto-update will overwrite your bot's files.</b>");
+		}
 		if($this->botversion['latest'] === true && strtolower(args($message, 1, true)) !== 'reset yes')
-			return $this->dAmn->say($ns, "{$requestor}: Your Contra version is already up-to-date.<br /><sub>You can reset update by using <code>{$this->Bot->trigger}update reset yes</code></sub>");
+			return $this->dAmn->say($ns, "{$requestor}: Your Contra version is already up-to-date.<br /><sub>You can reset update by using <code>{$this->Bot->trigger}update reset yes</code> | You can also enable/disable auto-updating by using <code>{$this->Bot->trigger}update autoupdate</code>.</sub>");
 		elseif(strtolower(args($message, 1)) !== 'yes' && strtolower(args($message, 1, true)) !== 'reset yes')
-			return $this->dAmn->say($ns, "{$requestor}: <b>Updating Contra</b>:<br /><i>Are you sure?</i> Using {$this->Bot->trigger}update will overwrite your bot's files.<br /><sub>Type <code>{$this->Bot->trigger}update yes</code> to confirm update.</sub>");
+			return $this->dAmn->say($ns, "{$requestor}: <b>Updating Contra</b>:<br /><i>Are you sure?</i> Using {$this->Bot->trigger}update will overwrite your bot's files.<br /><sub>Type <code>{$this->Bot->trigger}update yes</code> to confirm update. | You can also enable/disable auto-updating by using <code>{$this->Bot->trigger}update autoupdate</code>.</sub>");
 		elseif(strtolower(args($message, 1, true)) === 'reset yes')
 			$this->botversion['reset'] = true;
 
