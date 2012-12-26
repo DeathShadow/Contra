@@ -176,6 +176,9 @@ class Bot {
 		if(empty($this->username)) $this->load_config();
 		$this->Console->Notice(($sec === false ? 'Starting' : 'Restarting').' dAmn.');
 		$socket = fsockopen('ssl://www.deviantart.com', 443);
+		if (!$socket) {
+			die(chr(10).chr(10).'Unable to connect to dAmn. Are you sure you\'re connected to the internet?'.chr(10));
+		}
 		$response = $this->dAmn->send_headers(
 			$socket,
 			$this->owner.'.deviantart.com',

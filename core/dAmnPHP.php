@@ -335,6 +335,7 @@ class dAmnPHP {
 			$headers .= 'Content-Length: '.strlen($post)."\r\n\r\n$post";
 		else $headers .= "\r\n";
 		$response = '';
+		if (!$socket) return '';
 		fputs($socket, $headers);
 		while(!@feof ($socket)) $response .= @fgets($socket, 8192);
 		return $response;
