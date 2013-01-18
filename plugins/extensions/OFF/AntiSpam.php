@@ -420,10 +420,13 @@ class AntiSpam extends extension {
 
                 } else {
                     // Let them know they've gained a strike!
+                    if($this->data[$safe_ns]['max_strikes_penalty'] == 'ban')
+                            $penalty = 'banned';
+                    else $penalty = 'silenced';
                     $this->dAmn->say($ns, $from .': Slow down! You\'ve been given a strike. '.
                             '<sup>(You\'ve got '. $this->data[$safe_ns]['strikes'][$user]['strike_count'] .
                             '/'. $this->data[$safe_ns]['max_strikes'] .'. Reaching '. $this->data[$safe_ns]['max_strikes'].
-                            ' will result in you being '.$this->data[$safe_ns]['max_strikes_penalty'].'.)</sup>');
+                            ' will result in you being '.$penalty.'.)</sup>');
                 }
 
             } else {
