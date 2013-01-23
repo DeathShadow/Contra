@@ -30,7 +30,8 @@ class Bot {
 	public $trigger;
 	public $aboutStr;
 	public $autojoin;
-        public $session;
+	public $session;
+	public $logging = true;
 	public $damntoken;
 	public $usingStored = false;
 	public $Console;
@@ -145,6 +146,9 @@ class Bot {
 			require_once('./core/Extras.php');
 			$this->trigger = hexentity(html_entity_decode($config['info']['trigger']));
 		}
+		if (!array_key_exists('enable_logs', $config))
+			$config['enable_logs'] = true;
+		$this->logging = $config['enable_logs'];
 		$this->aboutStr = $config['about'];
 		$this->autojoin = $config['autojoin'];
 		if(isset($config['cookie']) && !empty($config['cookie']))
@@ -164,6 +168,7 @@ class Bot {
 			),
 			'about' => $this->aboutStr,
 			'autojoin' => $this->autojoin,
+			'enable_logs' => $this->logging,
 			'damntoken' => empty($this->damntoken) ? '' : serialize($this->damntoken),
 			'updatenotes' => $this->updatenotes,
 			'autoupdate' => $this->autoupdate,

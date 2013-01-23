@@ -132,11 +132,13 @@
 		echo '> Please enter the following information.'.chr(10);
 		$config = array(
 			'about' => '<b>%N% %V%%S%</b> (%R% release)<br/><sub><b>Author:</b> :dev%A%:<b>; Owner:</b> :dev%O%:<b>;</b><br/><b>%D%</b></sub>',
-			'autojoin' => array()
+			'autojoin' => array(),
+			'enable_logs' => true
 		);
 		foreach(array('username' => Null, 'trigger' => Null, 'owner' => Null) as $part => $s)
 			$config['info'][$part] = cmd_get_args('Bot '.$part, $s, false);
 		if(strstr($config['info']['owner'], ',') || strstr($config['info']['owner'], ' ') || strstr($config['info']['owner'], ';')) die('Contra does not support multi-owners.'.chr(10));
+		$config['enable_logs'] = cmd_get_args('Enable channel logging? [y/n]', array('y'=>true,'n'=>false), false);
 		echo '> Which channels would you like your bot to join? Separate with commas.'.chr(10);
 		$rooms = explode(',',cmd_in('> ', true));
 		foreach($rooms as $id => $room)
@@ -152,6 +154,7 @@
 			'info' => $config['info'],
 			'about' => $config['about'],
 			'autojoin' => $config['autojoin'],
+			'enable_logs' => $config['enable_logs'],
 			'damntoken' => '',
 			'updatenotes' => true,
 			'timezone' => $config['timezone'],

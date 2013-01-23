@@ -408,7 +408,7 @@ class dAmn_lib extends extension {
 	}
 
 	function log($chan, $text, $time) {
-		if($chan != '#DataShare') {
+		if($chan != '#DataShare' && $this->Bot->logging) {
 			$fold = date('M-Y', $time);
 			$file = date('d-m-y', $time).'.txt';
 			$text = $this->Console->Clock($time).$text;
