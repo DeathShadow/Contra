@@ -783,11 +783,14 @@ class System_commands extends extension {
 		$pay = explode(',', $parts[3], 2);
 		$version = $payload[1];
 		$released = $payload[2];
+		$ov_arr = explode('.', $this->Bot->info['version']);
+		$nv_arr = explode('.', $version);
+		$newer = (intval($ov_arr[0]) <= intval($nv_arr[0]) && intval($ov_arr[1]) <= intval($nv_arr[1]) && intval($ov_arr[2]) < intval($nv_arr[2]));
 
 		if(empty($version) || empty($released)) return;
 
 		if($pay[0] == $this->Bot->username || strstr($pay[0], 'ALL')) {
-			if($this->Bot->info['version'] < $version && $from == 'Botdom') {
+			if($newer && $from == 'Botdom') {
 				$this->botversion['latest'] = false;
 				if($this->Bot->autoupdate == false) {
 					if(strstr($pay[0], 'ALL'))
