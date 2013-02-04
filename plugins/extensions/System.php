@@ -785,7 +785,7 @@ class System_commands extends extension {
 		$released = $payload[2];
 		$ov_arr = explode('.', $this->Bot->info['version']);
 		$nv_arr = explode('.', $version);
-		$newer = (intval($ov_arr[0]) <= intval($nv_arr[0]) && intval($ov_arr[1]) <= intval($nv_arr[1]) && intval($ov_arr[2]) < intval($nv_arr[2]));
+		$newer = (intval($ov_arr[0]) <= intval($nv_arr[0]) && intval($ov_arr[1]) <= intval($nv_arr[1]) && (intval($ov_arr[2]) < intval($nv_arr[2]) || intval($ov_arr[1]) < intval($nv_arr[1])));
 
 		if(empty($version) || empty($released)) return;
 
