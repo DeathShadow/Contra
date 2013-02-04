@@ -28,6 +28,8 @@ class Console {
 	}
 	function Clock($ts=false) {	return '['.$this->Time($ts).']'; }
 	function Message($str = '', $ts = false) {
+		foreach (array(chr(0), chr(7)) as $chr)
+			$str = str_replace($chr, '', $str);
 		if(DEBUG) $this->log($this->Clock($ts).' '.$str.chr(10));
 		echo $this->Clock($ts),' ',$str,chr(10);
 	}
@@ -37,6 +39,8 @@ class Console {
 	function Write($data = '') {
 		if(is_array($data)) $data = var_export($data, true);
 		$data = str_replace("\n", "\n>>", $data);
+		foreach (array(chr(0), chr(7)) as $chr)
+			$str = str_replace($chr, '', $str);
 		echo '>>',$data,chr(10);
 		if(DEBUG) $this->log('>>'.$data.chr(10));
 	}
