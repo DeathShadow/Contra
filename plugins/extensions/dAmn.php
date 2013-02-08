@@ -153,6 +153,8 @@ class dAmn_commands extends extension {
 		if(empty($prop))
 			return $this->dAmn->say($ns, $from.': Usage: '.$this->Bot->trigger.'get (property)');
 		$this->dAmn->get($target, $prop);
+		if (!in_array('get', $this->Bot->propchans))
+			array_push($this->Bot->propchans['get'], $ns);
 	}
 	function c_set($ns, $from, $message, $target) {
 		$prop = args($message,1);
@@ -160,6 +162,8 @@ class dAmn_commands extends extension {
 		if(empty($prop) || empty($val))
 			return $this->dAmn->say($ns, $from.': Usage: '.$this->Bot->trigger.'set (property) (value)');
 		$this->dAmn->set($target, $prop, $val);
+		if (!in_array('set', $this->Bot->propchans))
+			array_push($this->Bot->propchans['set'], $ns);
 	}
 	function c_admin($ns, $from, $message, $target) {
 		$com = args($message,1,true);

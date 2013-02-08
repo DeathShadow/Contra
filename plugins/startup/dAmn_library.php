@@ -196,6 +196,8 @@ class dAmn_lib extends extension {
 				);
 				$evt['p'][1] = $packet['body']; $evt['p'][2] = $packet['args']['by'];
 				$evt['p'][3] = $packet['args']['ts'];
+				$c=$this->dAmn->deform_chat($ns, $this->Bot->username);
+				$this->logprop($c, $prop, $packet['body']);
 				break;
 			case 'privclasses':
 				$pcs = parse_dAmn_packet($packet['body'],':');
@@ -288,6 +290,12 @@ class dAmn_lib extends extension {
 					return;
 				$save = $d->deform_chat($p[0],$this->Bot->username);
 				$log = 'Got '.$p[1].' for '.$save.'.';
+				if ($p[1] == 'title' || $p[1] == 'topic') {
+					if (count($this->Bot->propchans['get']) > 0) {
+						$propchan = array_pop($this->Bot->propchans['get']);
+						$d->say($propchan, '<b>'.ucfirst($p[1]).' of '.$save.'</b>:<br/>'.$d->chat[$p[0]][$p[1]]['content']);
+					}
+				}
 				break;
 			case 'recv_msg':
 			case 'recv_action':
@@ -384,6 +392,14 @@ class dAmn_lib extends extension {
 				$save = $d->deform_chat($p[0],$this->Bot->username); $usen=false;
 				$log = ' ** '.ucfirst($data['event']).' error: '.
 				($p[2]!=false?$p[2].' ('.$p[1].')':$p[1]);
+				if ($data['event'] == 'get' || $data['event'] == 'set') {
+					$devt = $data['event'];
+					$dcht = $d->deform_chat($p[0],$this->Bot->username);
+					if (count($this->Bot->propchans[$devt]) > 0) {
+						$propchan = array_pop($this->Bot->propchans[$devt]);
+						$d->say($propchan, 'Failed to '.$devt.' the '.$p[1].' of '.$dcht.': '.$p[2]);
+					}
+				}
 				break;
 			case 'kill': $log = 'Kill error: '.$p[1].' ('.$p[2].')';
 				break;
@@ -419,6 +435,15 @@ class dAmn_lib extends extension {
 			$old = @file_get_contents('./storage/logs/'.$chan.'/'.$fold.'/'.$file);
 			if($old !== false) $text = $old.chr(10).$text;
 			file_put_contents('./storage/logs/'.$chan.'/'.$fold.'/'.$file, $text);
+		}
+	}
+
+	function logprop($chan, $prop, $val) {
+		if($chan != '#DataShare') {
+			if(!is_dir('./storage')) mkdir('./storage', 0755);
+			if(!is_dir('./storage/logs')) mkdir('./storage/logs', 0755);
+			if(!is_dir('./storage/logs/'.$chan)) mkdir('./storage/logs/'.$chan,0755);
+			file_put_contents('./storage/logs/'.$chan.'/'.$prop.'.txt', $val);
 		}
 	}
 }
