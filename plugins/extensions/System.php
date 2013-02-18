@@ -542,8 +542,13 @@ class System_commands extends extension {
 	function e_botcheck($parts, $from, $message) {
 		if(!isset($parts[3])) return;
 		if(isset($parts[0]) && $parts[0] !== 'BDS' && $parts[0] !== 'CODS') return;
-		if($parts[1] == "BOTCHECK" && $parts[2] === 'DIRECT')
-			if(!strstr($parts[3], ',') && strtolower($parts[3]) !== strtolower($this->Bot->username) || strstr($parts[3], ',') && !stristr($parts[3], $this->Bot->username)) return;
+		if($parts[1] == "BOTCHECK" && $parts[2] === 'DIRECT') {
+			if(!strstr($parts[3], ',') && strtolower($parts[3]) !== strtolower($this->Bot->username)) return;
+			if(strstr($parts[3], ',')) {
+				$check = explode(',', $parts[3]);
+				if(!in_array($this->Bot->username, $check)) return;
+			}
+		}
 		if($parts[1] == "BOTCHECK" && $parts[2] === 'ALL')
 			if($this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] !== 'PoliceBot') return;
 		if($parts[1] == "BOTCHECK" && $parts[2] === 'NODATA' && isset($parts[3])) {
