@@ -88,6 +88,8 @@ class dAmnPHP {
 	public $buffer = Null;
 	public $chat = array();
 	public $disconnects = 0;
+	public $bytes_sent = 0;
+	public $bytes_recv = 0;
 	static $tablumps = array(                       // Regex stuff for removing tablumps.
 		'a1' => array(
 			"&b\t",  "&/b\t",    "&i\t",    "&/i\t", "&u\t",   "&/u\t", "&s\t",   "&/s\t",    "&sup\t",    "&/sup\t", "&sub\t", "&/sub\t", "&code\t", "&/code\t",
@@ -466,7 +468,7 @@ class dAmnPHP {
 	function admin($ns, $command) { $this->send('send '.$ns.LBR.LBR.'admin'.LBR.LBR.$command); }
 	function disconnect() { $this->send('disconnect'.LBR); }
 	// Here's the actual send function which sends the packets.
-	function send($data) { @stream_socket_sendto($this->socket, $data.chr(0)); }
+	function send($data) { @stream_socket_sendto($this->socket, $data.chr(0)); $this->bytes_sent += strlen($data) + 1; }
 	// This is the important one. It reads packets off of the stream and returns them in an array! Numerically indexed.
 	function read() {
 		$s = array($this->socket); $w=Null;
@@ -475,6 +477,7 @@ class dAmnPHP {
 			$data = @stream_socket_recvfrom($this->socket, 8192);
 			if($data !== false && $data !== '') {
 				$this->buffer .= $data;
+				$this->bytes_recv += strlen($data);
 				$parts = explode(chr(0), $this->buffer);
 				$this->buffer = ($parts[count($parts)-1] != '' ? $parts[count($parts)-1] : '');
 				unset($parts[count($parts)-1]);

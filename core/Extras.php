@@ -49,4 +49,30 @@
 		throw new Exception('Invalid character passed for conversion.');
 	}
 
+	define('BYTE_SIZE_GB', pow(2, 30));
+	define('BYTE_SIZE_MB', pow(2, 20));
+	define('BYTE_SIZE_KB', pow(2, 10));
+
+	/// Function for formatting bytes into human readable strings.
+	/// Author: Justin Eittreim (DivinityArcane) > eittreim.justin@live.com
+	function FormatBytes($bytes, $verbose = false) {
+		if ($bytes <= 0) return $verbose ? '0 Bytes' : '0B';
+		else if ($bytes == 1) return $verbose ? '1 Byte' : '1B';
+
+		$gb = 0; $mb = 0; $kb = 0;
+
+		while ($bytes >= BYTE_SIZE_GB) { $gb++; $bytes -= BYTE_SIZE_GB; }
+		while ($bytes >= BYTE_SIZE_MB) { $mb++; $bytes -= BYTE_SIZE_MB; }
+		while ($bytes >= BYTE_SIZE_KB) { $kb++; $bytes -= BYTE_SIZE_KB; }
+
+		$fmt = array();
+
+		if ($gb > 0) array_push($fmt, $gb . ($verbose ? ' GigaByte' . ($gb == 1 ? '' : 's') : 'GB'));
+		if ($mb > 0) array_push($fmt, $mb . ($verbose ? ' MegaByte' . ($mb == 1 ? '' : 's') : 'MB'));
+		if ($kb > 0) array_push($fmt, $kb . ($verbose ? ' KiloByte' . ($kb == 1 ? '' : 's') : 'kB'));
+		if ($bytes > 0) array_push($fmt, $bytes . ($verbose ? ' Byte' . ($bytes == 1 ? '' : 's') : 'B'));
+
+		return implode(', ', $fmt);
+	}
+
 ?>

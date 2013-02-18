@@ -53,6 +53,7 @@ class System_commands extends extension {
 		$this->addCmd('credits', 'c_credits');
 		$this->addCmd('botinfo', 'c_botinfo', 50);
 		$this->addCmd('update', 'c_update', 100);
+		$this->addCmd('netusage', 'c_netusage');
 
 		$this->addCmd('sudo', 'c_sudo', 100); // Lololololololololol.
 
@@ -73,6 +74,7 @@ class System_commands extends extension {
 		$this->cmdHelp('credits', 'Here lies the persons whom helped in the creation of Contra.');
 		$this->cmdHelp('botinfo', 'Lists information on a specific bot.');
 		$this->cmdHelp('update', 'Updates Contra to latest version. Only works if the bot\'s current version is below the released version');
+		$this->cmdHelp('netusage', 'Displays information on the bots network usage.');
 
 		$this->cmdHelp(
 			'sudo',
@@ -745,6 +747,11 @@ class System_commands extends extension {
 		$this->dAmn->say($ns, "{$requestor}: Now updating. Bot will be shutdown after update is complete.");
 		$this->doupdate($requestor, $message);
 	}
+
+	function c_netusage($ns, $from, $message, $target) {
+		$this->dAmn->say($ns, '<b>Bytes sent:</b> '.FormatBytes($this->dAmn->bytes_sent).'<br/><b>Bytes received:</b> '.FormatBytes($this->dAmn->bytes_recv).'<abbr title=" '.$from.': "></abbr>');
+	}
+
 
 	function doupdate($requestor, $message) {
 		$this->dAmn->npmsg('chat:DataShare', "CODS:VERSION:UPDATEME:{$this->Bot->username},{$this->Bot->info['version']}", true);

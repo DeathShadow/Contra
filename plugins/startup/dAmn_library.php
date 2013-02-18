@@ -434,7 +434,7 @@ class dAmn_lib extends extension {
 			if(!is_dir('./storage/logs/'.$chan.'/'.$fold)) mkdir('./storage/logs/'.$chan.'/'.$fold, 0755);
 			$old = @file_get_contents('./storage/logs/'.$chan.'/'.$fold.'/'.$file);
 			if($old !== false) $text = $old.chr(10).$text;
-			file_put_contents('./storage/logs/'.$chan.'/'.$fold.'/'.$file, $text);
+			file_put_contents('./storage/logs/'.$chan.'/'.$fold.'/'.$file, str_replace(chr(7), '', $text));
 		}
 	}
 
@@ -443,7 +443,7 @@ class dAmn_lib extends extension {
 			if(!is_dir('./storage')) mkdir('./storage', 0755);
 			if(!is_dir('./storage/logs')) mkdir('./storage/logs', 0755);
 			if(!is_dir('./storage/logs/'.$chan)) mkdir('./storage/logs/'.$chan,0755);
-			file_put_contents('./storage/logs/'.$chan.'/'.$prop.'.txt', $val);
+			file_put_contents('./storage/logs/'.$chan.'/'.$prop.'.txt', str_replace(chr(7), '', $val));
 		}
 	}
 }
