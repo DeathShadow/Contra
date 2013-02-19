@@ -551,9 +551,9 @@ class System_commands extends extension {
 				if(!in_array($this->Bot->username, $check)) return;
 			}
 		}
-		elseif($parts[1] == "BOTCHECK" && $parts[2] === 'ALL')
+		if($parts[1] == "BOTCHECK" && $parts[2] === 'ALL')
 			if($this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] !== 'PoliceBot') return;
-		elseif($parts[1] == "BOTCHECK" && $parts[2] === 'NODATA' && isset($parts[3])) {
+		if($parts[1] == "BOTCHECK" && $parts[2] === 'NODATA' && isset($parts[3])) {
 			if($this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] !== 'PoliceBot') return;
 			if(strtolower($parts[3]) !== strtolower($this->Bot->username)) return;
 		}
