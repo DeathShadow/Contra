@@ -54,7 +54,7 @@ class System_commands extends extension {
 		$this->addCmd('credits', 'c_credits');
 		$this->addCmd('botinfo', 'c_botinfo', 50);
 		$this->addCmd('update', 'c_update', 100);
-		$this->addCmd($netusage, 'c_netusage');
+		$this->addCmd($netusage, 'c_netusage', 0);
 
 		$this->addCmd('sudo', 'c_sudo', 100); // Lololololololololol.
 
@@ -75,7 +75,7 @@ class System_commands extends extension {
 		$this->cmdHelp('credits', 'Here lies the persons whom helped in the creation of Contra.');
 		$this->cmdHelp('botinfo', 'Lists information on a specific bot.');
 		$this->cmdHelp('update', 'Updates Contra to latest version. Only works if the bot\'s current version is below the released version');
-		$this->cmdHelp('netusage', 'Displays information on the bots network usage.');
+		$this->cmdHelp($netusage, 'Displays information on the bots network usage.');
 
 		$this->cmdHelp(
 			'sudo',
@@ -751,11 +751,10 @@ class System_commands extends extension {
 
 	function c_netusage($ns, $from, $message, $target) {
 		if(strtolower(args($message, 1)) == 'reset') {
-			if($this->user->has($from, 99)) {
-				$this->dAmn->bytes_sent = 0;
-				$this->dAmn->bytes_recv = 0;
-				$this->dAmn->say($ns, $from.': Network Usage stats reseted.');
-			}else return $this->dAmn->say($ns, $from.': You do not have access to this command.');
+			if(!$this->user->has($from, 99)) return $this->dAmn->say($ns, $from.': You do not have access to this command.');
+			$this->dAmn->bytes_sent = 0;
+			$this->dAmn->bytes_recv = 0;
+			$this->dAmn->say($ns, $from.': Network Usage stats reseted.');
 		}else $this->dAmn->say($ns, '<b>Bytes sent:</b> '.FormatBytes($this->dAmn->bytes_sent).'<br/><b>Bytes received:</b> '.FormatBytes($this->dAmn->bytes_recv).'<abbr title=" '.$from.': "></abbr>');
 	}
 
