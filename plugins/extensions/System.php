@@ -755,7 +755,7 @@ class System_commands extends extension {
 				$this->dAmn->bytes_sent = 0;
 				$this->dAmn->bytes_recv = 0;
 				$this->dAmn->say($ns, $from.': Network Usage stats reseted.');
-			}else return;
+			}else return $this->dAmn->say($ns, $from.': You do not have access to this command.';
 		}else $this->dAmn->say($ns, '<b>Bytes sent:</b> '.FormatBytes($this->dAmn->bytes_sent).'<br/><b>Bytes received:</b> '.FormatBytes($this->dAmn->bytes_recv).'<abbr title=" '.$from.': "></abbr>');
 	}
 
