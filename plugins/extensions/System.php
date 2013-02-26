@@ -35,6 +35,7 @@ class System_commands extends extension {
 		$mods = array('modules', 'mods');
 		$mod = array('module', 'mod');
 		$aj = array('autojoin', 'aj');
+		$netusage = array('netusage', 'netinfo');
 
 		$this->addCmd('about', 'c_about');
 		$this->addCmd('system', 'c_about');
@@ -53,8 +54,7 @@ class System_commands extends extension {
 		$this->addCmd('credits', 'c_credits');
 		$this->addCmd('botinfo', 'c_botinfo', 50);
 		$this->addCmd('update', 'c_update', 100);
-		$this->addCmd('netusage', 'c_netusage');
-		$this->addCmd('netinfo', 'c_netusage');
+		$this->addCmd($netusage, 'c_netusage');
 
 		$this->addCmd('sudo', 'c_sudo', 100); // Lololololololololol.
 
