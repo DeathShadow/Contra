@@ -11,3 +11,4 @@ storage/oauth.json
 storage/users.cf
 Connection.log
 oauth.json
+phpbin
