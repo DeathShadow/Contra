@@ -116,6 +116,7 @@ class Event_System {
 		*/
 		if(!array_key_exists(strtolower($command), $this->events['cmd']))
 			return $this->core->Console->Notice('Received unknown command "'.$command.'" from '.$from.'.');
+		if (array_key_exists($from, $this->core->dAmn->last_command) && microtime(true) - $this->core->dAmn->last_command[$from] < 1) return;
 		$cmda = $this->events['cmd'][strtolower($command)];
 		if($cmda['s'] === false) return;
 		if($this->core->mod[$cmda['m']]->status === false) return;
@@ -127,8 +128,10 @@ class Event_System {
 			$this->core->dAmn->say($tns, $from.': '.$cmda['h']);
 			return;
 		}
-		if($this->core->user->hasCmd($from, $command))
+		if($this->core->user->hasCmd($from, $command)) {
+			$this->core->dAmn->last_command[$from] = microtime(true);
 			return $this->core->mod[$cmda['m']]->$cmda['e']($ns, $from, rtrim($message), $tns);
+		}
 		$this->core->Console->Notice(
 			'User "'.$from.'" was denied access to "'.$command.'" in '.$this->core->dAmn->deform_chat($ns,$this->core->username).'.'
 		);

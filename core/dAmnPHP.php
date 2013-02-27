@@ -90,6 +90,7 @@ class dAmnPHP {
 	public $disconnects = 0;
 	public $bytes_sent = 0;
 	public $bytes_recv = 0;
+	public $last_command = array();
 	static $tablumps = array(                       // Regex stuff for removing tablumps.
 		'a1' => array(
 			"&b\t",  "&/b\t",    "&i\t",    "&/i\t", "&u\t",   "&/u\t", "&s\t",   "&/s\t",    "&sup\t",    "&/sup\t", "&sub\t", "&/sub\t", "&code\t", "&/code\t",

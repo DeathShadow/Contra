@@ -197,7 +197,7 @@ class dAmn_lib extends extension {
 				$evt['p'][1] = $packet['body']; $evt['p'][2] = $packet['args']['by'];
 				$evt['p'][3] = $packet['args']['ts'];
 				$c=$this->dAmn->deform_chat($ns, $this->Bot->username);
-				$this->logprop($c, $prop, $packet['body']);
+				$this->logprop($c, $prop, $packet['args']['ts'], $packet['body']);
 				break;
 			case 'privclasses':
 				$pcs = parse_dAmn_packet($packet['body'],':');
@@ -438,12 +438,15 @@ class dAmn_lib extends extension {
 		}
 	}
 
-	function logprop($chan, $prop, $val) {
+	function logprop($chan, $prop, $ts, $val) {
 		if($chan != '#DataShare') {
+			$dt = date('m-d-Y-hms', $ts);
+			$fn = $prop.'-'.$dt.'.txt';
 			if(!is_dir('./storage')) mkdir('./storage', 0755);
 			if(!is_dir('./storage/logs')) mkdir('./storage/logs', 0755);
 			if(!is_dir('./storage/logs/'.$chan)) mkdir('./storage/logs/'.$chan,0755);
-			file_put_contents('./storage/logs/'.$chan.'/'.$prop.'.txt', str_replace(chr(7), '', $val));
+			if (!file_exists('./storage/logs/'.$chan.'/'.$fn))
+				file_put_contents('./storage/logs/'.$chan.'/'.$fn, str_replace(chr(7), '', $val));
 		}
 	}
 }

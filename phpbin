@@ -1,2 +1,1 @@
-# replace this with the location of your own php binary
-C:\php\php.exe
+/usr/bin/php
