@@ -190,7 +190,7 @@ class Event_System {
 				$path .= ':*';
 
 		$path = str_replace('*', '.*', $path);
-		$path = '/' . $path . '/';
+		$path = '/' . $path . '/i';
 		return $path;
 	}
 	
