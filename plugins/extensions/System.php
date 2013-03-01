@@ -535,10 +535,10 @@ class System_commands extends extension {
 					$sb .= "</sub><abbr title=\"{$requestor}\"> </abbr>";
 
 					$dAmn->say($ns, $sb);
-				} elseif($parts[2] === 'NODATA') {
+				} elseif($parts[2] === 'NODATA' || $parts[2] === 'CLIENTINFO' || $parts[2] === 'BADCLIENT') {
 					$dAmn->say($ns, "Sorry, {$requestor}, there is no information on <b>{$bot}</b> in the database.");
 				}
-			}, 'BDS:BOTCHECK:(NODATA|INFO|BADBOT):' . $bot . '*');
+			}, 'BDS:BOTCHECK:(NODATA|INFO|CLIENTINFO|BADBOT|BADCLIENT):' . $bot . '*');
 		}
 	}
 
