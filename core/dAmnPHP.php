@@ -91,6 +91,15 @@ class dAmnPHP {
 	public $bytes_sent = 0;
 	public $bytes_recv = 0;
 	public $last_command = array();
+	public $plc_enabled = false;
+	private $plc_time = 0;		// Time since last reset.
+	private $plc_time_limit = 1;	// Seconds between resets.
+	private $plc_data_limit = 5;    // Packets allowed in the time limit.
+	private $plc_count = array(
+		'send'	=> 0,
+		'join'	=> 0,
+		'part'	=> 0); 		// Packets since last reset.
+
 	static $tablumps = array(                       // Regex stuff for removing tablumps.
 		'a1' => array(
 			"&b\t",  "&/b\t",    "&i\t",    "&/i\t", "&u\t",   "&/u\t", "&s\t",   "&/s\t",    "&sup\t",    "&/sup\t", "&sub\t", "&/sub\t", "&code\t", "&/code\t",
@@ -469,7 +478,22 @@ class dAmnPHP {
 	function admin($ns, $command) { $this->send('send '.$ns.LBR.LBR.'admin'.LBR.LBR.$command); }
 	function disconnect() { $this->send('disconnect'.LBR); }
 	// Here's the actual send function which sends the packets.
-	function send($data) { @stream_socket_sendto($this->socket, $data.chr(0)); $this->bytes_sent += strlen($data) + 1; }
+	function send($data) {
+		if ($this->plc_enabled && strlen($data) > 4) {
+			$ph = substr($data, 0, 4);
+			if ($ph == 'send' || $ph == 'join' || $ph == 'part') {
+				$this->plc_count[$ph]++;
+				if (microtime(true) - $this->plc_time >= $this->plc_time_limit) {
+					foreach ($this->plc_count as $k => $v) {
+						$this->plc_count[$k] = 0;
+					}
+					$this->plc_time = microtime(true);
+				} else if ($this->plc_count[$ph] >= $this->plc_data_limit) return;
+			}
+		}
+		@stream_socket_sendto($this->socket, $data.chr(0));
+		$this->bytes_sent += strlen($data) + 1;
+	}
 	// This is the important one. It reads packets off of the stream and returns them in an array! Numerically indexed.
 	function read() {
 		$s = array($this->socket); $w=Null;

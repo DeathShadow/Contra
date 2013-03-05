@@ -113,6 +113,7 @@ class dAmn_lib extends extension {
 		if($e == 'ok') {
 			$this->dAmn->connecting = $this->dAmn->login = false;
 			foreach($this->Bot->autojoin as $id => $channel) { $this->dAmn->join($this->dAmn->format_chat($channel)); }
+			$this->dAmn->plc_enabled = true;
 			return;
 		} elseif($this->Bot->usingStored) {
 			@stream_socket_shutdown($this->dAmn->socket,STREAM_SHUT_RDWR);
