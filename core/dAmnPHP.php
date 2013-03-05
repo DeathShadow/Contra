@@ -481,7 +481,7 @@ class dAmnPHP {
 	function send($data) {
 		if ($this->plc_enabled && strlen($data) > 4) {
 			$ph = substr($data, 0, 4);
-			if ($ph == 'send' || $ph == 'join' || $ph == 'part') {
+			if (array_key_exists($ph, $this->plc_count)) {
 				$this->plc_count[$ph]++;
 				if (microtime(true) - $this->plc_time >= $this->plc_time_limit) {
 					foreach ($this->plc_count as $k => $v) {
