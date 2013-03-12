@@ -230,6 +230,7 @@ class System_commands extends extension {
 				foreach($this->user->list['pc'] as $num => $name) {
 					$modline = '<br/>&nbsp;-<b> '.$name.':</b> ';
 					$cmds = '';
+					$cmdarr = array();
 					foreach($this->Bot->Events->events['cmd'] as $cmd => $cmda) {
 						if(array_key_exists($cmd, $this->user->list['override']['command']))
 							$priv_level = $this->user->list['override']['command'][$cmd];
@@ -238,11 +239,14 @@ class System_commands extends extension {
 							if($this->user->hasCmd($from,$cmd) || $all) {
 								if($cmd != 'mod' && $cmd != 'mods' && $cmd != 'aj' && $cmd != 'e' && $cmd != 'cmd' && $cmd != 'cmds') {
 									$off = (($cmda['s']===false||$this->Bot->mod[$cmda['m']]->status===false)?true:false);
-									$cmds.= ($off?'<i><code>':'').$cmd.
-									($off?'</code></i>':'').', ';
+									$cmdarr[$cmd] = ($off?'<i><code>'.$cmd.'</code></i>':$cmd);
 								}
 							}
 						}
+					}
+					sort($cmdarr);
+					foreach ($cmdarr as $k => $cmd) {
+						$cmds .= $cmd . ', ';
 					}
 					if(!empty($cmds)) $say.= $modline.rtrim($cmds, ', ');
 				}
