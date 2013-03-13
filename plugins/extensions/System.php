@@ -592,6 +592,7 @@ class System_commands extends extension {
 				else {
 					$this->Bot->autojoin[] = $ans;
 					$say = $from.': Added '.$ans.' to your autojoin list.';
+					$this->dAmn->join($this->dAmn->format_chat($ans));
 				}
 				$this->Bot->save_config();
 				break;
@@ -609,6 +610,7 @@ class System_commands extends extension {
 				else {
 					$this->Bot->autojoin = array_del_key($this->Bot->autojoin, $rnsid);
 					$say = $from.': Removed '.$rns.' from your autojoin list.';
+					$this->dAmn->part($this->dAmn->format_chat($rns));
 				}
 				$this->Bot->save_config();
 				break;
