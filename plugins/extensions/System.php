@@ -88,7 +88,6 @@ class System_commands extends extension {
 
 		$this->hookBDS('e_botcheck', '^BDS:BOTCHECK:(DIRECT|ALL|NODATA):*$');
 		$this->hookBDS('e_botcheck', '^CODS:BOTCHECK:ALL$');
-
 		$this->hookBDS('e_codsnotify', 'CODS:VERSION:NOTIFY');
 
 		$this->loadnotes();
