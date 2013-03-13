@@ -86,8 +86,8 @@ class System_commands extends extension {
 		$this->hook('e_trigcheck', 'recv_msg');
 		$this->hook('load_switches', 'startup');
 
-		$this->hookBDS('e_botcheck', 'BDS:BOTCHECK:(DIRECT|ALL|NODATA)');
-		$this->hookBDS('e_botcheck', 'CODS:BOTCHECK:ALL');
+		$this->hookBDS('e_botcheck', '^BDS:BOTCHECK:(DIRECT|ALL|NODATA):*$');
+		$this->hookBDS('e_botcheck', '^CODS:BOTCHECK:ALL$');
 
 		$this->hookBDS('e_codsnotify', 'CODS:VERSION:NOTIFY');
 
