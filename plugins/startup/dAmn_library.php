@@ -99,6 +99,7 @@ class dAmn_lib extends extension {
 		$this->hook('e_damntoken', 'damntoken');
 		$this->hook('e_connected', 'connected');
 		sleep(1.5);
+		$this->dAmn->plc_enabled = false;
 		$this->Bot->network(true);
 	}
 	function e_connected($version) {
