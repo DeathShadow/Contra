@@ -144,8 +144,8 @@ class dAmn_lib extends extension {
 	}
 
 	function e_check_bds($ns, $from, $msg) {
-		if(strtolower($ns) == 'chat:datashare') {
-			$this->Bot->Events->triggerBDS($msg, $from);
+		if(strtolower($ns) == 'chat:datashare' || strtolower($ns) == 'chat:dsgateway') {
+			$this->Bot->Events->triggerBDS($ns, $msg, $from);
 		}
 	}
 
@@ -160,19 +160,27 @@ class dAmn_lib extends extension {
 		);
 	}
 
-	function e_join2($ns) {
-		$ajn = array_map('strtolower',$this->Bot->autojoin);
-		$i=count(array_keys($ajn, '#datashare'));
-		while($i > 0) {
-			unset($ajn[array_search('#datashare', $ajn)]);
-			sort($ajn);
-			$this->Bot->autojoin = $ajn;
-			$i--;
-			$this->Bot->save_config();
+ 	function e_join2($ns) {
+ 		$ajn = array_map('strtolower',$this->Bot->autojoin);
+ 		$i=count(array_keys($ajn, '#datashare'));
+		$i2=count(array_keys($ajn, '#dsgateway'));
+		while($i > 0 || $i2 > 0) {
+			if($i > 0) {
+				unset($ajn[array_search('#datashare', $ajn)]);
+				$i--;
+			}
+			if($i2 > 0) {
+				unset($ajn[array_search('#dsgateway', $ajn)]);
+				$i2--;
+			}
+ 			sort($ajn);
+ 			$this->Bot->autojoin = $ajn;
+ 			$this->Bot->save_config();
+ 		}
+		if(!in_array('#dsgateway', $ajn)) {
+			$this->dAmn->join('chat:dsgateway');
 		}
-		if(!in_array('#datashare', $ajn))
-			$this->dAmn->join('chat:datashare');
-	}
+ 	}
 
 	function e_part($ns, $e, $r = false, $channel = false) {
 		if($e != 'ok') return;

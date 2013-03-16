@@ -85,7 +85,7 @@ class Event_System {
 		return true;
 	}
 	
-	public function triggerBDS($message, $from) {
+	public function triggerBDS($ns, $message, $from) {
 		foreach ($this->events['BDS'] as $regex => $arr) {
 			if (preg_match($regex, $message) === 1) {
 				foreach ($arr as $i => $data) {
@@ -95,7 +95,7 @@ class Event_System {
 							// it's a callback function
 							$data['f']($parts, $from, $message);
 						} else {
-							$this->core->mod[$data['m']]->$data['f']($parts, $from, $message);
+							$this->core->mod[$data['m']]->$data['f']($ns, $parts, $from, $message);
 						}
 					}
 				}
