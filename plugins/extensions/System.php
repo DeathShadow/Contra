@@ -548,7 +548,7 @@ class System_commands extends extension {
 	function e_botcheck($ns, $parts, $from, $message) {
 		if(!isset($parts[2])) return;
 		if($parts[0] !== 'BDS' && $parts[0] !== 'CODS') return;
-		if($ns == ('chat:DataShare'|'chat:DSGateway') && $parts[1] == "BOTCHECK" && $parts[2] === 'DIRECT') {
+		if($parts[1] == "BOTCHECK" && $parts[2] === 'DIRECT') {
 			if(!strstr($parts[3], ',') && strtolower($parts[3]) !== strtolower($this->Bot->username)) return;
 			if(strstr($parts[3], ',')) {
 				$check = explode(',', $parts[3]);
