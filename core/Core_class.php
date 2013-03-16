@@ -23,7 +23,7 @@ class Bot {
 		'status' => '',
 		'release' => 'dev',
 		'author' => 'photofroggy',
-		'bdsversion' => '0.3',
+		'bdsversion' => '0.4',
 	);
 	public $username;
 	public $owner;
