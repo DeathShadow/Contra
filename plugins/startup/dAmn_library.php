@@ -284,8 +284,12 @@ class dAmn_lib extends extension {
 				break;
 			case 'join':
 			case 'part':
-				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#datashare')
+				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#datashare') {
 					return;
+				}
+				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#dsgateway') {
+					return;
+				}
 				$log = ucfirst($data['event']);
 				if($p[1]=='ok') {
 					$log.=' ok';
@@ -296,8 +300,12 @@ class dAmn_lib extends extension {
 				if($p[1]=='ok'&&$p[2]!=false) $log.= ' ['.$p[2].']';
 				break;
 			case 'property':
-				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#datashare')
+				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#datashare') {
 					return;
+				}
+				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#dsgateway') {
+					return;
+				}
 				$save = $d->deform_chat($p[0],$this->Bot->username);
 				$log = 'Got '.$p[1].' for '.$save.'.';
 				if ($p[1] == 'title' || $p[1] == 'topic') {
@@ -309,24 +317,36 @@ class dAmn_lib extends extension {
 				break;
 			case 'recv_msg':
 			case 'recv_action':
-				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#datashare')
+				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#datashare') {
 					return;
+				}
+				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#dsgateway') {
+					return;
+				}
 				$save = $d->deform_chat($p[0],$this->Bot->username); $usen=false; $hn = true;
 				$log = ' '.(substr($data['event'],5)=='msg'?'<'.$p[1].'>':'* '.$p[1]);
 				$log.= ' '.$p[2];
 				break;
 			case 'recv_join':
 			case 'recv_part':
-				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#datashare')
+				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#datashare') {
 					return;
+				}
+				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#dsgateway') {
+					return;
+				}
 				$save = $d->deform_chat($p[0],$this->Bot->username); $usen=false; $hn = true;
 				$log = ' ** '.$p[1].' has '.(substr($data['event'],5)=='join'?'joined':'left')
 				.(($data['event']=='recv_part'&&$p[2]!=false)?' ['.$p[2].']':'');
 				break;
 			case 'recv_privchg':
 			case 'recv_kicked':
-				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#datashare')
+				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#datashare') {
 					return;
+				}
+				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#dsgateway') {
+					return;
+				}
 				$save = $d->deform_chat($p[0],$this->Bot->username); $usen=false;
 				$log = ' ** '.$p[1].' has been '.
 				(substr($data['event'],5)=='privchg'?
@@ -336,47 +356,71 @@ class dAmn_lib extends extension {
 				break;
 			case 'recv_admin_create':
 			case 'recv_admin_update':
-				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#datashare')
+				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#datashare') {
 					return;
+				}
+				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#dsgateway') {
+					return;
+				}
 				$this->dAmn->get($p[0],'members');
 				$save = $d->deform_chat($p[0],$this->Bot->username); $usen=false;
 				$log = ' ** privilege class '.$p[3].' has been '
 				.substr($data['event'],11).'d by '.$p[2].' with: '.$p[4];
 				break;
 			case 'recv_admin_rename':
-				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#datashare')
+				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#datashare') {
 					return;
+				}
+				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#dsgateway') {
+					return;
+				}
 				$this->dAmn->get($p[0],'members');
 				$save = $d->deform_chat($p[0],$this->Bot->username); $usen=false;
 				$log = ' ** privilege class '.$p[3].' has been renamed to '
 				.$p[4].' by '.$p[2];
 				break;
 			case 'recv_admin_move':
-				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#datashare')
+				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#datashare') {
 					return;
+				}
+				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#dsgateway') {
+					return;
+				}
 				$this->dAmn->get($p[0],'members');
 				$save = $d->deform_chat($p[0],$this->Bot->username); $usen=false;
 				$log = ' ** all members of '.$p[3].' have been made '
 				.$p[4].' by '.$p[2].' -- '.$p[5].' members were affected';
 				break;
 			case 'recv_admin_remove':
-				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#datashare')
+				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#datashare') {
 					return;
+				}
+				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#dsgateway') {
+					return;
+				}
 				$this->dAmn->get($p[0],'members');
 				$save = $d->deform_chat($p[0],$this->Bot->username); $usen=false;
 				$log = ' ** privilege class '.$p[3]
 				.' has been removed by '.$p[2].' -- '.$p[4].' members were affected';
 				break;
 			case 'recv_admin_show':
-				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#datashare')
+				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#datashare') {
 					return;
+				}
+				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#dsgateway') {
+					return;
+				}
 				$this->dAmn->get($p[0],'members');
 				$save = $d->deform_chat($p[0],$this->Bot->username); $usen=false;
 				$GLOBALS['crap'] = $p[2];
 				break;
 			case 'recv_admin_privclass':
-				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#datashare')
+				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#datashare') {
 					return;
+				}
+				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#dsgateway') {
+					return;
+				}
 				$save = $d->deform_chat($p[0],$this->Bot->username); $usen=false;
 				$log = ' ** admin '.$p[1].' failed, error: '.$p[2];
 				if($p[3]!==false) $log.=' ('.$p[3].')';
@@ -397,8 +441,12 @@ class dAmn_lib extends extension {
 			case 'kick':
 			case 'get':
 			case 'set':
-				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#datashare')
+				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#datashare') {
 					return;
+				}
+				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#dsgateway') {
+					return;
+				}
 				$save = $d->deform_chat($p[0],$this->Bot->username); $usen=false;
 				$log = ' ** '.ucfirst($data['event']).' error: '.
 				($p[2]!=false?$p[2].' ('.$p[1].')':$p[1]);
@@ -416,8 +464,12 @@ class dAmn_lib extends extension {
 			case 'whois': break;
 			case '': break;
 			default:
-				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#datashare')
+				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#datashare') {
 					return;
+				}
+				if(strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#dsgateway') {
+					return;
+				}
 				$log = 'Received unknown packet.';
 				$log.= str_replace("\n", "\n>>", $raw);
 				return;
@@ -434,7 +486,7 @@ class dAmn_lib extends extension {
 	}
 
 	function log($chan, $text, $time) {
-		if($chan != '#DataShare' && $this->Bot->logging) {
+		if($chan != '#DataShare' && $this->Bot->logging && $chan != '#DSGateway' && $this->Bot->logging) {
 			$fold = date('M-Y', $time);
 			$file = date('d-m-y', $time).'.txt';
 			$text = $this->Console->Clock($time).$text;
@@ -449,7 +501,7 @@ class dAmn_lib extends extension {
 	}
 
 	function logprop($chan, $prop, $ts, $val) {
-		if($chan != '#DataShare') {
+		if($chan != '#DataShare' && $chan != '#DSGateway') {
 			$dt = date('m-d-Y-hms', $ts);
 			$fn = $prop.'-'.$dt.'.txt';
 			if(!is_dir('./storage')) mkdir('./storage', 0755);

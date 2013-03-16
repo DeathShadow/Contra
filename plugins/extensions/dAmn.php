@@ -276,6 +276,7 @@ class dAmn_commands extends extension {
 				foreach($crc as $id => $cl) {
 					$chans.= $this->dAmn->deform_chat($cl, $this->Bot->username).', ';
 					$chans = str_ireplace('#DataShare,', '', $chans);
+					$chans = str_ireplace('#DSGateway,', '', $chans);
 				}
 				$say.= rtrim($chans,', ');
 			}
