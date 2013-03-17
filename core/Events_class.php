@@ -93,7 +93,7 @@ class Event_System {
 						$parts = explode(':', $message, 4);
 						if (is_callable($data['f'])) {
 							// it's a callback function
-							$data['f']($ns, $parts, $from, $message);
+							$data['f']($parts, $from, $message);
 						} else {
 							$this->core->mod[$data['m']]->$data['f']($ns, $parts, $from, $message);
 						}
