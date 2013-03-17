@@ -572,6 +572,12 @@ class System_commands extends extension {
 			$this->dAmn->part('chat:DSGateway');
 			return;
  		}
+		if($ns == 'chat:DSGateway' && $parts[1] == "BOTCHECK" && $parts[2] === 'DENIED' ) {
+			if($this->dAmn->chat['chat:DSGateway']['member'][$from]['pc'] !== 'PoliceBot') return;
+ 			if(strtolower($parts[3]) !== strtolower($this->Bot->username)) return;
+			$this->dAmn->part('chat:DSGateway');
+			return;
+ 		}
 
 			$response = $parts[0].':BOTCHECK:RESPONSE:' . $from . ',' .
 						$this->Bot->owner . ',' .

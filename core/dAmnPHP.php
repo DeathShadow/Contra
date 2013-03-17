@@ -451,19 +451,19 @@ class dAmnPHP {
 		$message = is_array($message) ? $message = '<bcode>'.print_r($message, true) : $message;
 		$message = str_replace('&lt;','<',$message);
 		$message = str_replace('&gt;','>',$message);
-		if(strtolower($ns) != 'chat:datashare' || $DATASHARE == TRUE)
+		if(strtolower($ns) != 'chat:datashare' && strtolower($ns) != 'chat:dsgateway' || $DATASHARE == TRUE)
 			$this->send('send '.$ns.LBR.LBR.$type.' main'.LBR.LBR.$message);
 	}
 	function action($ns, $message, $DATASHARE = FALSE) {
 		if(strtolower($ns) == 'chat:irpg') return;
-		if(strtolower($ns) != 'chat:datashare')
+		if(strtolower($ns) != 'chat:datashare' && strtolower($ns) != 'chat:dsgateway')
 			$this->say($ns, '/me '.$message);
 		elseif($DATASHARE == TRUE)
 			$this->say($ns, '/me '.$message, TRUE);
 	}
 	function npmsg($ns, $message, $DATASHARE = FALSE) {
 		if(strtolower($ns) == 'chat:irpg') return;
-		if(strtolower($ns) != 'chat:datashare')
+		if(strtolower($ns) != 'chat:datashare' && strtolower($ns) != 'chat:dsgateway')
 			$this->say($ns, '/npmsg '.$message);
 		elseif($DATASHARE == TRUE)
 			$this->say($ns, '/npmsg '.$message, TRUE);
