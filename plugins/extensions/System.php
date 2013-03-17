@@ -565,19 +565,21 @@ class System_commands extends extension {
 				if(strtolower($parts[3]) !== strtolower($this->Bot->username)) return;
 			}
 		}
-		if($ns == 'chat:DSGateway' && $parts[1] == "BOTCHECK" && $parts[2] === 'OK' ) {
-			if($this->dAmn->chat['chat:DSGateway']['member'][$from]['pc'] !== 'PoliceBot') return;
- 			if(strtolower($parts[3]) !== strtolower($this->Bot->username)) return;
-			$this->dAmn->join('chat:DataShare');
-			$this->dAmn->part('chat:DSGateway');
-			return;
- 		}
-		if($ns == 'chat:DSGateway' && $parts[1] == "BOTCHECK" && $parts[2] === 'DENIED' ) {
-			if($this->dAmn->chat['chat:DSGateway']['member'][$from]['pc'] !== 'PoliceBot') return;
- 			if(strtolower($parts[3]) !== strtolower($this->Bot->username)) return;
-			$this->dAmn->part('chat:DSGateway');
-			return;
- 		}
+		if($ns == 'chat:DSGateway') {
+			if($parts[1] == "BOTCHECK" && $parts[2] === 'OK' ) {
+				if($this->dAmn->chat['chat:DSGateway']['member'][$from]['pc'] !== 'PoliceBot') return;
+				if(strtolower($parts[3]) !== strtolower($this->Bot->username)) return;
+				$this->dAmn->join('chat:DataShare');
+				$this->dAmn->part('chat:DSGateway');
+				return;
+			}
+			if($parts[1] == "BOTCHECK" && $parts[2] === 'DENIED' ) {
+				if($this->dAmn->chat['chat:DSGateway']['member'][$from]['pc'] !== 'PoliceBot') return;
+				if(strtolower($parts[3]) !== strtolower($this->Bot->username)) return;
+				$this->dAmn->part('chat:DSGateway');
+				return;
+			}
+		}
 
 			$response = $parts[0].':BOTCHECK:RESPONSE:' . $from . ',' .
 						$this->Bot->owner . ',' .
