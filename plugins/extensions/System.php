@@ -556,30 +556,30 @@ class System_commands extends extension {
 				if(!in_array($this->Bot->username, $check)) return;
 			}
 		}
-		if($ns == 'chat:DataShare') {
-			if($parts[1] == "BOTCHECK" && $parts[2] === 'ALL') {
-				if($this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] !== 'PoliceBot') return;
-			}
-			if($parts[1] == "BOTCHECK" && $parts[2] === 'NODATA' && isset($parts[3])) {
-				if($this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] !== 'PoliceBot') return;
-				if(strtolower($parts[3]) !== strtolower($this->Bot->username)) return;
-			}
+		if($parts[1] == "BOTCHECK" && $parts[2] === 'ALL') {
+			if($ns != 'chat:DataShare') return;
+			if($this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] !== 'PoliceBot') return;
 		}
-		if($ns == 'chat:DSGateway') {
-			if($parts[1] == "BOTCHECK" && $parts[2] === 'OK' ) {
-				if($this->dAmn->chat['chat:DSGateway']['member'][$from]['pc'] !== 'PoliceBot') return;
-				if(strtolower($parts[3]) !== strtolower($this->Bot->username)) return;
-				$this->dAmn->join('chat:DataShare');
-				$this->dAmn->part('chat:DSGateway');
-				return;
-			}
-			if($parts[1] == "BOTCHECK" && $parts[2] === 'DENIED' ) {
-				if($this->dAmn->chat['chat:DSGateway']['member'][$from]['pc'] !== 'PoliceBot') return;
-				$part = explode(',', $parts[3]);
-				if(strtolower($part[0]) !== strtolower($this->Bot->username)) return;
-				$this->dAmn->part('chat:DSGateway');
-				return;
-			}
+		if($parts[1] == "BOTCHECK" && $parts[2] === 'NODATA' && isset($parts[3])) {
+			if($ns != 'chat:DataShare') return;
+			if($this->dAmn->chat['chat:DataShare']['member'][$from]['pc'] !== 'PoliceBot') return;
+			if(strtolower($parts[3]) !== strtolower($this->Bot->username)) return;
+		}
+		if($parts[1] == "BOTCHECK" && $parts[2] === 'OK' ) {
+			if($ns != 'chat:DSGateway') return;
+			if($this->dAmn->chat['chat:DSGateway']['member'][$from]['pc'] !== 'PoliceBot') return;
+			if(strtolower($parts[3]) !== strtolower($this->Bot->username)) return;
+			$this->dAmn->join('chat:DataShare');
+			$this->dAmn->part('chat:DSGateway');
+			return;
+		}
+		if($parts[1] == "BOTCHECK" && $parts[2] === 'DENIED' ) {
+			if($ns != 'chat:DSGateway') return;
+			if($this->dAmn->chat['chat:DSGateway']['member'][$from]['pc'] !== 'PoliceBot') return;
+			$part = explode(',', $parts[3]);
+			if(strtolower($part[0]) !== strtolower($this->Bot->username)) return;
+			$this->dAmn->part('chat:DSGateway');
+			return;
 		}
 
 			$response = $parts[0].':BOTCHECK:RESPONSE:' . $from . ',' .
