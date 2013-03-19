@@ -89,7 +89,7 @@ class System_commands extends extension {
 		$this->hookBDS('e_botcheck', '^BDS:BOTCHECK:(DIRECT|NODATA|OK|DENIED):*$');
 		$this->hookBDS('e_botcheck', '^BDS:BOTCHECK:ALL$');
 		$this->hookBDS('e_botcheck', '^CODS:BOTCHECK:ALL$');
-		$this->hookBDS('e_codsnotify', 'CODS:VERSION:NOTIFY');
+		$this->hookBDS('e_codsnotify', '^CODS:VERSION:NOTIFY:*$');
 
 		$this->loadnotes();
 
@@ -799,7 +799,7 @@ class System_commands extends extension {
 
 			if(strtolower($pay[0]) !== strtolower($self->Bot->username)) return;
 			if(empty($version) || empty($downloadlink)) return;
-			if($self->botversion['reset'] != true && $version <= $self->Bot->info['version']) return;
+			if(array_key_exists('reset', $self->botversion) && $self->botversion['reset'] != true && $version <= $self->Bot->info['version']) return;
 			if($from !== 'Botdom') return;
 			if($this->Bot->autoupdate == true) {
 				file_put_contents('./storage/bat/update.bcd', 'updating');
@@ -824,10 +824,10 @@ class System_commands extends extension {
 			$self->Bot->shutdownStr[0] = 'Bot has been updated.';
 			$dAmn->close = true;
 			$dAmn->disconnect();
-		}, 'CODS:VERSION:UPDATE');
+		}, '^CODS:VERSION:UPDATE:*$');
 	}
 
-	function e_codsnotify($parts, $from, $message) {
+	function e_codsnotify($ns, $parts, $from, $message) {
 		$payload = explode(',', $message, 5);
 		$pay = explode(',', $parts[3], 2);
 		$version = $payload[1];
@@ -835,6 +835,7 @@ class System_commands extends extension {
 		$ov_arr = explode('.', $this->Bot->info['version']);
 		$nv_arr = explode('.', $version);
 		$newer = (intval($ov_arr[0]) <= intval($nv_arr[0]) && intval($ov_arr[1]) <= intval($nv_arr[1]) && (intval($ov_arr[2]) < intval($nv_arr[2]) || intval($ov_arr[1]) < intval($nv_arr[1])));
+		$requestor = $pay[0];
 
 		if(empty($version) || empty($released)) return;
 
