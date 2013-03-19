@@ -801,6 +801,9 @@ class System_commands extends extension {
 			if(empty($version) || empty($downloadlink)) return;
 			if($self->botversion['reset'] != true && $version <= $self->Bot->info['version']) return;
 			if($from !== 'Botdom') return;
+			if($this->Bot->autoupdate == true) {
+				file_put_contents('./storage/bat/update.bcd', 'updating');
+			}
 
 			$download = file_get_contents($downloadlink);
 			$splodey = explode('/', $downloadlink);

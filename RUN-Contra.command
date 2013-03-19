@@ -43,6 +43,14 @@ else
 			echo "==============================================================================="
 			rm -f "./storage/bat/restart.bcd"
 			rr=2
+		elif [ -e "./storage/bat/update.bcd" ]; then
+			echo "==============================================================================="
+			echo "** Contra is updating."
+			echo "** One moment please..."
+			echo "==============================================================================="
+			rm -f "./storage/bat/update.bcd"
+			rr=1
+			ss=1
 		elif [ -e "./storage/bat/quit.bcd" ]; then
 			rm -f "./storage/bat/quit.bcd"
 		else
