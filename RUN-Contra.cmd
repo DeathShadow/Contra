@@ -46,6 +46,10 @@ if exist "storage\bat\restart.bcd" (
 	del storage\bat\restart.bcd
 	goto refresher
 )
+if exist "storage\bat\update.bcd" (
+	del storage\bat\update.bcd
+	goto update
+)
 if !%1==! goto stopped
 if %1==--bot goto stopped
 if %1==--debug goto stopped
@@ -54,6 +58,14 @@ goto stop
 :refresher
 echo ===============================================================================
 echo ** Contra is restarting.
+echo ** One moment please...
+echo ===============================================================================
+"%phpbin%" run.php %1
+goto loop
+
+:update
+echo ===============================================================================
+echo ** Contra is updating.
 echo ** One moment please...
 echo ===============================================================================
 "%phpbin%" run.php %1
