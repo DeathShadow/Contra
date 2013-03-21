@@ -501,7 +501,7 @@ class dAmn_lib extends extension {
 	}
 
 	function logprop($chan, $prop, $ts, $val) {
-		if($chan != '#DataShare' && $chan != '#DSGateway') {
+		if($chan != '#DataShare' && $chan != '#DSGateway' && $this->Bot->logging) {
 			$dt = date('m-d-Y-hms', $ts);
 			$fn = $prop.'-'.$dt.'.txt';
 			if(!is_dir('./storage')) mkdir('./storage', 0755);
