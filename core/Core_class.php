@@ -28,7 +28,7 @@ class Bot {
 	public $username;
 	public $owner;
 	public $trigger;
-	public $aboutStr;
+	public $aboutStr = '<b>%N% %V%%S%</b> (%R% release)<br/><sub><b>Author:</b> :dev%A%:<b>; Owner:</b> :dev%O%:<b>;</b><br/><b>%D%</b></sub>';
 	public $autojoin;
 	public $session;
 	public $logging = true;
@@ -162,7 +162,6 @@ class Bot {
 		if (!array_key_exists('enable_logs', $config))
 			$config['enable_logs'] = true;
 		$this->logging = $config['enable_logs'];
-		$this->aboutStr = $config['about'];
 		$this->autojoin = $config['autojoin'];
 		if(isset($config['cookie']) && !empty($config['cookie']))
 			$this->damntoken = unserialize($config['cookie']);
@@ -179,7 +178,6 @@ class Bot {
 				'trigger' => $this->trigger,
 				'owner' => $this->owner,
 			),
-			'about' => $this->aboutStr,
 			'autojoin' => $this->autojoin,
 			'enable_logs' => $this->logging,
 			'damntoken' => empty($this->damntoken) ? '' : serialize($this->damntoken),
