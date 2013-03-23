@@ -438,6 +438,7 @@ class dAmnPHP {
 	}
 	function say($ns, $message, $DATASHARE = FALSE) {
 		if(strtolower($ns) == 'chat:irpg') return;
+		if(strtolower($ns) == 'chat:dAmnIdlers') return;
 		if(is_array($ns)) {
 			// WE CAN SEND MESSAGES TO A PLETHORA OF CHANNELS!
 			foreach($ns as $var1 => $var2) {
@@ -456,6 +457,7 @@ class dAmnPHP {
 	}
 	function action($ns, $message, $DATASHARE = FALSE) {
 		if(strtolower($ns) == 'chat:irpg') return;
+		if(strtolower($ns) == 'chat:dAmnIdlers') return;
 		if(strtolower($ns) != 'chat:datashare' && strtolower($ns) != 'chat:dsgateway')
 			$this->say($ns, '/me '.$message);
 		elseif($DATASHARE == TRUE)
@@ -463,6 +465,7 @@ class dAmnPHP {
 	}
 	function npmsg($ns, $message, $DATASHARE = FALSE) {
 		if(strtolower($ns) == 'chat:irpg') return;
+		if(strtolower($ns) == 'chat:dAmnIdlers') return;
 		if(strtolower($ns) != 'chat:datashare' && strtolower($ns) != 'chat:dsgateway')
 			$this->say($ns, '/npmsg '.$message);
 		elseif($DATASHARE == TRUE)
