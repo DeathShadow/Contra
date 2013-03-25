@@ -201,7 +201,7 @@ class dAmn_commands extends extension {
 
 	function c_members($ns, $from, $message, $target) {
 		$chan = $this->dAmn->is_channel($target);
-		if($chan===false||$chan=='chat:DataShare')
+		if($chan===false||$chan=='chat:DataShare'||$chan=='chat:DSGateway')
 			return $this->dAmn->say($ns, $from.': I have not joined '.$this->dAmn->deform_chat($target, $this->Bot->username).'.');
 		$type = strtolower(args($message,1));
 		switch($type) {
@@ -298,6 +298,7 @@ class dAmn_commands extends extension {
 		foreach($this->dAmn->chat as $name => $data) {
 			$chans.= $this->dAmn->deform_chat($name, $this->Bot->username).', ';
 			$chans = str_ireplace('#DataShare,', '', $chans);
+			$chans = str_ireplace('#DSGateway,', '', $chans);
 		}
 		$this->dAmn->say($ns, $msg.rtrim($chans,', ').'</sup>');
 	}
