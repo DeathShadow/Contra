@@ -27,7 +27,7 @@ class Global_Ban extends extension {
 				foreach($list as $key => $room) {
 					$list[$key] = $this->dAmn->deform_chat($room);
 				}
-				$say .= implode(' · ', $list);
+				$say .= implode(' &#183; ', $list);
 				$this->say($ns, $from, $say);
 				break;
 
