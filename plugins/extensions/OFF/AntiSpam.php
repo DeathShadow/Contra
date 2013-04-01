@@ -428,6 +428,7 @@ class AntiSpam extends extension {
                             $penalty = 'banned';
                     } else {
                             $penalty = 'silenced';
+                    }
                     $this->dAmn->say($ns, $from .': Slow down! You\'ve been given a strike. '.
                             '<sup>(You\'ve got '. $this->data[$safe_ns]['strikes'][$user]['strike_count'] .
                             '/'. $this->data[$safe_ns]['max_strikes'] .'. Reaching '. $this->data[$safe_ns]['max_strikes'].
