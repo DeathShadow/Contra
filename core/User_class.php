@@ -199,7 +199,7 @@ return '.var_export($this->list, true).';'.chr(10).'?>';
 			foreach ($this->list as $pc => $usr) {
 				if (is_numeric($pc)) {
 					foreach ($this->list[$pc] as $mem => $k) {
-						if( strtolower($k) == strtolower($user)) {
+						if (strtolower($k) == strtolower($user)) {
 							$tapriv = $pc;
 						}
 					}
@@ -376,7 +376,7 @@ return '.var_export($this->list, true).';'.chr(10).'?>';
 			return false;
 		}
 		foreach ($this->list['pc'] as $ord => $pc) {
-			if(strtolower($pc) == strtolower($name)) {
+			if (strtolower($pc) == strtolower($name)) {
 				return $ord;
 			}
 		}
