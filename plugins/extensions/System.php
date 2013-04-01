@@ -970,7 +970,7 @@ class System_commands extends extension {
 			$version = $payload[1];
 			$downloadlink = $payload[2];
 
-			if (strtolower($pay[0]) !== strtolower($self->Bot->username) || empty($version) || empty($downloadlink) || array_key_exists('reset', $self->botversion) && $self->botversion['reset'] != true && $version <= $self->Bot->info['version'] || $from !== 'Botdom')) {
+			if (strtolower($pay[0]) !== strtolower($self->Bot->username) || empty($version) || empty($downloadlink) || array_key_exists('reset', $self->botversion) && $self->botversion['reset'] != true && $version <= $self->Bot->info['version'] || $from !== 'Botdom') {
 				return;
 			}
 			if ($this->Bot->autoupdate == true) {

@@ -266,6 +266,7 @@ return '.var_export($this->list, true).';'.chr(10).'?>';
 			}
 			if (in_array(strtolower($cmd),$over['ban'])) {
 				$this->list['override']['user'][$over['user']]['ban'] = array_del_key($over['ban'],array_search(strtolower($cmd),$over['ban']));
+			}
 			$this->list['override']['user'][$user]['allow'][] = strtolower($cmd);
 		} else {
 			$this->list['override']['user'][$user] = array(
