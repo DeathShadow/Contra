@@ -33,15 +33,18 @@
 	*/
 
 	// Before anything happens, we need to make sure OpenSSL is loaded. If not, kill the program!
-	if(!extension_loaded('OpenSSL')) {
+	if (!extension_loaded('OpenSSL')) {
 		echo '>> WARNING: You don\'t have OpenSSL loaded!',chr(10);
-		if(PHP_OS == 'WIN32' || PHP_OS == 'WINNT' || PHP_OS == 'Windows')
+		if (PHP_OS == 'WIN32' || PHP_OS == 'WINNT' || PHP_OS == 'Windows') {
 			echo '>> Re-read the Install PHP guide @ http://botdom.com/documentation/Install_PHP_on_Windows',chr(10),'>> ';
-		if(PHP_OS == 'Linux')
+		}
+		if (PHP_OS == 'Linux') {
 			echo '>> Re-read the Install PHP guide @ http://botdom.com/documentation/Install_PHP_on_Linux',chr(10),'>> ';
-		if(PHP_OS == 'Darwin')
+		}
+		if (PHP_OS == 'Darwin') {
 			echo '>> Re-read the Install PHP guide @ http://botdom.com/documentation/Install_PHP_on_Mac_OS_X',chr(10),'>> ';
-		for($i = 0;$i < 3; ++$i) {
+		}
+		for ($i = 0;$i < 3; ++$i) {
 			sleep(1);
 			echo '.';
 		}
@@ -50,13 +53,15 @@
 		exit();
 	}
 	// Also make sure date.timezone is set. If not, kill the program, unless it's OSX, then skip the check.
-	if(!ini_get('date.timezone') && PHP_OS != 'Darwin') {
+	if (!ini_get('date.timezone') && PHP_OS != 'Darwin') {
 		echo '>> WARNING: You didn\'t setup php properly. (date.timezone is not set)',chr(10);
-		if(PHP_OS == 'WIN32' || PHP_OS == 'WINNT' || PHP_OS == 'Windows')
+		if (PHP_OS == 'WIN32' || PHP_OS == 'WINNT' || PHP_OS == 'Windows') {
 			echo '>> Re-read the Install PHP guide @ http://botdom.com/documentation/Install_PHP_on_Windows#Part_2 (Do/redo step 7-9)',chr(10),'>> ';
-		if(PHP_OS == 'Linux')
+		}
+		if (PHP_OS == 'Linux') {
 			echo '>> Re-read the Install PHP guide @ http://botdom.com/documentation/Install_PHP_on_Linux#PHP_configure_setup (Do/redo step 2-4)',chr(10),'>> ';
-		for($i = 0;$i < 3; ++$i) {
+		}
+		for ($i = 0;$i < 3; ++$i) {
 			sleep(1);
 			echo '.';
 		}
@@ -154,11 +159,21 @@ class dAmnPHP {
 		'chat:communityrelations',
 	);
 
-	function Time($ts=false) { return date('H:i:s', ($ts===false?time():$ts)); }
-	function Clock($ts=false) {     return '['.$this->Time($ts).']'; }
-	function Message($str = '', $ts = false) { echo $this->Clock($ts),' '.$str,chr(10); }
-	function Notice($str = '', $ts = false)  { $this->Message('** '.$str,$ts); }
-	function Warning($str = '', $ts = false) { $this->Message('>> '.$str,$ts); }
+	function Time($ts=false) {
+		return date('H:i:s', ($ts===false?time():$ts));
+	}
+	function Clock($ts=false) {
+		return '['.$this->Time($ts).']';
+	}
+	function Message($str = '', $ts = false) {
+		echo $this->Clock($ts),' '.$str,chr(10);
+	}
+	function Notice($str = '', $ts = false)  {
+		$this->Message('** '.$str,$ts);
+	}
+	function Warning($str = '', $ts = false) {
+		$this->Message('>> '.$str,$ts);
+	}
 
 	// oAuth function, Modes are 0 = Silent, 1 = Echo
 	public function oauth($mode, $refresh = false) {
@@ -167,19 +182,19 @@ class dAmnPHP {
 		$oauth_file          = './storage/oauth.json';
 
 		// First off, check if the oAuth file exists and is available for reading.
-		if(is_readable($oauth_file)) {
+		if (is_readable($oauth_file)) {
 
 			// If we're not in silent mode.
-			if($mode == 0) {
+			if ($mode == 0) {
 				echo 'Grabbing existing oAuth tokens...' . LBR; // Turn off if silent
 			}
 
 			// Reading oauth file
-			if(filesize($oauth_file) != 0) {
+			if (filesize($oauth_file) != 0) {
 				$fh = fopen($oauth_file, 'r') or die('Failed to open oAuth file for reading.');
 
 				// If we're not in silent mode.
-				if($mode == 0) {
+				if ($mode == 0) {
 					echo 'Tokens grabbed from file...' . LBR . LBR;
 				}
 
@@ -187,10 +202,10 @@ class dAmnPHP {
 				$this->oauth_tokens = json_decode(fread($fh, filesize($oauth_file)));
 
 				// Do we need a new token?
-				if($refresh) {
+				if ($refresh) {
 
 					// If we're not in silent mode.
-					if($mode == 0) {
+					if ($mode == 0) {
 						echo 'Refreshing Token' . LBR;
 					}
 
@@ -201,9 +216,9 @@ class dAmnPHP {
 					$this->oauth_tokens = json_decode($tokens);
 
 					// Check if the request was considered a success
-					if($this->oauth_tokens->status != "success") {
+					if ($this->oauth_tokens->status != "success") {
 						// Nope, something went wrong.
-						if($mode == 0) {
+						if ($mode == 0) {
 							echo $this->error('Something went wrong while trying to grab a token! Error: ' . $this->oauth_tokens->error_description) . LBR;
 							echo 'Let\'s try and grab a new token...' . LBR;
 						}
@@ -216,13 +231,13 @@ class dAmnPHP {
 						fclose($fh);
 
 						// If not in silent mode.
-						if($mode == 0) {
+						if ($mode == 0) {
 							echo 'We got a new token!' . LBR;
 						}
 					}
 				} else {
 					// If not in silent mode.
-					if($mode == 0) {
+					if ($mode == 0) {
 						echo 'Checking if tokens have expired...' . LBR;
 					}
 
@@ -230,15 +245,15 @@ class dAmnPHP {
 					$placebo = json_decode($this->socket("/api/draft15/placebo?access_token={$this->oauth_tokens->access_token}"));
 
 					// Is the token OK?
-					if($placebo->status != "success") {
+					if ($placebo->status != "success") {
 						// Nope, it expired.
-						if($mode == 0) {
+						if ($mode == 0) {
 							echo $this->error('It appears that your token has expired! Let\'s grab a new one.') . LBR;
 						}
 						$this->oauth(0, true);
 					} else {
 						// We're done!
-						if($mode == 0) {
+						if ($mode == 0) {
 							echo 'We got a new token!' . LBR;
 						}
 						fclose($fh);
@@ -246,7 +261,7 @@ class dAmnPHP {
 				}
 			} else {
 				// We need a new token!
-				if($mode == 0) {
+				if ($mode == 0) {
 					echo $this->error('Your token file is empty, grabbing new tokens...') . LBR;
 				}
 				unlink($oauth_file);
@@ -254,7 +269,7 @@ class dAmnPHP {
 			}
 		} else {
 			// We need a token!
-			if($mode == 0) {
+			if ($mode == 0) {
 				echo 'Grabbing the oAuth Tokens from deviantART...' . LBR;
 			}
 
@@ -273,8 +288,8 @@ class dAmnPHP {
 			$this->oauth_tokens = json_decode($tokens);
 
 			// Was it a success?
-			if($this->oauth_tokens->status != 'success') {
-				if($mode == 0) {
+			if ($this->oauth_tokens->status != 'success') {
+				if ($mode == 0) {
 					echo $this->error('Something went wrong while trying to grab a token! Error: ' . $this->oauth_tokens->error_description) . LBR;
 					echo 'Did you log into your bot\'s account and go to the link above?' . LBR;
 				}
@@ -287,7 +302,7 @@ class dAmnPHP {
 				fclose($fh);
 
 				// If we're not in silent mode.
-				if($mode == 0) {
+				if ($mode == 0) {
 					echo 'We got a token!' . LBR;
 				}
 			}
@@ -297,7 +312,7 @@ class dAmnPHP {
 	// dAmntoken function
 	public function damntoken() {
 		// Check if the oauth_tokens variable is set, if not set it.
-		if(!isset($this->oauth_tokens)) {
+		if (!isset($this->oauth_tokens)) {
 			$this->oauth(0);
 		}
 
@@ -332,25 +347,32 @@ class dAmnPHP {
 	    try
 	    {
 		$headers = '';
-		if(isset($post))
+		if(isset($post)) {
 			$headers .= "POST $url HTTP/1.1\r\n";
-		else $headers .= "GET $url HTTP/1.1\r\n";
+		} else {
+			$headers .= "GET $url HTTP/1.1\r\n";
+		}
 		$headers .= "Host: $host\r\n";
 		$headers .= 'User-Agent: '.$this->Agent."\r\n";
 		$headers .= "Referer: $referer\r\n";
-		if($cookies != array())
+		if ($cookies != array()) {
 			$headers .= 'Cookie: '.implode("; ", $cookies)."\r\n";
+		}
 		$headers .= "Connection: close\r\n";
 		$headers .= "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*\/*;q=0.8\r\n";
 		$headers .= "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\n";
 		$headers .= "Content-Type: application/x-www-form-urlencoded\r\n";
-		if(isset($post))
+		if (isset($post)) {
 			$headers .= 'Content-Length: '.strlen($post)."\r\n\r\n$post";
-		else $headers .= "\r\n";
+		} else {
+			$headers .= "\r\n";
+		}
 		$response = '';
 		if (!$socket) return '';
 		fputs($socket, $headers);
-		while(!@feof ($socket)) $response .= @fgets($socket, 8192);
+		while (!@feof ($socket)) {
+			$response .= @fgets($socket, 8192);
+		}
 		return $response;
 	    }
 	    catch (Exception $e)
@@ -365,7 +387,7 @@ class dAmnPHP {
 		$this->socket = @stream_socket_client('tcp://'.$this->server['chat']['host'].
 		':'.$this->server['chat']['port']);
 		// If we managed to open a connection, we need to do one or two things.
-		if($this->socket !== false) {
+		if ($this->socket !== false) {
 			// First we set the stream to non-blocking, so the bot doesn't pause when reading data.
 			stream_set_blocking($this->socket, 0);
 			// Now we make our handshake packet. Here we send information about the bot/client to the dAmn server.
@@ -393,25 +415,32 @@ class dAmnPHP {
 	}
 
 	function deform_chat($chat, $discard=false) {
-		if(substr($chat, 0, 5)=='chat:') return '#'.str_replace('chat:','',$chat);
-		if(substr($chat, 0, 6)=='pchat:') {
-			if($discard===false) return $chat;
+		if (substr($chat, 0, 5)=='chat:') {
+			return '#'.str_replace('chat:','',$chat);
+		}
+		if (substr($chat, 0, 6)=='pchat:') {
+			if ($discard===false) {
+				return $chat;
+			}
 			$chat = str_replace('pchat:','',$chat);
 			$chat1=substr($chat,0,strpos($chat,':'));
 			$chat2=substr($chat,strpos($chat,':')+1);
 			$mod = true;
-			if(strtolower($chat1)==strtolower($discard)) return '@'.$chat1;
-			else return '@'.$chat2;
+			if (strtolower($chat1)==strtolower($discard)) {
+				return '@'.$chat1;
+			} else {
+				return '@'.$chat2;
+			}
 		}
 		return (substr($chat,0,1)=='#') ? $chat : (substr($chat, 0, 1)=='@' ? $chat : "#$chat");
 	}
 
 	function format_chat($chat, $chat2=false) {
 		$chat = str_replace('#','',$chat);
-		if($chat2!=false) {
+		if ($chat2!=false) {
 			$chat = str_replace('@','',$chat);
 			$chat2 = str_replace('@','',$chat2);
-			if(strtolower($chat)!=strtolower($chat2)) {
+			if (strtolower($chat)!=strtolower($chat2)) {
 				$channel = 'pchat:';
 				$users = array($chat, $chat2);
 				sort($users);
@@ -429,19 +458,27 @@ class dAmnPHP {
 	*               "LBR"s are actually "\n"s, because they are...
 	*/
 	function join($channel) {
-		if(in_array(strtolower($channel), $this->njc)) return;
+		if (in_array(strtolower($channel), $this->njc)) {
+			return;
+		}
 		$this->send('join '.$channel.LBR);
 	}
 	function part($channel) {
-		if(strtolower($channel) == 'chat:datashare') return;
+		if (strtolower($channel) == 'chat:datashare') {
+			return;
+		}
 		$this->send('part '.$channel.LBR);
 	}
 	function say($ns, $message, $DATASHARE = FALSE) {
-		if(strtolower($ns) == 'chat:irpg') return;
-		if(strtolower($ns) == 'chat:dAmnIdlers') return;
-		if(is_array($ns)) {
+		if (strtolower($ns) == 'chat:irpg') {
+			return;
+		}
+		if (strtolower($ns) == 'chat:dAmnIdlers') {
+			return;
+		}
+		if (is_array($ns)) {
 			// WE CAN SEND MESSAGES TO A PLETHORA OF CHANNELS!
-			foreach($ns as $var1 => $var2) {
+			foreach ($ns as $var1 => $var2) {
 				$this->say(((is_string($var1)) ? $var1 : $var2), $message);
 			}
 			return;
@@ -452,34 +489,63 @@ class dAmnPHP {
 		$message = is_array($message) ? $message = '<bcode>'.print_r($message, true) : $message;
 		$message = str_replace('&lt;','<',$message);
 		$message = str_replace('&gt;','>',$message);
-		if(strtolower($ns) != 'chat:datashare' && strtolower($ns) != 'chat:dsgateway' || $DATASHARE == TRUE)
+		if (strtolower($ns) != 'chat:datashare' && strtolower($ns) != 'chat:dsgateway' || $DATASHARE == TRUE) {
 			$this->send('send '.$ns.LBR.LBR.$type.' main'.LBR.LBR.$message);
+		}
 	}
 	function action($ns, $message, $DATASHARE = FALSE) {
-		if(strtolower($ns) == 'chat:irpg') return;
-		if(strtolower($ns) == 'chat:dAmnIdlers') return;
-		if(strtolower($ns) != 'chat:datashare' && strtolower($ns) != 'chat:dsgateway')
+		if (strtolower($ns) == 'chat:irpg') {
+			return;
+		}
+		if (strtolower($ns) == 'chat:dAmnIdlers') {
+			return;
+		}
+		if (strtolower($ns) != 'chat:datashare' && strtolower($ns) != 'chat:dsgateway') {
 			$this->say($ns, '/me '.$message);
-		elseif($DATASHARE == TRUE)
+		} elseif ($DATASHARE == TRUE) {
 			$this->say($ns, '/me '.$message, TRUE);
+		}
 	}
 	function npmsg($ns, $message, $DATASHARE = FALSE) {
-		if(strtolower($ns) == 'chat:irpg') return;
-		if(strtolower($ns) == 'chat:dAmnIdlers') return;
-		if(strtolower($ns) != 'chat:datashare' && strtolower($ns) != 'chat:dsgateway')
+		if (strtolower($ns) == 'chat:irpg') {
+			return;
+		}
+		if (strtolower($ns) == 'chat:dAmnIdlers') {
+			return;
+		}
+		if (strtolower($ns) != 'chat:datashare' && strtolower($ns) != 'chat:dsgateway') {
 			$this->say($ns, '/npmsg '.$message);
-		elseif($DATASHARE == TRUE)
+		} elseif ($DATASHARE == TRUE) {
 			$this->say($ns, '/npmsg '.$message, TRUE);
+		}
 	}
-	function promote($ns, $user, $pc=false) { $this->send('send '.$ns.LBR.LBR.'promote '.$user.LBR.LBR.($pc!=false?$pc:'')); }
-	function demote($ns, $user, $pc=false) { $this->send('send '.$ns.LBR.LBR.'demote '.$user.LBR.LBR.($pc!=false?$pc:'')); }
-	function kick($ns, $user, $r=false) { $this->send('kick '.$ns.LBR.'u='.$user.LBR.($r!=false?"\n$r\n":'')); }
-	function ban($ns, $user) { $this->send('send '.$ns.LBR.LBR.'ban '.$user.LBR); }
-	function unban($ns, $user) { $this->send('send '.$ns.LBR.LBR.'unban '.$user.LBR); }
-	function get($ns, $property) { $this->send('get '.$ns.LBR.'p='.$property.LBR); }
-	function set($ns, $property, $value) { $this->send('set '.$ns.LBR.'p='.$property.LBR.LBR.$value.LBR); }
-	function admin($ns, $command) { $this->send('send '.$ns.LBR.LBR.'admin'.LBR.LBR.$command); }
-	function disconnect() { $this->send('disconnect'.LBR); }
+	function promote($ns, $user, $pc=false) {
+		$this->send('send '.$ns.LBR.LBR.'promote '.$user.LBR.LBR.($pc!=false?$pc:''));
+	}
+	function demote($ns, $user, $pc=false) {
+		$this->send('send '.$ns.LBR.LBR.'demote '.$user.LBR.LBR.($pc!=false?$pc:''));
+	}
+	function kick($ns, $user, $r=false) {
+		$this->send('kick '.$ns.LBR.'u='.$user.LBR.($r!=false?"\n$r\n":''));
+	}
+	function ban($ns, $user) {
+		$this->send('send '.$ns.LBR.LBR.'ban '.$user.LBR);
+	}
+	function unban($ns, $user) {
+		$this->send('send '.$ns.LBR.LBR.'unban '.$user.LBR);
+	}
+	function get($ns, $property) {
+		$this->send('get '.$ns.LBR.'p='.$property.LBR);
+	}
+	function set($ns, $property, $value) {
+		$this->send('set '.$ns.LBR.'p='.$property.LBR.LBR.$value.LBR);
+	}
+	function admin($ns, $command) {
+		$this->send('send '.$ns.LBR.LBR.'admin'.LBR.LBR.$command);
+	}
+	function disconnect() {
+		$this->send('disconnect'.LBR);
+	}
 	// Here's the actual send function which sends the packets.
 	function send($data) {
 		if ($this->plc_enabled && strlen($data) > 4) {
@@ -491,7 +557,9 @@ class dAmnPHP {
 						$this->plc_count[$k] = 0;
 					}
 					$this->plc_time = microtime(true);
-				} else if ($this->plc_count[$ph] >= $this->plc_data_limit) return;
+				} elseif ($this->plc_count[$ph] >= $this->plc_data_limit) {
+					return;
+				}
 			}
 		}
 		@stream_socket_sendto($this->socket, $data.chr(0));
@@ -500,24 +568,35 @@ class dAmnPHP {
 	// This is the important one. It reads packets off of the stream and returns them in an array! Numerically indexed.
 	function read() {
 		$s = array($this->socket); $w=Null;
-		if(($s = @stream_select($s,$w,$w,0)) !== false) {
-			if($s === 0) return false;
+		if (($s = @stream_select($s,$w,$w,0)) !== false) {
+			if ($s === 0) {
+				return false;
+			}
 			$data = @stream_socket_recvfrom($this->socket, 8192);
-			if($data !== false && $data !== '') {
+			if ($data !== false && $data !== '') {
 				$this->buffer .= $data;
 				$this->bytes_recv += strlen($data);
 				$parts = explode(chr(0), $this->buffer);
 				$this->buffer = ($parts[count($parts)-1] != '' ? $parts[count($parts)-1] : '');
 				unset($parts[count($parts)-1]);
-				if($parts!==Null) return $parts;
+				if ($parts!==Null) {
+					return $parts;
+				}
 				return false;
-			} else return array("disconnect\ne=socket closed\n\n");
-		} else return array("disconnect\ne=socket error\n\n");
+			} else {
+				return array("disconnect\ne=socket closed\n\n");
+			}
+		} else {
+			return array("disconnect\ne=socket error\n\n");
+		}
 	}
 
 	function is_channel($ns) {
-		foreach($this->chat as $namespace => $data)
-			if(strtolower($namespace)==strtolower($ns)) return $namespace;
+		foreach ($this->chat as $namespace => $data) {
+			if (strtolower($namespace)==strtolower($ns)) {
+				return $namespace;
+			}
+		}
 		return false;
 	}
 }
@@ -544,16 +623,18 @@ function parse_dAmn_packet($data, $sep = '=') {
 		'body' => Null,
 		'raw' => $data
 	);
-	if(stristr($data, "\n\n")) {
+	if (stristr($data, "\n\n")) {
 		$packet['body'] = trim(stristr($data, "\n\n"));
 		$data = substr($data, 0, strpos($data, "\n\n"));
 	}
 	$data = explode("\n", $data);
-	foreach($data as $id => $str) {
-		if(strpos($str, $sep) != 0)
+	foreach ($data as $id => $str) {
+		if (strpos($str, $sep) != 0) {
 			$packet['args'][substr($str, 0, strpos($str, $sep))] = substr($str, strpos($str, $sep)+1);
-		elseif(isset($str[1])) {
-			if(!stristr($str, ' ')) { $packet['cmd'] = $str; } else {
+		} elseif (isset($str[1])) {
+			if (!stristr($str, ' ')) {
+				$packet['cmd'] = $str;
+			} else {
 				$packet['cmd'] = substr($str, 0, strpos($str, ' '));
 				$packet['param'] = trim(stristr($str, ' '));
 			}
@@ -569,12 +650,12 @@ function sort_dAmn_packet($packet) {
 		'p' => array($packet['param'], False, False, False, False, False),
 		'packet' => $packet,
 	);
-	if(substr($packet['param'], 0, 6)=='login:') {
+	if (substr($packet['param'], 0, 6)=='login:') {
 		$data['event'] = 'whois';
 		$data['p'][0] = $packet['raw'];
 		return $data;
 	}
-	switch($packet['cmd']) {
+	switch ($packet['cmd']) {
 		case 'dAmnServer':
 			$data['event'] = 'connected';
 			break;
@@ -596,7 +677,7 @@ function sort_dAmn_packet($packet) {
 		case 'recv':
 			$sub = parse_dAmn_packet($packet['body']);
 			$data['event'] = 'recv_'.$sub['cmd'];
-			switch($sub['cmd']) {
+			switch ($sub['cmd']) {
 				case 'msg':
 				case 'action':
 					$data['p'][1] = $sub['args']['from'];
@@ -605,22 +686,31 @@ function sort_dAmn_packet($packet) {
 				case 'join':
 				case 'part':
 					$data['p'][1] = $sub['param'];
-					if(array_key_exists('r', $sub['args'])) $data['p'][2] = $sub['args']['r'];
-					if($sub['cmd']=='join') $data['p'][2] = $sub['body'];
+					if (array_key_exists('r', $sub['args'])) {
+						$data['p'][2] = $sub['args']['r'];
+					}
+					if ($sub['cmd']=='join') {
+						$data['p'][2] = $sub['body'];
+					}
 					break;
 				case 'privchg':
 				case 'kicked':
 					$data['p'][1] = $sub['param'];
 					$data['p'][2] = $sub['args']['by'];
-					if($sub['cmd']=='privchg') $data['p'][3] = $sub['args']['pc'];
-					if($sub['body'] !== Null) $data['p'][3] = $sub['body'];
+					if ($sub['cmd']=='privchg') {
+						$data['p'][3] = $sub['args']['pc'];
+					}
+					if ($sub['body'] !== Null) {
+						$data['p'][3] = $sub['body'];
+					}
 					break;
 				case 'admin':
 					$data['event'].= '_'.$sub['param'];
 					$data['p'] = array($packet['param'],$sub['args']['p'],false,false,false,false);
-					if(array_key_exists('by', $sub['args']))
+					if (array_key_exists('by', $sub['args'])) {
 						$data['p'][2] = $sub['args']['by'];
-					switch($sub['param']) {
+					}
+					switch ($sub['param']) {
 						case 'create':
 						case 'update':
 							$data['p'][3] = $sub['args']['name'];
@@ -630,8 +720,9 @@ function sort_dAmn_packet($packet) {
 						case 'move':
 							$data['p'][3] = $sub['args']['prev'];
 							$data['p'][4] = $sub['args']['name'];
-							if(array_key_exists('n', $sub['args']))
+							if (array_key_exists('n', $sub['args'])) {
 								$data['p'][5] = $sub['args']['n'];
+							}
 							break;
 						case 'remove':
 							$data['p'][3] = $sub['args']['name'];
@@ -642,8 +733,9 @@ function sort_dAmn_packet($packet) {
 							break;
 						case 'privclass':
 							$data['p'][2] = $sub['args']['e'];
-							if($sub['body']!==Null)
+							if ($sub['body']!==Null) {
 								$data['p'][3] = $sub['body'];
+							}
 							break;
 					}
 					break;
@@ -652,11 +744,13 @@ function sort_dAmn_packet($packet) {
 		case 'kicked':
 			$data['event'] = 'kicked';
 			$data['p'][1] = $packet['args']['by'];
-			if($packet['body'] !== Null) $data['p'][2] = $packet['body'];
+			if ($packet['body'] !== Null) {
+				$data['p'][2] = $packet['body'];
+			}
 			break;
 		case 'ping':
 			$data['event'] = 'ping';
-			$data['p'][0]=false;
+			$data['p'][0] = false;
 			break;
 		case 'disconnect':
 			$data['event'] = 'disconnect';

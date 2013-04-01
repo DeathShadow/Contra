@@ -29,11 +29,13 @@ class Brain extends extension {
 			case 'on':
 			case 'off':
 				$kw = $com == 'on' ? 'hook' : 'unhook';
-				if($ns == "chat:Botdom" && $com == 'on') {
+				if ($ns == "chat:Botdom" && $com == 'on') {
 					$dAmn->say($ns, $from.': AI can\'t be turned on in #Botdom.');
 					break;
 				}
-				if($this->$kw('e_msg', 'recv_msg')) $dAmn->say($ns, $from.': AI turned '.$com.'!');
+				if ($this->$kw('e_msg', 'recv_msg')) {
+					$dAmn->say($ns, $from.': AI turned '.$com.'!');
+				}
 				$this->switch_board($com);
 				break;
 			default:
@@ -45,26 +47,33 @@ class Brain extends extension {
 	function e_msg($c, $from, $msg) {
 		$dAmn = $this->dAmn;
 		$name = $this->Bot->username;
-		if(strtolower(substr($msg, 0, strlen($name))) == strtolower($name)) {
-			if($c == "chat:Botdom") return;
+		if (strtolower(substr($msg, 0, strlen($name))) == strtolower($name)) {
+			if ($c == "chat:Botdom") {
+				return;
+			}
 			$msg = substr($msg, strlen($name.': '));
 			$awayStr = 'I am currently away. Reason:';
-			if(strtolower($msg)=="trigcheck"||strtolower($msg)=="trigger"||strtolower(substr($msg, 0, strlen($awayStr))) == strtolower($awayStr)) return;
+			if (strtolower($msg)=="trigcheck" || strtolower($msg)=="trigger" || strtolower(substr($msg, 0, strlen($awayStr))) == strtolower($awayStr)) {
+				return;
+			}
 			$response = file_get_contents('http://kato.botdom.com/respond/'.$from.'/'.base64_encode(html_entity_decode($msg)));
 			$dAmn->say($c, $from.': '.$response);
 		}
 	}
 
 	function switch_board($switch = false) {
-		if($switch !== false) {
-			if($switch == 'on')
+		if ($switch !== false) {
+			if ($switch == 'on') {
 				$this->Write('switch', 'true', 1);
-			else
-				if(file_exists('./storage/mod/'.$this->name.'/switch.bsv'))
+			} else {
+				if (file_exists('./storage/mod/'.$this->name.'/switch.bsv')) {
 					$this->Unlink('switch');
+				}
+			}
 		}
-		if(file_exists('./storage/mod/'.$this->name.'/switch.bsv'))
+		if (file_exists('./storage/mod/'.$this->name.'/switch.bsv')) {
 			$this->hook('e_msg', 'recv_msg');
+		}
 	}
 }
 

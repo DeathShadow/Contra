@@ -42,23 +42,29 @@ class Welcome extends extension {
 
 	function c_welcome($ns, $from, $message, $target) {
 		$channel = strtolower($target);
-		if(!isset($this->welcome[$channel])) return $this->dAmn->say($ns, $from.': Welcomes are not being used in '.$this->dAmn->deform_chat($target, $this->Bot->username).'.');
+		if (!isset($this->welcome[$channel])) {
+			return $this->dAmn->say($ns, $from.': Welcomes are not being used in '.$this->dAmn->deform_chat($target, $this->Bot->username).'.');
+		}
 		$welcomes = $this->welcome[$channel];
-		if($welcomes['type'] != 'indv')
+		if ($welcomes['type'] != 'indv') {
 			return $this->dAmn->say($ns, $from.': You don\'t have the ability to set a welcome message in '.$this->dAmn->deform_chat($target, $this->Bot->username).'.');
-		if(!$welcomes['switch'])
+		}
+		if (!$welcomes['switch']) {
 			return $this->dAmn->say($ns, $from.': Welcomes are currently deactivated in '.$this->dAmn->deform_chat($target, $this->Bot->username).'.');
+		}
 		$say = $from.': ';
 		$welcome_msg = args($message, 1, true);
 		$welcome_arg = args($message, 1);
 		$secp = args($message, 2, true);
-		if(strtolower($welcome_arg) == 'off' && empty($secp)) {
-			if(isset($this->welcome[$channel]['users'][$from])) {
+		if (strtolower($welcome_arg) == 'off' && empty($secp)) {
+			if (isset($this->welcome[$channel]['users'][$from])) {
 				unset($this->welcome[$channel]['users'][$from]);
 				$say.= 'Welcome message deleted!';
-			} else $say.= 'You didn\'t have a welcome message stored anyway.';
+			} else {
+				$say.= 'You didn\'t have a welcome message stored anyway.';
+			}
 		} else {
-			if(empty($welcome_msg)) {
+			if (empty($welcome_msg)) {
 				$say.= 'You need to give a welcome message to be set.';
 			} else {
 				$this->welcome[$channel]['users'][$from] = $welcome_msg;
@@ -78,13 +84,13 @@ class Welcome extends extension {
 		$com3s = args($message, 4, true);
 		$channel = strtolower($target);
 		$say = $from.': ';
-		switch($subcom) {
+		switch ($subcom) {
 			case 'all':
-				if($channel == "chat:botdom") {
+				if ($channel == "chat:botdom") {
 					$say.='Welcomes are not allowed in #Botdom.';
 					break;
 				}
-				if(empty($com1s)) {
+				if (empty($com1s)) {
 					$say.= 'You need to give a welcome message to set.';
 					break;
 				}
@@ -97,30 +103,30 @@ class Welcome extends extension {
 				$say.= ' set to "'.$com1s.'"';
 				break;
 			case 'pc':
-				if($channel == "chat:botdom") {
+				if ($channel == "chat:botdom") {
 					$say.='Welcomes are not allowed in #Botdom.';
 					break;
 				}
-				if(empty($com1)) {
+				if (empty($com1)) {
 					$say.= 'You need to give a privclass name.';
 				} else {
-					if(array_search($com1, $this->dAmn->chat[$channel]['pc']) === false) {
+					if (array_search($com1, $this->dAmn->chat[$channel]['pc']) === false) {
 						$say.= $com1.' is not a valid privclass in '.$this->dAmn->deform_chat($target, $this->Bot->username).'.';
 					} else {
-						if(!isset($this->welcome[$channel]))
+						if (!isset($this->welcome[$channel]))
 							$this->welcome[$channel] = array(
 								'type' => 'pc',
 								'pc' => array(),
 								'switch' => true
 							);
-						if($this->welcome[$channel]['type'] != 'pc')
+						if ($this->welcome[$channel]['type'] != 'pc')
 							$this->welcome[$channel] = array(
 								'type' => 'pc',
 								'pc' => array(),
 								'switch' => $this->welcome[$channel]['switch']
 							);
-						if(strtolower($com2) == 'off' && empty($com3s)) {
-							if(isset($this->welcome[$channel]['pc'][$com1])) {
+						if (strtolower($com2) == 'off' && empty($com3s)) {
+							if (isset($this->welcome[$channel]['pc'][$com1])) {
 								$say.= 'Welcome for '.$com1.' members has been deleted.';
 								unset($this->welcome[$channel]['pc'][$com1]);
 							} else {
@@ -134,7 +140,7 @@ class Welcome extends extension {
 				}
 				break;
 			case 'indv':
-				if($channel == "chat:botdom") {
+				if ($channel == "chat:botdom") {
 					$say.='Welcomes are not allowed in #Botdom.';
 					break;
 				}
@@ -147,16 +153,16 @@ class Welcome extends extension {
 				break;
 			case 'on':
 			case 'off':
-				if($channel == "chat:botdom") {
+				if ($channel == "chat:botdom") {
 					$say.='Welcomes are not allowed in #Botdom.';
 					break;
 				}
-				if(!isset($this->welcome[$channel])) {
+				if (!isset($this->welcome[$channel])) {
 					$say.= 'There are no welcome settings for '.$this->dAmn->deform_chat($target, $this->Bot->username).'.';
 					break;
 				}
 				$sw = $subcom == 'on' ? true : false;
-				if($this->welcome[$channel]['switch'] === $sw) {
+				if ($this->welcome[$channel]['switch'] === $sw) {
 					$say.= 'Welcomes in '.$this->dAmn->deform_chat($target, $this->Bot->username).' are already '.$subcom.'.';
 					break;
 				}
@@ -164,17 +170,17 @@ class Welcome extends extension {
 				$say.= 'Welcomes in '.$this->dAmn->deform_chat($target, $this->Bot->username).' have been turned '.$subcom.'.';
 				break;
 			case 'clear':
-				if(empty($com1)) {
+				if (empty($com1)) {
 					$say.= 'This will delete all welcome data! Type "<code>';
 					$say.= str_replace('&', '&amp;', $this->Bot->trigger).'wt '.$subcom.' yes</code>"';
 					$say.= ' to clear all welcome data.';
-				} elseif(strtolower($com1) == 'yes') {
+				} elseif (strtolower($com1) == 'yes') {
 					unset($this->welcome[$channel]);
 					$say.= 'Welcome data for '.$this->dAmn->deform_chat($target, $this->Bot->username).' has been deleted!';
 				}
 				break;
 			case 'settings':
-				if(!isset($this->welcome[$channel])) {
+				if (!isset($this->welcome[$channel])) {
 					$say.= 'Welcomes are not being used in '.$this->dAmn->deform_chat($target, $this->Bot->username).'.';
 					break;
 				}
@@ -198,18 +204,26 @@ class Welcome extends extension {
 	}
 
 	function e_welcome($ns, $from, $info) {
-		if(!isset($this->welcome[strtolower($ns)])) return;
-		if(!$this->welcome[strtolower($ns)]['switch']) return;
-		switch($this->welcome[strtolower($ns)]['type']) {
+		if (!isset($this->welcome[strtolower($ns)])) {
+			return;
+		}
+		if (!$this->welcome[strtolower($ns)]['switch']) {
+			return;
+		}
+		switch ($this->welcome[strtolower($ns)]['type']) {
 			case 'pc':
 				$info = parse_dAmn_packet($info);
 				$pc = $info['args']['pc'];
 				unset($info);
-				if(!isset($this->welcome[strtolower($ns)]['pc'][$pc])) return;
+				if (!isset($this->welcome[strtolower($ns)]['pc'][$pc])) {
+					return;
+				}
 				$this->send_welcome($ns, $from, $this->welcome[strtolower($ns)]['pc'][$pc]);
 				break;
 			case 'indv':
-				if(!isset($this->welcome[strtolower($ns)]['users'][$from])) return;
+				if (!isset($this->welcome[strtolower($ns)]['users'][$from])) {
+					return;
+				}
 				$this->send_welcome($ns, $from, $this->welcome[strtolower($ns)]['users'][$from]);
 				break;
 			case 'all':
@@ -219,8 +233,9 @@ class Welcome extends extension {
 	}
 
 	function send_welcome($ns, $from, $msg) {
-                if($ns == 'chat:Botdom') return;
-		if($this->dAmn->chat[$ns]['member'][$from]['con'] > 1) return;
+                if ($ns == 'chat:Botdom' || $this->dAmn->chat[$ns]['member'][$from]['con'] > 1) {
+			return;
+		}
 		$msg = str_replace('{channel}', $this->dAmn->deform_chat($ns, $this->Bot->username), $msg);
 		$msg = str_replace('{ns}', $ns, $msg);
 		$msg = str_replace('{from}', $from, $msg);
@@ -233,15 +248,24 @@ class Welcome extends extension {
 		$this->welcome = $this->welcome === false ? array() : $this->welcome;
 		$this->welcome = array_change_key_case($this->welcome, CASE_LOWER);
 		$this->save_data();
-		if(!empty($this->welcome)) $this->hook('e_welcome', 'recv_join');
-		else $this->unhook('e_welcome', 'recv_join');
+		if (!empty($this->welcome)) {
+			$this->hook('e_welcome', 'recv_join');
+		} else {
+			$this->unhook('e_welcome', 'recv_join');
+		}
 	}
 
 	function save_data() {
-		if(empty($this->welcome)) $this->Unlink('wdata');
-		else $this->Write('wdata', $this->welcome, 2);
-		if(!empty($this->welcome)) $this->hook('e_welcome', 'recv_join');
-		else $this->unhook('e_welcome', 'recv_join');
+		if (empty($this->welcome)) {
+			$this->Unlink('wdata');
+		} else {
+			$this->Write('wdata', $this->welcome, 2);
+		}
+		if (!empty($this->welcome)) {
+			$this->hook('e_welcome', 'recv_join');
+		} else {
+			$this->unhook('e_welcome', 'recv_join');
+		}
 	}
 }
 

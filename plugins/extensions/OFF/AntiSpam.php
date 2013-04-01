@@ -36,8 +36,9 @@ class AntiSpam extends extension {
         $opt3       = args($message, 4);
         $trigger    = $this->Bot->trigger;
 
-        if (empty($channel) || '#' !== $channel[0])
+        if (empty($channel) || '#' !== $channel[0]) {
             $option = null;
+        }
 
         // What do they want to do?
         switch ($option) {
@@ -314,15 +315,17 @@ class AntiSpam extends extension {
         $safe_ns = strtolower(substr($ns, 5));
 
         // Check that the module is enabled in this channel.
-        if (!array_key_exists($safe_ns, $this->data))
+        if (!array_key_exists($safe_ns, $this->data)) {
             return;
+        }
 
         // Convert their name to lowercase, easily manageable.
         $user = strtolower($from);
 
         // Make sure we aren't recording ourselves.
-        if ($user === strtolower($this->Bot->username))
+        if ($user === strtolower($this->Bot->username)) {
             return;
+        }
 
         // If we don't have this user in the DB, add them.
         if (!array_key_exists($user, $this->data[$safe_ns]['msgs'])) {
@@ -343,7 +346,7 @@ class AntiSpam extends extension {
                 $this->data[$safe_ns]['msgs'][$user]['last_msg'] = time();
                 $this->data[$safe_ns]['msgs'][$user]['msg_count'] = 1;
 
-            } else if ($this->data[$safe_ns]['msgs'][$user]['msg_count'] >= $this->data[$safe_ns]['max_msgs']) {
+            } elseif ($this->data[$safe_ns]['msgs'][$user]['msg_count'] >= $this->data[$safe_ns]['max_msgs']) {
                 // User is message flooding
 
                 // If they're not in the strikes DB, add them.
@@ -381,7 +384,7 @@ class AntiSpam extends extension {
                 // If they've got enough strikes, penalize them.
                 if ($this->data[$safe_ns]['strikes'][$user]['strike_count'] >= $this->data[$safe_ns]['max_strikes']) {
                     // What kind of action are we taking?
-                    switch($this->data[$safe_ns]['max_strikes_penalty']) {
+                    switch ($this->data[$safe_ns]['max_strikes_penalty']) {
 
                         // The default is to silence them to the specified privclass.
                         default:
@@ -404,8 +407,9 @@ class AntiSpam extends extension {
                             $this->dAmn->ban($ns, $user);
 
                             // If they've not in the database (they shouldn't be.) add them.
-                            if (!array_key_exists('bans', $this->data[$safe_ns]))
+                            if (!array_key_exists('bans', $this->data[$safe_ns])) {
                                 $this->data[$safe_ns]['bans'] = array();
+                            }
 
                             // Make sure we know why they were banned.
                             $this->data[$safe_ns]['bans'][$user] = array(
@@ -420,9 +424,10 @@ class AntiSpam extends extension {
 
                 } else {
                     // Let them know they've gained a strike!
-                    if($this->data[$safe_ns]['max_strikes_penalty'] == 'ban')
+                    if($this->data[$safe_ns]['max_strikes_penalty'] == 'ban') {
                             $penalty = 'banned';
-                    else $penalty = 'silenced';
+                    } else {
+                            $penalty = 'silenced';
                     $this->dAmn->say($ns, $from .': Slow down! You\'ve been given a strike. '.
                             '<sup>(You\'ve got '. $this->data[$safe_ns]['strikes'][$user]['strike_count'] .
                             '/'. $this->data[$safe_ns]['max_strikes'] .'. Reaching '. $this->data[$safe_ns]['max_strikes'].
@@ -450,15 +455,17 @@ class AntiSpam extends extension {
         $safe_ns = strtolower(substr($ns, 5));
 
         // Check that the module is enabled in this channel.
-        if (!array_key_exists($safe_ns, $this->data))
+        if (!array_key_exists($safe_ns, $this->data)) {
             return;
+        }
 
         // Convert their name to lowercase, easily manageable.
         $user = strtolower($from);
 
         // Make sure we aren't recording ourselves.
-        if ($user === strtolower($this->Bot->username))
+        if ($user === strtolower($this->Bot->username)) {
             return;
+        }
 
         // If we don't have this user in the DB, add them.
         if (!array_key_exists($user, $this->data[$safe_ns]['joins'])) {
@@ -479,14 +486,15 @@ class AntiSpam extends extension {
                 $this->data[$safe_ns]['joins'][$user]['last_join'] = time();
                 $this->data[$safe_ns]['joins'][$user]['join_count'] = 1;
 
-            } else if ($this->data[$safe_ns]['joins'][$user]['join_count'] >= $this->data[$safe_ns]['max_joins']) {
+            } elseif ($this->data[$safe_ns]['joins'][$user]['join_count'] >= $this->data[$safe_ns]['max_joins']) {
                 // User is join flooding
 
                 // If they're not in the strikes DB, add them.
-                if (!array_key_exists($user, $this->data[$safe_ns]['strikes']))
+                if (!array_key_exists($user, $this->data[$safe_ns]['strikes'])) {
                     $this->data[$safe_ns]['strikes'][$user] = array(
                         'strike_count' => 0,
                         'last_strike' => 0);
+                }
 
                 // If they've got more than zero strikes, check them out.
                 if ($this->data[$safe_ns]['strikes'][$user]['last_strike'] != 0) {
@@ -525,8 +533,9 @@ class AntiSpam extends extension {
                             $this->dAmn->demote($ns, $user, $this->data[$safe_ns]['silenced_privclass']);
 
                             // If they've not in the database (they shouldn't be.) add them.
-                            if (!array_key_exists('silences', $this->data[$safe_ns]))
+                            if (!array_key_exists('silences', $this->data[$safe_ns])) {
                                 $this->data[$safe_ns]['silences'] = array();
+                            }
 
                             // Make sure we know why they were silenced.
                             $this->data[$safe_ns]['silences'][$user] = array(
@@ -540,8 +549,9 @@ class AntiSpam extends extension {
                             $this->dAmn->ban($ns, $user);
 
                             // If they've not in the database (they shouldn't be.) add them.
-                            if (!array_key_exists('bans', $this->data[$safe_ns]))
+                            if (!array_key_exists('bans', $this->data[$safe_ns])) {
                                 $this->data[$safe_ns]['bans'] = array();
+                            }
 
                             // Make sure we know why they were banned.
                             $this->data[$safe_ns]['bans'][$user] = array(
@@ -574,8 +584,9 @@ class AntiSpam extends extension {
     function load_data() {
         $this->data = $this->Read('asdata', 2);
 
-        if (false === $this->data)
+        if (false === $this->data) {
             $this->data = array();
+        }
 
         if(!empty($this->data)) {
             $this->hook('e_check_msgs', 'recv_msg');

@@ -66,50 +66,68 @@ class Bot {
 		global $Bot;
 		$Bot = $this;
 		// Generate a session ID code.
-		if(DEBUG) $this->session = sha1(microtime());
+		if (DEBUG) {
+			$this->session = sha1(microtime());
+		}
 		// Our start time is here.
 		$this->start = time();
 		// System information string.
 		$this->sysString = php_uname('s').' '.php_uname('r').' '.php_uname('v');
 
-		if(strstr($this->sysString, 'NT 6.2')) $this->sysString = 'Windows 8';
-		elseif(strstr($this->sysString, 'NT 6.1')) $this->sysString = 'Windows 7';
-		elseif(strstr($this->sysString, 'NT 6.0')) $this->sysString = 'Windows Vista';
-		elseif(strstr($this->sysString, 'NT 5.2')) $this->sysString = 'Windows 2003';
-		elseif(strstr($this->sysString, 'NT 5.1')) $this->sysString = 'Windows XP';
-		elseif(strstr($this->sysString, 'NT 5.0')) $this->sysString = 'Windows 2000';
-		elseif(strstr($this->sysString, 'NT 4.9')) $this->sysString = 'Windows ME';
+		if (strstr($this->sysString, 'NT 6.2')) {
+			$this->sysString = 'Windows 8';
+		} elseif (strstr($this->sysString, 'NT 6.1')) {
+			$this->sysString = 'Windows 7';
+		} elseif (strstr($this->sysString, 'NT 6.0')) {
+			$this->sysString = 'Windows Vista';
+		} elseif (strstr($this->sysString, 'NT 5.2')) {
+			$this->sysString = 'Windows 2003';
+		} elseif (strstr($this->sysString, 'NT 5.1')) {
+			$this->sysString = 'Windows XP';
+		} elseif (strstr($this->sysString, 'NT 5.0')) {
+			$this->sysString = 'Windows 2000';
+		} elseif (strstr($this->sysString, 'NT 4.9')) {
+			$this->sysString = 'Windows ME';
+		}
 
 		// Get a new console interface.
 		$this->Console = new Console();
 		// Tell the console the session code for logging purposes.
-		if(DEBUG) $this->Console->session = $this->session;
+		if (DEBUG) {
+			$this->Console->session = $this->session;
+		}
 		// Get a new timer class.
 		$this->Timer = new Timer($this);
 		// Some introduction messages! We've already done quite a bit but only introduce things here...
 		$this->Console->Notice('Hey thar!');
 		$this->Console->Notice('Loading '.$this->info['name'].' '.$this->info['version'].' '.$this->info['status'].' by '.$this->info['author']);
-		if(DEBUG) {
+		if (DEBUG) {
 			// This is for when we're running in debug mode.
 			$this->Console->Notice('Running in debug mode!');
 			$this->Console->Notice('Session ID: '.$this->session);
 		}
-		if(DEBUG) $this->Console->Notice('Loading bot config file.');
+		if (DEBUG) {
+			$this->Console->Notice('Loading bot config file.');
+		}
 		// Loading config file...
 		$this->load_config();
-		if(DEBUG) $this->Console->Notice('Config loaded, loading events system.');
+		if (DEBUG) {
+			$this->Console->Notice('Config loaded, loading events system.');
+		}
 		// Now we load our events system.
 		$this->Events = new Event_System($this);
-		if(DEBUG) $this->Console->Notice('Events system loaded.');
+		if (DEBUG) {
+			$this->Console->Notice('Events system loaded.');
+		}
 		$client =  $this->info['name'].' '.$this->info['version'].$this->info['status'].'/'.$this->info['release'];
-		if(DEBUG) $this->Console->Notice('Loading dAmnPHP, client string is "'.$client.'"');
+		if (DEBUG) $this->Console->Notice('Loading dAmnPHP, client string is "'.$client.'"');
 		// Load our dAmn interface.
 		$this->dAmn = new dAmnPHP;
 
 		// Check against non joinable channels.
-		foreach($this->autojoin as $key => $chan) {
+		foreach ($this->autojoin as $key => $chan) {
 			$chan = $this->dAmn->deform_chat($chan);
-			if(in_array(strtolower(str_replace('#', 'chat:', $chan)), $this->dAmn->njc)) {
+			if (in_array(strtolower(str_replace('#', 'chat:', $chan)), $this->dAmn->njc)) {
 				$this->Console->Notice('Channel '.$chan.' is not allowed, and has been removed.');
 				unset($this->autojoin[$key]);
 			}
@@ -123,24 +141,33 @@ class Bot {
 		$this->dAmn->Agent.= php_uname('s').' '.php_uname('r').'; en-GB; '.$this->owner.') ';
 		$this->dAmn->Agent.= 'dAmnPHP/'.$this->dAmn->Ver;
 		$this->dAmn->Agent.= ' Contra/'.$this->info['version'].'/'.$this->info['release'];
-		if(DEBUG) $this->Console->Notice('Loaded dAmnPHP, loading startup scripts.');
+		if (DEBUG) {
+			$this->Console->Notice('Loaded dAmnPHP, loading startup scripts.');
+		}
 		// Include our startup scripts.
 		inc_files('./plugins/startup', 'php', array('core'=>$this));
-		if(DEBUG) $this->Console->Notice('Loaded startup scripts, loading internal user access levels.');
+		if (DEBUG) {
+			$this->Console->Notice('Loaded startup scripts, loading internal user access levels.');
+		}
 		// Load our user level system! It's a bit late to load it here...
 		$this->user = new User_System($this->owner, $this);
-		if(DEBUG) $this->Console->Notice('Loaded internal user access levels, loading modules.');
+		if (DEBUG) {
+			$this->Console->Notice('Loaded internal user access levels, loading modules.');
+		}
 		// Now we load our modules.
 		$this->Events->load_mods();
-		if(DEBUG) $this->Console->Notice('Loaded '.count($this->mod).' modules with '.count($this->Events->events['cmd']).' commands.');
+		if (DEBUG) {
+			$this->Console->Notice('Loaded '.count($this->mod).' modules with '.count($this->Events->events['cmd']).' commands.');
+		}
 		// Because all modules have been loaded, we don't need the core class stored in globals, so we delete it.
 		unset($GLOBALS['Bot']);
 		// So, now we're ready to get some work done!
 		$this->Console->Notice('Ready!');
 		$this->Events->trigger('startup');
 		$this->network();
-		if($this->running===true) { $this->run(); }
-		else {
+		if ($this->running===true) {
+			$this->run();
+		} else {
 			// Looks like we failed lads.
 			$this->Console->Warning('Failed to start properly.');
 			$this->Console->Warning('Exiting...');
@@ -159,13 +186,16 @@ class Bot {
 			require_once('./core/Extras.php');
 			$this->trigger = hexentity(html_entity_decode($config['info']['trigger']));
 		}
-		if (!array_key_exists('enable_logs', $config))
+		if (!array_key_exists('enable_logs', $config)) {
 			$config['enable_logs'] = true;
+		}
 		$this->logging = $config['enable_logs'];
 		$this->autojoin = $config['autojoin'];
-		if(isset($config['cookie']) && !empty($config['cookie']))
+		if (isset($config['cookie']) && !empty($config['cookie'])) {
 			$this->damntoken = unserialize($config['cookie']);
-		else $this->damntoken = empty($config['damntoken']) ? '' : unserialize($config['damntoken']);
+		} else {
+			$this->damntoken = empty($config['damntoken']) ? '' : unserialize($config['damntoken']);
+		}
 		$this->updatenotes = empty($config['updatenotes']) ? true : $config['updatenotes'];
 		$this->autoupdate = empty($config['autoupdate']) ? false : $config['autoupdate'];
 		$this->timezone = $config['timezone'];
@@ -189,7 +219,9 @@ class Bot {
 	}
 
 	function network($sec = false) {
-		if(empty($this->username)) $this->load_config();
+		if (empty($this->username)) {
+			$this->load_config();
+		}
 		$this->Console->Notice(($sec === false ? 'Starting' : 'Restarting').' dAmn.');
 		$socket = fsockopen('ssl://www.deviantart.com', 443);
 		if (!$socket) {
@@ -202,17 +234,17 @@ class Bot {
 			'http://'.$this->owner.'.deviantart.com'
 		);
 		fclose($socket);
-		if(($pos = strpos($response, 'HTTP/1.1 200 OK')) === false) {
+		if (($pos = strpos($response, 'HTTP/1.1 200 OK')) === false) {
 			$this->Console->Warning('ERROR: Bot Owner does not exist. Check your bot\'s config.cf');
 			$this->dAmn->close=true;
 			$this->dAmn->disconnect();
 			return;
 		}
-		if(!$this->damntoken) {
+		if (!$this->damntoken) {
 			$this->Console->Notice('Retrieving dAmn Token. This may take a while...');
 			$this->dAmn->oauth(1);
 			$this->session = $this->dAmn->damntoken();
-		}elseif($this->damntoken) {
+		} elseif ($this->damntoken) {
 			$this->Console->Notice('Using stored damntoken first...');
 			$this->usingStored = true;
 			$this->session = array('status' => 1, 'damntoken' => $this->damntoken);
@@ -221,13 +253,14 @@ class Bot {
 	}
 
 	function run() {
-		while($this->running === true) {
+		while ($this->running === true) {
 			$this->Events->trigger('loop');
 			$this->Timer->triggerEvents();
 			usleep(10000);
 		}
-		foreach($this->shutdownStr as $id => $string)
+		foreach ($this->shutdownStr as $id => $string) {
 			$this->Console->Notice($string);
+		}
 	}
 }
 

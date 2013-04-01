@@ -49,10 +49,14 @@ class Games extends extension {
 
 	function c_8ball($ns, $from, $message, $target) {
 		$question = args($message, 1, true);
-		if(empty($question)) { $say = $from.': Give a question to the 8ball!'; }
-		else $say = $from.': You said \'<i>'.$question.'?</i>\' I say \'<b>'
-			.$this->ball[array_rand($this->ball)].'</b>\'';
-		if(!empty($say)) $this->dAmn->say($ns, $say);
+		if (empty($question)) {
+			$say = $from.': Give a question to the 8ball!';
+		} else {
+			$say = $from.': You said \'<i>'.$question.'?</i>\' I say \'<b>'.$this->ball[array_rand($this->ball)].'</b>\'';
+		}
+		if (!empty($say)) {
+			$this->dAmn->say($ns, $say);
+		}
 	}
 	function c_fortune($ns, $from, $message, $target) {
 		$this->dAmn->say($ns, $from.': Confucious say: <b>'.$this->cookies[array_rand($this->cookies)].'</b>');
@@ -61,42 +65,64 @@ class Games extends extension {
 		$spin = rand(1,6);
 		$bullet = rand(1,6);
 		$this->dAmn->say($ns, $from.': You place a bullet in the :gun: and spin it around. Then you put it to your head, and pull...');
-		if($spin===$bullet) $say = $from.': BLAM! You lose.';
-		else $say = $from.': :phew: You\'re alright.';
+		if ($spin===$bullet) {
+			$say = $from.': BLAM! You lose.';
+		} else {
+			$say = $from.': :phew: You\'re alright.';
+		}
 		$this->dAmn->say($ns, $say);
 	}
 	function c_shoot($ns, $from, $message, $target) {
 		$motion = $this->rpc[rand(0,2)];
 		$say = $from.': ';
-		switch(strtolower(args($message, 1))) {
+		switch (strtolower(args($message, 1))) {
 			case 'rock':
-				if($motion == 'rock') $say.= 'Rock ties rock.';
-				if($motion == 'paper') $say.= 'Paper covers rock. You lose.';
-				if($motion == 'scissors') $say.= 'Rock smashes scissors. You win.';
+				if ($motion == 'rock') {
+					$say.= 'Rock ties rock.';
+				}
+				if ($motion == 'paper') {
+					$say.= 'Paper covers rock. You lose.';
+				}
+				if ($motion == 'scissors') {
+					$say.= 'Rock smashes scissors. You win.';
+				}
 				break;
 			case 'paper':
-				if($motion == 'rock') $say.= 'Paper covers rock. You win.';
-				if($motion == 'paper') $say.= 'Paper ties paper.';
-				if($motion == 'scissors') $say.= 'Scissors cut paper. You lose.';
+				if ($motion == 'rock') {
+					$say.= 'Paper covers rock. You win.';
+				}
+				if ($motion == 'paper') {
+					$say.= 'Paper ties paper.';
+				}
+				if ($motion == 'scissors') {
+					$say.= 'Scissors cut paper. You lose.';
+				}
 				break;
 			case 'scissors':
 			case 'scissor':
-				if($motion == 'rock') $say.= 'Rock smashes scissors. You lose.';
-				if($motion == 'paper') $say.= 'Scissors cut paper. You win.';
-				if($motion == 'scissors') $say.= 'Scissors tie scissors.';
+				if ($motion == 'rock') {
+					$say.= 'Rock smashes scissors. You lose.';
+				}
+				if ($motion == 'paper') {
+					$say.= 'Scissors cut paper. You win.';
+				}
+				if ($motion == 'scissors') {
+					$say.= 'Scissors tie scissors.';
+				}
 				break;
-			default: $say.= 'Usage: '.$this->Bot->trigger.'shoot [rock|paper|scissors]';
+			default:
+				$say.= 'Usage: '.$this->Bot->trigger.'shoot [rock|paper|scissors]';
 				break;
 		}
 		$this->dAmn->say($ns, $say);
 	}
 	function c_vend($ns, $from, $message, $target) {
 		$order = args($message, 1, true);
-		if(empty($order)) {
+		if (empty($order)) {
 			$this->dAmn->say($ns, $from.': Order something from the vending machine.');
 			return;
 		}
-		if($this->stocks($order) === false) {
+		if ($this->stocks($order) === false) {
 			$this->dAmn->say($ns, $from.': The machine doesn\'t stock "'.$order.'".');
 			return;
 		}
@@ -104,7 +130,7 @@ class Games extends extension {
 	}
 	function c_games($ns, $from, $message, $target) {
 		$arg = args($message, 1);
-		if(strtolower($arg)!='list') {
+		if (strtolower($arg)!='list') {
 			$this->dAmn->say($ns, $from.': This module just contains a few small games for you to mess around with!');
 			return;
 		}
@@ -112,47 +138,60 @@ class Games extends extension {
 	}
 
 	function stocks($req) {
-		foreach($this->drinks as $id => $drink)
-			if(strtolower($req)==strtolower($drink))
+		foreach ($this->drinks as $id => $drink) {
+			if (strtolower($req)==strtolower($drink)) {
 				return $id;
+			}
+		}
 		return false;
 	}
 	function vend($req) {
-		$max=(count($this->drinks)*$this->vender)+1;
-		$get=rand(1, $max);
-		$cur=2;	$vend='';
-		foreach($this->drinks as $name){
-			if($cur==$get){
-				$vend=$name;
-				if($name==$req) $vended='success';
+		$max = (count($this->drinks)*$this->vender)+1;
+		$get = rand(1, $max);
+		$cur = 2;
+		$vend = '';
+		foreach ($this->drinks as $name){
+			if ($cur == $get){
+				$vend = $name;
+				if ($name == $req) {
+					$vended='success';
+				}
 			}
 		}
 		$cur++;
-		if(!$vend){
-			if($get==1) $vended='jam';
-			else if($get>$cur) $vended='success';
+		if (!$vend){
+			if ($get==1) {
+				$vended='jam';
+			} elseif ($get>$cur) {
+				$vended='success';
+			}
 		}
-		switch($vended) {
-			case 'success': return 'Here is your '.$req.'.';
+		switch ($vended) {
+			case 'success':
+				return 'Here is your '.$req.'.';
 				break;
-			case 'jam': return 'It\'s jammed. :thumb14796735:';
+			case 'jam':
+				return 'It\'s jammed. :thumb14796735:';
 				break;
-			default: return 'You got a '.$vend.' :shakefist:';
+			default:
+				return 'You got a '.$vend.' :shakefist:';
 				break;
 		}
 	}
-	function c_vender($ns, $from, $message, $target) { $this->c_stock($ns, $from, 'stock list', $target); }
+	function c_vender($ns, $from, $message, $target) {
+		$this->c_stock($ns, $from, 'stock list', $target);
+	}
 	function c_stock($ns, $from, $message, $target) {
 		$subcom = strtolower(args($message, 1));
 		$item = args($message, 2, true);
 		$say = $from.': ';
-		switch($subcom) {
+		switch ($subcom) {
 			case 'add':
-				if(empty($item)) {
+				if (empty($item)) {
 					$say.= 'You need to give an item to be stocked.';
 					break;
 				}
-				if($this->stocks($item) !== false) {
+				if ($this->stocks($item) !== false) {
 					$say.= 'The vending machine already stocks '.$item.'.';
 					break;
 				}
@@ -161,12 +200,12 @@ class Games extends extension {
 				break;
 			case 'rem':
 			case 'remove':
-				if(empty($item)) {
+				if (empty($item)) {
 					$say.= 'You need to give an item to remove from stock.';
 					break;
 				}
 				$key = $this->stocks($item);
-				if($key === false) {
+				if ($key === false) {
 					$say.= 'The vending machine doesn\'t stock '.$item.'.';
 					break;
 				}
@@ -174,7 +213,7 @@ class Games extends extension {
 				$say.= 'Removed '.$item.' from the vending machine.';
 				break;
 			case 'list':
-				if(empty($this->drinks)) {
+				if (empty($this->drinks)) {
 					$say.= 'The vending machine is empty.';
 					break;
 				}
@@ -197,26 +236,38 @@ class Games extends extension {
 		$this->load_drinks();
 		$this->dAmn->say($ns, $say);
 	}
-	function save_drinks() { $this->Write('drinks', $this->drinks, 2); }
+	function save_drinks() {
+		$this->Write('drinks', $this->drinks, 2);
+	}
 	function load_drinks() {
 		$this->drinks = $this->Read('drinks', 2);
-		if($this->drinks !== false) return;
+		if ($this->drinks !== false) {
+			return;
+		}
 		$this->drinks = $this->vender_defaults();
 		$this->save_drinks();
 		$this->load_drinks();
 	}
-	function save_fortunes() { $this->Write('fortune cookies', $this->cookies, 2); }
+	function save_fortunes() {
+		$this->Write('fortune cookies', $this->cookies, 2);
+	}
 	function load_fortunes() {
 		$this->cookies = $this->Read('fortune cookies', 2);
-		if($this->cookies !== false) return;
+		if ($this->cookies !== false) {
+			return;
+		}
 		$this->cookies = $this->fortune_defaults();
 		$this->save_fortunes();
 		$this->load_fortunes();
 	}
-	function save_8ball() { $this->Write('8ball', $this->ball, 2); }
+	function save_8ball() {
+		$this->Write('8ball', $this->ball, 2);
+	}
 	function load_8ball() {
 		$this->ball = $this->Read('8ball', 2);
-		if($this->ball !== false) return;
+		if ($this->ball !== false) {
+			return;
+		}
 		$this->ball = $this->eightBall_defaults();
 		$this->save_8ball();
 		$this->load_8ball();

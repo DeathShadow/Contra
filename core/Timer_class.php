@@ -10,24 +10,34 @@
 	*/
 	
 class Timer {
-	protected $events = array();		// Array to store timed events.
-	protected $timers = array();		// Array to store timers...
+	protected $events = array(); // Array to store timed events.
+	protected $timers = array(); // Array to store timers...
 	protected $rands = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r');
 	protected $Bot;
 	
-	function __get($var) { return $this->$var; }
-	function __construct($bot) { $this->Bot = $bot; }
+	function __get($var) {
+		return $this->$var;
+	}
+	function __construct($bot) {
+		$this->Bot = $bot;
+	}
 	
 	function addEvt($module, $time, $data = false, $evts = false) {			// This method should be used to add a timed event.	
-		if($module == false) return false;
-		if(!array_key_exists($module, $this->Bot->mod)) return false;
-		if($this->Bot->mod[$module]->status == true) {	
-			if(is_numeric($time)) {
+		if ($module == false) {
+			return false;
+		}
+		if (!array_key_exists($module, $this->Bot->mod)) {
+			return false;
+		}
+		if ($this->Bot->mod[$module]->status == true) {	
+			if (is_numeric($time)) {
 				$ctime = time();					// This is used instead of time() to make sure everything uses the exact same time.
 				$a = $this->rands[array_rand($this->rands)]; $b = $this->rands[array_rand($this->rands)];
-				$id = substr(sha1($ctime.$a.$b), -9);// Timer ID is simply the last 9 digits of the encrypted time.
+				$id = substr(sha1($ctime.$a.$b), -9); // Timer ID is simply the last 9 digits of the encrypted time.
 				
-				if($evts==false) $evts = 'timer';
+				if ($evts==false) {
+					$evts = 'timer';
+				}
 				
 				$this->events[$id] = array(					// Event [id] as array containing;
 					'Mod'  	=> $module,						// ----- Mod   as $module
@@ -52,7 +62,7 @@ class Timer {
 		*		can not be edited outside of this class.
 		*/
 	
-		if(array_key_exists($ID, $this->events)) {
+		if (array_key_exists($ID, $this->events)) {
 			unset($this->events[$ID]);
 			return true;						// Return true if the event has been deleted.
 		}
@@ -75,13 +85,13 @@ class Timer {
 		*		this method.
 		*/
 		
-		if(!empty($this->events)) {
+		if (!empty($this->events)) {
 			$time = time();
-			foreach($this->events as $eid => $ed) {
+			foreach ($this->events as $eid => $ed) {
 				$module = $this->events[$eid]['Mod'];
-				if($time >= $this->events[$eid]['exec']) {
-					if(array_key_exists($module, $this->Bot->mod)) {
-						if($this->Bot->mod[$module]->status == true) {
+				if ($time >= $this->events[$eid]['exec']) {
+					if (array_key_exists($module, $this->Bot->mod)) {
+						if ($this->Bot->mod[$module]->status == true) {
 							$data  = $this->events[$eid]['args'];
 							$event = $this->events[$eid]['event'];
 							$done = $this->Bot->Events->trigger_mod($module, $event, $data);
@@ -123,7 +133,7 @@ class Timer {
 		*/
 	
 		$end = time();
-		if(isset($this->timers[$id])) {
+		if (isset($this->timers[$id])) {
 			$start = $this->timers[$id]['start'];
 			$time  = $end - $start;
 			unset($this->timers[$id]);

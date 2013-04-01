@@ -13,7 +13,9 @@
 	*/
 
 	function array_del_key($array, $key) {
-		if(array_key_exists($key, $array)) array_splice($array, $key, 1);
+		if (array_key_exists($key, $array)) {
+			array_splice($array, $key, 1);
+		}
 		return $array;
 	}
 
@@ -25,11 +27,15 @@
 	*		you will be stuck in this loop forever!
 	*/
 
-		while(1) {
+		while (1) {
 			echo $pre;
 			$str = trim(fgets(STDIN));
-			if(strlen($str) > 0) return $str;
-			if($accept_empty === true && strlen($str) === 0) return false;
+			if (strlen($str) > 0) {
+				return $str;
+			}
+			if ($accept_empty === true && strlen($str) === 0) {
+				return false;
+			}
 		}
 	}
 
@@ -42,16 +48,19 @@
 
 		while(1) {
 			$str = cmd_in('> '.($disp !== 0 ? $disp.': ' : ''));
-			if($args === Null && strlen($str) > 0) return $str;
+			if ($args === Null && strlen($str) > 0) {
+				return $str;
+			}
 			$str = strtolower($str);
-			if(is_array($args) && array_key_exists($str, $args))
+			if (is_array($args) && array_key_exists($str, $args)) {
 				return $args[$str];
+			}
 		}
 	}
 
 	function main_menu($opt = false) {
 		// This is the main menu! The menu is actually skipped if $opt is not false...
-		if($opt === false) {
+		if ($opt === false) {
 			echo '=====> Main Menu <====='.chr(10);
 			echo '>>> Select an option:'.chr(10);
 			echo '>> Bot - run the bot.'.chr(10);
@@ -59,23 +68,32 @@
 			echo '>> Config - edit the bot config.'.chr(10);
 			echo '>> Exit - Exit the program.'.chr(10);
 			$select = cmd_get_args(0,array('bot'=>'bot','config'=>'config','exit'=>'exit','debug'=>'debug'));
-		} else { $select = str_replace('--','',$opt); }
-		switch(strtolower(trim($select))) {
+		} else {
+			$select = str_replace('--','',$opt);
+		}
+		switch (strtolower(trim($select))) {
 			case 'bot':
 			case 'debug':
 				define('DEBUG', (strtolower(trim($select)) == 'debug' ? true : false));
-				if(!defined('RESTARTABLE')) define('RESTARTABLE', true);
+				if (!defined('RESTARTABLE')) {
+					define('RESTARTABLE', true);
+				}
 				new Bot;
 				break;
 			case 'config':
-				if(!defined('RESTARTABLE')) define('RESTARTABLE', true);
+				if (!defined('RESTARTABLE')) {
+					define('RESTARTABLE', true);
+				}
 				config();
 				break;
 			case 'menu':
-				if(!defined('RESTARTABLE')) define('RESTARTABLE', false);
+				if (!defined('RESTARTABLE')) {
+					define('RESTARTABLE', false);
+				}
 				main_menu(false);
 				break;
-			case 'exit': default:
+			case 'exit':
+			default:
 				break;
 		}
 	}
@@ -88,11 +106,19 @@
 	*/
 
 	function humanList($data) {
-		if(!is_array($data)) return $data;
-		if(empty($data)) return false;
+		if (!is_array($data)) {
+			return $data;
+		}
+		if (empty($data)) {
+			return false;
+		}
 		$len = count($data);
-		if($len == 1) return $data[0];
-		if($len == 2) return implode(' and ', $data);
+		if ($len == 1) {
+			return $data[0];
+		}
+		if ($len == 2) {
+			return implode(' and ', $data);
+		}
 		$last = array_pop($data);
 		return implode(', ', $data).' and '.$last;
 	}
@@ -112,8 +138,8 @@
 	        );
 	        $ntimes	= array(); // This array will hold the formatted time!
 	        // The loop below sorts everything out.
-	        foreach($formats as $name => $format){
-		        if($time>=$format){
+	        foreach ($formats as $name => $format) {
+		        if ($time>=$format) {
 			        $num = floor($time / $format); // Ok, this actually formats the seconds.
 			        $time = $time % $format; // This takes away the seconds we have used/don't need
 			        $ntimes[$name] = $num >= 1 ? intVal($num) : false; // Save the value! Yeah!
@@ -122,8 +148,11 @@
 	        // The below array stores the times with the measurements. (1 year etc.)
 	        $times = array();
 	        // Ok, so we need to loop through the new times and determine which ones to store, and whether it's plural or not.
-        	foreach($ntimes as $name => $len)
-		        if($len > 0) $times[] = $len.' '.$name.($len == 1 ? '' : 's');
+        	foreach ($ntimes as $name => $len) {
+		        if ($len > 0) {
+				$times[] = $len.' '.$name.($len == 1 ? '' : 's');
+			}
+		}
 	        // Finally is the simple task of returning a correctly formatted string!
 	        return humanList($times);
         }
@@ -135,24 +164,32 @@
 			'autojoin' => array(),
 			'enable_logs' => true
 		);
-		foreach(array('username' => Null, 'trigger' => Null, 'owner' => Null) as $part => $s)
+		foreach (array('username' => Null, 'trigger' => Null, 'owner' => Null) as $part => $s) {
 			$config['info'][$part] = cmd_get_args('Bot '.$part, $s, false);
-		if(strlen($config['info']['trigger']) < 2)
+		}
+		if (strlen($config['info']['trigger']) < 2) {
 			die('Trigger must be at least 2 characters'.chr(10));
-		if(strstr($config['info']['owner'], ',') || strstr($config['info']['owner'], ' ') || strstr($config['info']['owner'], ';'))
+		}
+		if (strstr($config['info']['owner'], ',') || strstr($config['info']['owner'], ' ') || strstr($config['info']['owner'], ';')) {
 			die('Contra does not support multi-owners.'.chr(10));
+		}
 		$config['enable_logs'] = cmd_get_args('Enable channel logging? [y/n]', array('y'=>true,'n'=>false), false);
 		echo '> Which channels would you like your bot to join? Separate with commas.'.chr(10);
 		$rooms = explode(',',cmd_in('> ', true));
-		foreach($rooms as $id => $room)
-			if(strlen(trim($room)) > 0) $config['autojoin'][] = trim($room);
-		if(empty($config['autojoin']))
+		foreach ($rooms as $id => $room) {
+			if(strlen(trim($room)) > 0) {
+				$config['autojoin'][] = trim($room);
+			}
+		}
+		if (empty($config['autojoin'])) {
 			$config['autojoin'] = array('#Botdom');
-		if(!ini_get('date.timezone') && PHP_OS == 'Darwin') {
+		}
+		if (!ini_get('date.timezone') && PHP_OS == 'Darwin') {
 			echo '> Enter your timezone. See http://php.net/manual/en/timezones.php for list of supported timezones.'.chr(10);
 			$config['timezone'] = cmd_in('> ', true);
-		}elseif(ini_get('date.timezone'))
+		} elseif (ini_get('date.timezone')) {
 			$config['timezone'] = ini_get('date.timezone');
+		}
 		$config = array(
 			'info' => $config['info'],
 			'about' => $config['about'],
@@ -166,36 +203,59 @@
 		echo '> Configuration saved!'.chr(10);
 	}
 
-	function save_config($file, $data) { file_put_contents($file, "<?php\n\nreturn ".var_export($data, true).";\n\n?>"); }
+	function save_config($file, $data) {
+		file_put_contents($file, "<?php\n\nreturn ".var_export($data, true).";\n\n?>");
+	}
 	function args($string, $index, $cont = false, $sep = ' ') {
-		if(empty($string)) return '';
-		if($index != 0 ) {
-			for($i=1;$i<=$index;$i++) {
-				if(strpos($string,$sep)!==false) $string = substr($string,strpos($string,$sep)+1);
-				else return '';
+		if (empty($string)) {
+			return '';
+		}
+		if ($index != 0 ) {
+			for ($i=1;$i<=$index;$i++) {
+				if (strpos($string,$sep)!==false) {
+					$string = substr($string,strpos($string,$sep)+1);
+				} else {
+					return '';
+				}
 			}
 		}
-		if($cont==true) return $string;
-		if(strpos($string, $sep)) return substr($string, 0, strpos($string, $sep));
+		if ($cont==true) {
+			return $string;
+		}
+		if (strpos($string, $sep)) {
+			return substr($string, 0, strpos($string, $sep));
+		}
 		return $string;
 	}
 
 	// Make sure we have the needed directories!
-	if(!is_dir('./plugins'       	 ))   mkdir('./plugins'           , 0755);		// Need plugins directory.
-	if(!is_dir('./plugins/extensions'))   mkdir('./plugins/extensions', 0755);		// 	Extensions directory.
-	if(!is_dir('./plugins/startup'	 ))   mkdir('./plugins/startup'   , 0755);		// 	Startup directory.
-	if(!is_dir('./storage'        	 ))   mkdir('./storage'           , 0755);		// Storage directory.
-	if(!is_dir('./storage/logs'   	 ))   mkdir('./storage/logs'      , 0755);		// 	Logs directory.
-	if(!is_dir('./storage/bat'    	 ))   mkdir('./storage/bat'       , 0755);		// 	Storage for bat files.
+	if (!is_dir('./plugins')) {
+		mkdir('./plugins', 0755); // Need plugins directory.
+	}
+	if (!is_dir('./plugins/extensions')) {
+		mkdir('./plugins/extensions', 0755); // Extensions directory.
+	}
+	if (!is_dir('./plugins/startup')) {
+		mkdir('./plugins/startup', 0755); // Startup directory.
+	}
+	if (!is_dir('./storage')) {
+		mkdir('./storage', 0755); // Storage directory.
+	}
+	if (!is_dir('./storage/logs')) {
+		mkdir('./storage/logs', 0755); // Logs directory.
+	}
+	if (!is_dir('./storage/bat')) {
+		mkdir('./storage/bat', 0755); // Storage for bat files.
+	}
 	// Own dis shit!
-	chmod('.'					, 0755);
-	chmod('./core'				, 0755);
-	chmod('./plugins'			, 0755);
+	chmod('.', 0755);
+	chmod('./core', 0755);
+	chmod('./plugins', 0755);
 	chmod('./plugins/extensions', 0755);
-	chmod('./plugins/startup'	, 0755);
-	chmod('./storage'			, 0755);
-	chmod('./storage/logs'		, 0755);
-	chmod('./storage/bat'		, 0755);
+	chmod('./plugins/startup', 0755);
+	chmod('./storage', 0755);
+	chmod('./storage/logs', 0755);
+	chmod('./storage/bat', 0755);
 
 	/*
 	*	BOTDOM SPROCKET TITLE CODE
