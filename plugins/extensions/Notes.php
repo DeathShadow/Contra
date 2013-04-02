@@ -49,7 +49,9 @@ class notes_module extends extension {
 		if (substr(strtolower($msg), 0, strlen($trig.'note clear')) == $trig.'note clear') {
 			return $this->clearRecvs($from);
 		}
-		$this->checkmsg($from, $ns);
+		if (!stristr($msg, 'away')) {
+			$this->checkmsg($from, $ns);
+		}
 	}
 
 	function c_note($ns, $from, $message, $target) {
