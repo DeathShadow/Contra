@@ -716,9 +716,7 @@ class System_commands extends extension {
 				return;
 			}
 			$this->dAmn->part('chat:DSGateway');
-			if ($part[1] == 'Invalid BDS:BOTCHECK') {
-				$this->Console->Warning($this->Bot->username.' has been denied to #DataShare for Invalid BDS:BOTCHECK. Which should never happen, report this issue to http://bit.ly/10wlynt to it can be fixed.');
-			}
+			$this->Console->Warning($this->Bot->username.' has been denied to #DataShare for '.$part[1].'. Which should never happen, report this issue to http://bit.ly/10wlynt to it can be fixed.');
 			return;
 		}
 
