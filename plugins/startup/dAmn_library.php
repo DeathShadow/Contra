@@ -435,6 +435,9 @@ class dAmn_lib extends extension {
 				}
 				break;
 			case 'kicked':
+				if (strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#datashare' || strtolower($d->deform_chat($p[0],$this->Bot->username)) == '#dsgateway') {
+					return;
+				}
 				$save = $d->deform_chat($p[0],$this->Bot->username); $usen=false;
 				$log = ' ** You have been kicked by '.$p[1].' *';
 				if ($p[2]!==false) {
