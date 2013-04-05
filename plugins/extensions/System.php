@@ -480,8 +480,8 @@ class System_commands extends extension {
 			case 'del':
 			case 'rem':
 			case 'remove':
-				if (empty($usrx) || empty($priv)) {
-					return $this->dAmn->say($ns, $from.': Usage: '.$this->Bot->trigger.'user '.$act.' [username] [privilege class]');
+				if (empty($usrx)) {
+					return $this->dAmn->say($ns, $from.': Usage: '.$this->Bot->trigger.'user '.$act.' [username]');
 				}
 				$r = $this->user->rem($usrx);
 				if ($r=='removed') {
