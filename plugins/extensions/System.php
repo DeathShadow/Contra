@@ -477,6 +477,7 @@ class System_commands extends extension {
 					$say = $from.': Failed to add '.$usrx.' to privilege class '.$priv.' ('.$r.')';
 				}
 				break;
+			case 'del':
 			case 'rem':
 			case 'remove':
 				if (empty($usrx) || empty($priv)) {
@@ -505,6 +506,7 @@ class System_commands extends extension {
 							}
 						}
 						break;
+					case 'del':
 					case 'rem':
 					case 'remove':
 						if ($p1=='') {
@@ -759,6 +761,7 @@ class System_commands extends extension {
 				}
 				$this->Bot->save_config();
 				break;
+			case 'del':
 			case 'rem':
 			case 'remove':
 				$rns = args($message,2);
