@@ -48,7 +48,7 @@ class Brain extends extension {
 		$dAmn = $this->dAmn;
 		$name = $this->Bot->username;
 		if (strtolower(substr($msg, 0, strlen($name))) == strtolower($name)) {
-			if ($c == "chat:Botdom" || $from == $name) {
+			if ($c == "chat:Botdom" || strtolower($from) == strtolower($name)) {
 				return;
 			}
 			$msg = substr($msg, strlen($name.': '));
