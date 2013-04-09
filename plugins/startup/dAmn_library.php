@@ -118,9 +118,10 @@ class dAmn_lib extends extension {
 		$this->dAmn->login($this->Bot->username, $this->Bot->damntoken);
 	}
 
-	function e_login($e) {
+	function e_login($e, $u) {
 		$this->unhook('e_login', 'login');
 		if ($e == 'ok') {
+			$this->Bot->username = $u;
 			$this->dAmn->connecting = $this->dAmn->login = false;
 			foreach ($this->Bot->autojoin as $id => $channel) {
 				$this->dAmn->join($this->dAmn->format_chat($channel));
