@@ -234,9 +234,9 @@ class Bot {
 			'http://'.$this->owner.'.deviantart.com'
 		);
 		fclose($socket);
-		if (($pos = strpos($response, 'HTTP/1.1 200 OK')) === false) {
+		if (($pos = strpos($response, 'HTTP/1.1 200 OK')) === false && ($pos = strpos($response, 'HTTP/1.1 302 Moved')) === false) {
 			$this->Console->Warning('ERROR: Bot Owner does not exist. Check your bot\'s config.cf');
-			$this->dAmn->close=true;
+			$this->dAmn->close = true;
 			$this->dAmn->disconnect();
 			return;
 		}
