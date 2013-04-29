@@ -96,30 +96,24 @@ class dAmn_commands extends extension {
 
 	function c_joinpart($ns, $from, $message, $target) {
 		$func = strtolower(args($message, 0)) == 'join' ? 'join' : 'part';
-		$chans = str_replace('#', ' ', args($message, 1, true));
+		$chans = args($message, 1, true);
 		$chans = explode(' ', $chans);
+		if (strtolower($target) != strtolower($ns)) array_push($chans, $target);
 		$chans = array_filter($chans);
 		$njck = $this->dAmn->format_chat(args($message, 1));
 		if ($njck == 'chat:') {
 			unset($njck);
 		}
-		if (in_array(strtolower($target), $this->dAmn->njc) || (isset($njck) && in_array(strtolower($njck), $this->dAmn->njc))) {
-			if (isset($njck)) {
-				return $this->dAmn->say($ns, $from.': Cannot join '.$this->dAmn->deform_chat($njck).'.');
-			} else {
-				return $this->dAmn->say($ns, $from.': Cannot join '.$this->dAmn->deform_chat($target).'.');
-			}
-		}
 		if (empty($chans[0]) && $func != 'join' && $target == $ns && count($chans) <= 1) {
 			$this->dAmn->$func($ns);
-		} elseif (empty($chans[0]) && count($chans) <= 1) {
-			$this->dAmn->$func($this->dAmn->format_chat($target));
 		} else {
-			if ($target != $ns) {
-				$this->dAmn->$func($target);
-			}
 			foreach ($chans as $chan) {
-				$this->dAmn->$func($this->dAmn->format_chat($chan));
+				$chan = strtolower($this->dAmn->format_chat($chan));
+				if (in_array($chan, $this->dAmn->njc)) {
+					$this->dAmn->say($ns, $from.': Cannot join '.$this->dAmn->deform_chat($chan).'.');
+				} else if ($chan != strtolower($ns)) {
+					$this->dAmn->$func($chan);
+				}
 			}
 		}
 	}
