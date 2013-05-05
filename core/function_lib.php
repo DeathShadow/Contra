@@ -158,6 +158,9 @@
         }
 
 	function config() {
+		if (file_exists('./storage/oauth.json')) {
+			unlink('./storage/oauth.json');
+		}
 		echo '> Please enter the following information.'.chr(10);
 		$config = array(
 			'about' => '<b>%N% %V%%S%</b> (%R% release)<br/><sub><b>Author:</b> :dev%A%:<b>; Owner:</b> :dev%O%:<b>;</b><br/><b>%D%</b></sub>',
