@@ -95,5 +95,51 @@
 
 		return implode(', ', $fmt);
 	}
+    
+    function FormatTime($seconds) {
+        $years      = 0;
+        $weeks      = 0;
+        $days       = 0;
+        $hours      = 0;
+        $minutes    = 0;
+        $seconds    = round($seconds);
+        $output     = '';
+        
+        if ($seconds <= 0) return '0 seconds';
+        
+        while ($seconds >= 31556926) {
+            $years++;
+            $seconds -= 31556926;
+        }
+        
+        while ($seconds >= 604800) {
+            $weeks++;
+            $seconds -= 604800;
+        }
+        
+        while ($seconds >= 86400) {
+            $days++;
+            $seconds -= 86400;
+        }
+        
+        while ($seconds >= 3600) {
+            $hours++;
+            $seconds -= 3600;
+        }
+        
+        while ($seconds >= 60) {
+            $minutes++;
+            $seconds -= 60;
+        }
+        
+        if ($years   > 0) $output .= $years.   ' year'.   ($years   == 1 ? '' : 's') . ', ';
+        if ($weeks   > 0) $output .= $weeks.   ' week'.   ($weeks   == 1 ? '' : 's') . ', ';
+        if ($days    > 0) $output .= $days.    ' day'.    ($days    == 1 ? '' : 's') . ', ';
+        if ($hours   > 0) $output .= $hours.   ' hour'.   ($hours   == 1 ? '' : 's') . ', ';
+        if ($minutes > 0) $output .= $minutes. ' minute'. ($minutes == 1 ? '' : 's') . ', ';
+        if ($seconds > 0) $output .= $seconds. ' second'. ($seconds == 1 ? '' : 's') . ', ';
+        
+        return substr($output, 0, -2);
+    }
 
 ?>
