@@ -989,6 +989,10 @@ class System_commands extends extension {
 			fwrite($file, $download);
 			fclose($file);
 
+			if (!file_exists($filename)) {
+				return;
+			}
+
 			$zip = new ZipArchive;
 			if ($zip->open($filename) === TRUE) {
 				$zip->extractTo('./');
