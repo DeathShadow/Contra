@@ -977,7 +977,7 @@ class System_commands extends extension {
 			if (strtolower($pay[0]) !== strtolower($self->Bot->username) || empty($version) || empty($downloadlink) || array_key_exists('reset', $self->botversion) && $self->botversion['reset'] != true && $version <= $self->Bot->info['version'] || $from !== 'Botdom') {
 				return;
 			}
-			if ($this->Bot->autoupdate == true) {
+			if ($self->Bot->autoupdate == true) {
 				file_put_contents('./storage/bat/update.bcd', 'updating');
 			}
 
