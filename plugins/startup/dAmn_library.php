@@ -272,7 +272,16 @@ class dAmn_lib extends extension {
 	function register_user($ns, $data, $user = false) {
 		$user = ($user == false ? $data['param'] : $user);
 		if (array_key_exists($user, $this->dAmn->chat[$ns]['member'])) {
-			++$this->dAmn->chat[$ns]['member'][$user]['con'];
+			if (empty($this->dAmn->chat[$ns]['member'][$user]['con'])) {
+				unset($this->dAmn->chat[$ns]['member'][$user]);
+				$this->dAmn->chat[$ns]['member'][$user] = array(
+					'con' => 1,
+					'symbol' => $data['args']['symbol'],
+					'pc' => $data['args']['pc'],
+				);
+			} else {
+				++$this->dAmn->chat[$ns]['member'][$user]['con'];
+			}
 		} else {
 			$this->dAmn->chat[$ns]['member'][$user] = array(
 				'con' => 1,
