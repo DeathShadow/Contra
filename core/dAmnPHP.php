@@ -347,7 +347,7 @@ class dAmnPHP {
 	    try
 	    {
 		$headers = '';
-		if(isset($post)) {
+		if (isset($post)) {
 			$headers .= "POST $url HTTP/1.1\r\n";
 		} else {
 			$headers .= "GET $url HTTP/1.1\r\n";
@@ -668,7 +668,9 @@ function sort_dAmn_packet($packet) {
 		case 'part':
 			$data['event'] = $packet['cmd'];
 			$data['p'][1] = $packet['args']['e'];
-			if(array_key_exists('r', $packet['args'])) $data['p'][2] = $packet['args']['r'];
+			if (array_key_exists('r', $packet['args'])) {
+				$data['p'][2] = $packet['args']['r'];
+			}
 			break;
 		case 'property':
 			$data['event'] = 'property';

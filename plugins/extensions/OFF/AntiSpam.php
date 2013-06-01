@@ -424,7 +424,7 @@ class AntiSpam extends extension {
 
                 } else {
                     // Let them know they've gained a strike!
-                    if($this->data[$safe_ns]['max_strikes_penalty'] == 'ban') {
+                    if ($this->data[$safe_ns]['max_strikes_penalty'] == 'ban') {
                             $penalty = 'banned';
                     } else {
                             $penalty = 'silenced';
@@ -589,7 +589,7 @@ class AntiSpam extends extension {
             $this->data = array();
         }
 
-        if(!empty($this->data)) {
+        if (!empty($this->data)) {
             $this->hook('e_check_msgs', 'recv_msg');
             $this->hook('e_check_join', 'recv_join');
         } else {
@@ -600,7 +600,7 @@ class AntiSpam extends extension {
 
     // Save data to the config file.
     function save_data() {
-        if(empty($this->data)) {
+        if (empty($this->data)) {
             $this->Unlink('asdata');
 
             $this->unhook('e_check_msgs', 'recv_msg');

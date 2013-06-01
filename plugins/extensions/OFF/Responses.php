@@ -218,12 +218,12 @@ class Responses extends extension {
 		} else {
 			$this->Write('rdata', $this->response, 2);
 		}
-		if(empty($this->rooms)) {
+		if (empty($this->rooms)) {
 			$this->Unlink('rooms');
 		} else {
 			$this->Write('rooms', $this->rooms, 2);
 		}
-		if(!empty($this->response)) {
+		if (!empty($this->response)) {
 			$this->hook('e_respond', 'recv_msg');
 		} else {
 			$this->unhook('e_respond', 'recv_msg');

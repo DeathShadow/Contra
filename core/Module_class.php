@@ -171,7 +171,7 @@ class extension {
 				}
 			}
 		}
-		if(!empty($this->cmds)) {
+		if (!empty($this->cmds)) {
 			foreach ($this->cmds as $cmd) {
 				$this->Bot->Events->delCmd($this->name, $cmd);
 			}

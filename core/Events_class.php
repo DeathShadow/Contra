@@ -165,7 +165,7 @@ class Event_System {
 			return false;
 		}
 		foreach ($this->events['evt'][$event] as $id => $info) {
-			if($info['m'] == $mod && $info['f'] == $meth) {
+			if ($info['m'] == $mod && $info['f'] == $meth) {
 				return $id;
 			}
 		}

@@ -234,7 +234,7 @@ class dAmn_lib extends extension {
 				$evt['p'][1] = $pcs['args'];
 				break;
 			case 'members':
-				if(!empty($this->dAmn->chat[$ns]['member'])) $this->dAmn->chat[$ns]['member'] = array();
+				if (!empty($this->dAmn->chat[$ns]['member'])) $this->dAmn->chat[$ns]['member'] = array();
 				$member = parse_dAmn_packet($packet['body']);
 				while($member['cmd'] != Null) {
 					$this->register_user($ns, $member);

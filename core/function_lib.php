@@ -180,7 +180,7 @@
 		echo '> Which channels would you like your bot to join? Separate with commas.'.chr(10);
 		$rooms = explode(',',cmd_in('> ', true));
 		foreach ($rooms as $id => $room) {
-			if(strlen(trim($room)) > 0) {
+			if (strlen(trim($room)) > 0) {
 				$config['autojoin'][] = trim($room);
 			}
 		}
