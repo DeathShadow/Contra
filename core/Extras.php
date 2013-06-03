@@ -142,4 +142,49 @@
         return substr($output, 0, -2);
     }
 
+    /* Deviant info function
+     * 2008-2013 Justin Eittreim
+     * http://divinityarcane.deviantart.com/ */
+    function deviant_info($user) {
+        $url  = 'http://'.$user.'.deviantart.com/';
+        $page = file_get_contents($url) or null;
+
+        if ($page == null) return null;
+        
+        $patt = '%(<title>(?P<username>[^\s]+) on deviantART</title>)|(<strong>(?P<number>[^<]+)</strong>(?P<type>[^\t]+))|(<div id="super-secret-\w+"[^>]*>(?P<tagline>[^<]+))|(<d. class="f h">(?P<item>[^<]+)</d.>)|(<div>Deviant for (?P<years>[^<]+)</div><div>(?P<member>[^<]+)</div>)%';
+        $data = array('info'=>array());
+        $type = 0;
+        $tnls = array(1=>'Type', 2=>'Name', 3=>'ASL');
+        
+        foreach (explode("\n", $page) as $line) {
+            preg_match_all($patt, $line, $matches);
+            
+            if (count($matches['item']) > 0 && strlen($matches['item'][0]) > 0) {
+                if (count($matches['item']) == 1)
+                    $data[$tnls[++$type]] = $matches['item'][0];
+                else if (strlen($matches['item'][0]) <= 32)
+                    $data[$matches['item'][0]] = $matches['item'][1];
+
+            } else if (count($matches['tagline']) > 0 && strlen($matches['tagline'][0]) > 0) {
+                $data['Tagline'] = $matches['tagline'][0];
+            
+            } else if (count($matches['username']) > 0 && strlen($matches['username'][0]) > 0) {
+                $data['Username'] = str_replace('#', '', $matches['username'][0]);
+            
+            } else if (count($matches['years']) > 0 && strlen($matches['years'][0]) > 0) {
+                $data['Joined'] = 'Deviant for '.preg_replace('%\s+%', ' ', $matches['years'][0]);
+                $data['Member'] = $matches['member'][0];
+            
+            } else if (count($matches['number']) > 0 && strlen($matches['number'][0]) > 0) {
+                $t = strip_tags(trim($matches['type'][0]));
+                if (strlen($t) < 1) continue;
+                if (strstr($t, '   ')) $t = substr($t, 0, strpos($t, '   '));
+		if (strlen($t) > 5 && strlen($t) <= 32)
+			$data['info'][$t] = $matches['number'][0];
+            }
+        }
+
+        return $data;
+    }
+
 ?>
