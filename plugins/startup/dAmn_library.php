@@ -252,7 +252,11 @@ class dAmn_lib extends extension {
 
 	function e_recv_part($ns, $user, $r = false) {
 		if (array_key_exists($user, $this->dAmn->chat[$ns]['member'])) {
-			--$this->dAmn->chat[$ns]['member'][$user]['con'];
+			if (array_key_exists('con', $this->dAmn->chat[$ns]['member'][$user])) {
+				--$this->dAmn->chat[$ns]['member'][$user]['con'];
+			} elseif ($this->dAmn->chat[$ns]['member'][$user]['con'] > 0) {
+				$this->dAmn->chat[$ns]['member'][$user]['con'] = 1;
+			}
 			if ($this->dAmn->chat[$ns]['member'][$user]['con']===0) {
 				unset($this->dAmn->chat[$ns]['member'][$user]);
 			}
@@ -272,7 +276,7 @@ class dAmn_lib extends extension {
 	function register_user($ns, $data, $user = false) {
 		$user = ($user == false ? $data['param'] : $user);
 		if (array_key_exists($user, $this->dAmn->chat[$ns]['member'])) {
-			if (empty($this->dAmn->chat[$ns]['member'][$user]['con'])) {
+			if (!array_key_exists('con', $this->dAmn->chat[$ns]['member'][$user])) {
 				unset($this->dAmn->chat[$ns]['member'][$user]);
 				$this->dAmn->chat[$ns]['member'][$user] = array(
 					'con' => 1,
