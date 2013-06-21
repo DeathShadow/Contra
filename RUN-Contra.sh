@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 if [ "`whoami`" = "root" ]; then
     echo "Don't run Contra on root user!";
     exit;
