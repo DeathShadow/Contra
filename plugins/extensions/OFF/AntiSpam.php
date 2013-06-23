@@ -36,9 +36,16 @@ class AntiSpam extends extension {
         $opt3       = args($message, 4);
         $trigger    = $this->Bot->trigger;
 
-        if (empty($channel) || '#' !== $channel[0]) {
+        if ('#' !== $channel[0]) {
             $option = null;
         }
+
+	if (substr($channel, 0, 1) != '#') {
+	    $option  = args($message, 1);
+	    $channel = $this->dAmn->deform_chat($ns);
+	    $opt2    = args($message, 2);
+	    $opt3    = args($message, 3);
+	}
 
         // What do they want to do?
         switch ($option) {
@@ -80,6 +87,7 @@ class AntiSpam extends extension {
             case 'options':
                 // Make sure we have a more generic version of the chat namespace.
                 $safe_chan = strtolower(substr($channel, 1));
+
 
                 if (!array_key_exists($safe_chan, $this->data)) {
                     $this->dAmn->say($ns, $from .': Anti-Spam is not enabled for that channel!');
