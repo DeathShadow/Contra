@@ -36,10 +36,6 @@ class AntiSpam extends extension {
         $opt3       = args($message, 4);
         $trigger    = $this->Bot->trigger;
 
-        if ('#' !== $channel[0]) {
-            $option = null;
-        }
-
 	if (substr($channel, 0, 1) != '#') {
 	    $option  = args($message, 1);
 	    $channel = $this->dAmn->deform_chat($ns);
