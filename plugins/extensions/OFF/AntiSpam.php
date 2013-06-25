@@ -72,7 +72,7 @@ class AntiSpam extends extension {
                     'silenced_privclass'  => 'Silenced');
 
                 $this->save_data();
-                $this->dAmn->say($ns, "{$from}: Anti-Spam has been enabled for {$channel}.");
+                $this->dAmn->say($ns, $from.': Anti-Spam has been enabled for '.$channel.'.');
                 break;
 
             // User wants to disable the anti-spam module in a certain channel.
@@ -80,7 +80,7 @@ class AntiSpam extends extension {
                 $safe_chan = strtolower(substr($channel, 1));
                 unset($this->data[$safe_chan]);
                 $this->save_data();
-                $this->dAmn->say($ns, "{$from}: Anti-Spam has been disabled for {$channel}.");
+                $this->dAmn->say($ns, $from.': Anti-Spam has been disabled for '.$channel.'.');
                 break;
 
             // User wants to change some options, sure!
@@ -90,7 +90,7 @@ class AntiSpam extends extension {
 
 
                 if (!array_key_exists($safe_chan, $this->data)) {
-                    $this->dAmn->say($ns, $from .': Anti-Spam is not enabled for that channel!');
+                    $this->dAmn->say($ns, $from .': Anti-Spam is not enabled for '.$channel.'.');
                     return;
                 }
 
