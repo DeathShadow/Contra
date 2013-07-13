@@ -957,28 +957,15 @@ class System_commands extends extension {
 	}
 
 	function doupdate($requestor, $message) {
-		$this->dAmn->npmsg('chat:DataShare', "CODS:VERSION:UPDATEME:{$this->Bot->username},{$this->Bot->info['version']}", true);
-
-		$dAmn = $this->dAmn;
-		$self = $this;
-
-		$this->hookOnceBDS(function ($parts, $from, $message) use ($requestor, $dAmn, $self) {
-			// CODS:VERSION:UPDATE:RoleyMoley,5.5.1,http://download.botdom.com/uk0g6/Contra_5.5.1_public_auto.zip
-
-			$payload = explode(',', $message, 5);
-			$pay = explode(',', $parts[3], 2);
-			$version = $payload[1];
-			$downloadlink = $payload[2];
-
-			if (strtolower($pay[0]) !== strtolower($self->Bot->username) || empty($version) || empty($downloadlink) || array_key_exists('reset', $self->botversion) && $self->botversion['reset'] != true && $version <= $self->Bot->info['version'] || $from !== 'Botdom') {
-				return;
-			}
-			if ($self->Bot->autoupdate == true) {
+		$json = file_get_contents("http://damn.shadowkitsune.net/contra-latest.php");
+		$result = json_decode($json, true);
+		if (!empty($result)) {
+			if ($this->Bot->autoupdate == true) {
 				file_put_contents('./storage/bat/update.bcd', 'updating');
 			}
 
-			$download = file_get_contents($downloadlink);
-			$splodey = explode('/', $downloadlink);
+			$download = file_get_contents($result['downloadlink']);
+			$splodey = explode('/', $result['downloadlink']);
 			$filename = $splodey[4];
 
 			$file = fopen($filename, 'w+');
@@ -997,36 +984,23 @@ class System_commands extends extension {
 
 			unlink($filename);
 
-			$self->Bot->shutdownStr[0] = 'Bot has been updated.';
-			$dAmn->close = true;
-			$dAmn->disconnect();
-		}, '^CODS:VERSION:UPDATE:*$');
+			$this->Bot->shutdownStr[0] = 'Bot has been updated.';
+			$this->dAmn->close = true;
+			$this->dAmn->disconnect();
+		}
 	}
 
 	function e_codsnotify($ns, $parts, $from, $message) {
-		$payload = explode(',', $message, 5);
-		$pay = explode(',', $parts[3], 2);
-		$version = $payload[1];
-		$released = $payload[2];
-		$ov_arr = explode('.', $this->Bot->info['version']);
-		$nv_arr = explode('.', $version);
-		$newer = (intval($ov_arr[0]) <= intval($nv_arr[0]) && intval($ov_arr[1]) <= intval($nv_arr[1]) && (intval($ov_arr[2]) < intval($nv_arr[2]) || intval($ov_arr[1]) < intval($nv_arr[1])));
-		$requestor = $pay[0];
-
-		if (empty($version) || empty($released)) {
-			return;
-		}
-		if ($pay[0] == $this->Bot->username || strstr($pay[0], 'ALL')) {
-			if ($newer && $from == 'Botdom') {
+		$json = file_get_contents("http://damn.shadowkitsune.net/contra-latest.php");
+		$result = json_decode($json, true);
+		if (!empty($result)) {
+			if ($this->Bot->info['version'] < $result['releaseversion']) {
 				$this->botversion['latest'] = false;
 				if ($this->Bot->autoupdate == false) {
-					if (strstr($pay[0], 'ALL')) {
-						$this->botversion['notify'] = true;
-					}
 					if (!isset($this->Bot->updatenotes) || $this->Bot->updatenotes == true) {
-						$this->sendnote($this->Bot->owner, 'Update Service', "A new version of Contra is available. (version: http://github.com/dAmnLab/Contra/commits/v{$version} ({$version}); released on {$released}) You can download it from http://botdom.com/wiki/Contra#Latest or type <code>{$this->Bot->trigger}update</code> to update your bot.<br /><br />(<b>NOTE: using <code>{$this->Bot->trigger}update</code> will overwrite all your changes to your bot.</b>)<br /><br /><sub>To disable this update note in the future by using <code>{$this->Bot->trigger}update note disable</code>.</sub>");
+						$this->sendnote($this->Bot->owner, 'Update Service', "A new version of Contra is available. (version: http://github.com/dAmnLab/Contra/commits/v{$result['releaseversion']} ({$result['releaseversion']}); released on {$result['releasedate']}) You can download it from http://botdom.com/wiki/Contra#Latest or type <code>{$this->Bot->trigger}update</code> to update your bot.<br /><br />(<b>NOTE: using <code>{$this->Bot->trigger}update</code> will overwrite all your changes to your bot.</b>)<br /><br /><sub>To disable this update note in the future by using <code>{$this->Bot->trigger}update note disable</code>.</sub>");
 					}
-					$this->Console->Alert("Contra {$version} has been released on {$released}. Get it at http://botdom.com/wiki/Contra#Latest");
+					$this->Console->Alert("Contra {$result['releaseversion']} has been released on {$result['releasedate']}. Get it at http://botdom.com/wiki/Contra#Latest");
 				} elseif ($this->Bot->autoupdate == true) {
 					$this->doupdate($requestor, $message);
 				}
