@@ -83,13 +83,13 @@ class System_commands extends extension {
 				.$this->Bot->trigger.'sudo [user] [command] [params]'
 		);
 
+		$this->hook('e_codsnotify', 'login');
 		$this->hook('e_trigcheck', 'recv_msg');
 		$this->hook('load_switches', 'startup');
 
 		$this->hookBDS('e_botcheck', '^BDS:BOTCHECK:(DIRECT|NODATA|OK|DENIED):*$');
 		$this->hookBDS('e_botcheck', '^BDS:BOTCHECK:ALL$');
 		$this->hookBDS('e_botcheck', '^CODS:BOTCHECK:ALL$');
-		$this->hookBDS('e_codsnotify', '^CODS:VERSION:NOTIFY:*$');
 
 		$this->loadnotes();
 
