@@ -825,6 +825,8 @@ class System_commands extends extension {
 		}
 		if ($e === false) {
 			return $this->dAmn->say($ns, 'Code returned false! Make sure your input is correct!');
+		} elseif (strlen($result) <= 0) {
+			return $this->dAmn->say($ns, 'Code returned NULL');
 		}
 		$this->dAmn->say($ns, 'Code executed.');
 	}
