@@ -1002,7 +1002,7 @@ class System_commands extends extension {
 					}
 					$this->Console->Alert("Contra {$result['releaseversion']} has been released on {$result['releasedate']}. Get it at http://botdom.com/wiki/Contra#Latest");
 				} elseif ($this->Bot->autoupdate == true) {
-					$this->doupdate($requestor, $message);
+					$this->doupdate($from, $message);
 				}
 			}
 		}
