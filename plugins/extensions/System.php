@@ -192,7 +192,7 @@ class System_commands extends extension {
 					}
 				} elseif (is_numeric($level)) {
 					if ($this->user->addOverride($cmd, $level)) {
-						$say.= 'Privilege level for '.$cmd.' has been set to '.$level'.';
+						$say.= 'Privilege level for '.$cmd.' has been set to '.$level.'.';
 					} else {
 						$say.= 'Command '.$cmd.' does not exist.';
 					}
