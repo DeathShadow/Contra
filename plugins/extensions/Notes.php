@@ -245,7 +245,7 @@ class notes_module extends extension {
 		fclose($socket);
 
 		if (($pos = strpos($response, 'HTTP/1.1 404 Not Found')) !== false) {
-			$this->say($ns, $from, "{$user} does not exist.");
+			$this->say($ns, $from, $user.' does not exist.');
 			return;
 		} else {
 			if (!isset($this->notes[$user])) {

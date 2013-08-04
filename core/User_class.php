@@ -160,16 +160,16 @@ return '.var_export($this->list, true).';'.chr(10).'?>';
 		}																	//END IF
 		if ($class !== false) {												//IF $class is bigger than or equal to 0 THEN
 			if ($class == 25) {												//	IF $class is 25 THEN
-				return "added";												//		Return the string "added"
+				return 'added';												//		Return the string "added"
 			}
 			if ($class == 100) {
 				return 'can\'t make owner';
 			}
-			array_push($this->list["$class"], $user);						//	Add $user on to the selected privclass.
+			array_push($this->list['$class'], $user);						//	Add $user on to the selected privclass.
 			$this->UpdateList();
-			return "added";													//	Return the string "added".
+			return 'added';													//	Return the string "added".
 		} else {															//ELSE
-			return "no such privclass";										//	Return the string "no such privclass".
+			return 'no such privclass';										//	Return the string "no such privclass".
 		}																	//END IF
 	}																		// END OF METHOD
 
@@ -182,14 +182,14 @@ return '.var_export($this->list, true).';'.chr(10).'?>';
 						if (strtolower($k) == strtolower($user)) {						//				IF the current user is the input user THEN
 							unset($this->list[$pc][$mem]);							//					Delete the user from the list.
 							$this->UpdateList();
-							return "removed";										//					Return the string "removed".
+							return 'removed';										//					Return the string "removed".
 						}															//				END IF
 					}																//			END LOOP
 				}																	//		END IF
 			}																		//	END LOOP
-			return "no such user";													//	Return string "no such user". Shouldn't get here if input user is a user of the bot.
+			return 'no such user';													//	Return string "no such user". Shouldn't get here if input user is a user of the bot.
 		} else {																	// ELSE
-			return "can't remove owner";											//	Return string "can't remove owner"
+			return 'can\'t remove owner';											//	Return string "can't remove owner"
 		}																			// END IF
 	}																	// End of method lols
 

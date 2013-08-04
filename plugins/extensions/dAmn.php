@@ -292,7 +292,7 @@ class dAmn_commands extends extension {
 			$user = $Whois['user'];
 			$Whois['rn'] = $user == 'ManjyomeThunder' ? 'The additional pylon\'s bitch!' : $Whois['rn'];
 			$say = '<abbr title="'.$this->whois_from.'"></abbr><b>:icon'.$user.'::dev'.$user.":</b>\n";
-			$say.= "<b>&nbsp;&middot;</b>&nbsp;&nbsp;{$Whois['rn']}\n";
+			$say.= '<b>&nbsp;&middot;</b>&nbsp;&nbsp;'.$Whois['rn']."\n";
 			foreach ($Whois['cons'] as $con => $cont) {
 				if (isset($Whois['cons'][2])) {
 					$say.= "\n<i>Connection $con:</i>";

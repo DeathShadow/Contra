@@ -29,7 +29,7 @@ class Brain extends extension {
 			case 'on':
 			case 'off':
 				$kw = $com == 'on' ? 'hook' : 'unhook';
-				if ($ns == "chat:Botdom" && $com == 'on') {
+				if ($ns == 'chat:Botdom' && $com == 'on') {
 					$dAmn->say($ns, $from.': AI can\'t be turned on in #Botdom.');
 					break;
 				}
@@ -48,12 +48,12 @@ class Brain extends extension {
 		$dAmn = $this->dAmn;
 		$name = $this->Bot->username;
 		if (strtolower(substr($msg, 0, strlen($name))) == strtolower($name)) {
-			if ($c == "chat:Botdom" || strtolower($from) == strtolower($name)) {
+			if ($c == 'chat:Botdom' || strtolower($from) == strtolower($name)) {
 				return;
 			}
 			$msg = substr($msg, strlen($name.': '));
 			$awayStr = 'I am currently away. Reason:';
-			if (strtolower($msg)=="trigcheck" || strtolower($msg)=="trigger" || strtolower(substr($msg, 0, strlen($awayStr))) == strtolower($awayStr)) {
+			if (strtolower($msg)=='trigcheck' || strtolower($msg)=='trigger' || strtolower(substr($msg, 0, strlen($awayStr))) == strtolower($awayStr)) {
 				return;
 			}
 			$response = file_get_contents('http://kato.botdom.com/respond/'.$from.'/'.base64_encode(html_entity_decode($msg)));

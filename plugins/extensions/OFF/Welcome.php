@@ -86,7 +86,7 @@ class Welcome extends extension {
 		$say = $from.': ';
 		switch ($subcom) {
 			case 'all':
-				if ($channel == "chat:botdom") {
+				if ($channel == 'chat:botdom') {
 					$say.='Welcomes are not allowed in #Botdom.';
 					break;
 				}
@@ -103,7 +103,7 @@ class Welcome extends extension {
 				$say.= ' set to "'.$com1s.'"';
 				break;
 			case 'pc':
-				if ($channel == "chat:botdom") {
+				if ($channel == 'chat:botdom') {
 					$say.='Welcomes are not allowed in #Botdom.';
 					break;
 				}
@@ -140,7 +140,7 @@ class Welcome extends extension {
 				}
 				break;
 			case 'indv':
-				if ($channel == "chat:botdom") {
+				if ($channel == 'chat:botdom') {
 					$say.='Welcomes are not allowed in #Botdom.';
 					break;
 				}
@@ -153,7 +153,7 @@ class Welcome extends extension {
 				break;
 			case 'on':
 			case 'off':
-				if ($channel == "chat:botdom") {
+				if ($channel == 'chat:botdom') {
 					$say.='Welcomes are not allowed in #Botdom.';
 					break;
 				}

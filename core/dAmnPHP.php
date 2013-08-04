@@ -210,13 +210,13 @@ class dAmnPHP {
 					}
 
 					// Grab the JSON data from the server.
-					$tokens = $this->socket("/oauth2/draft15/token?client_id={$this->client_id}&redirect_uri=http://damn.shadowkitsune.net/apicode/&grant_type=refresh_token&client_secret={$this->client_secret}&refresh_token={$this->oauth_tokens->refresh_token}");
+					$tokens = $this->socket('/oauth2/draft15/token?client_id='.$this->client_id.'&redirect_uri=http://damn.shadowkitsune.net/apicode/&grant_type=refresh_token&client_secret='.$this->client_secret.'&refresh_token='.$this->oauth_tokens->refresh_token);
 
 					// Decode it and store it.
 					$this->oauth_tokens = json_decode($tokens);
 
 					// Check if the request was considered a success
-					if ($this->oauth_tokens->status != "success") {
+					if ($this->oauth_tokens->status != 'success') {
 						// Nope, something went wrong.
 						if ($mode == 0) {
 							echo $this->error('Something went wrong while trying to grab a token! Error: ' . $this->oauth_tokens->error_description) . LBR;
@@ -242,10 +242,10 @@ class dAmnPHP {
 					}
 
 					// Place a placebo call to check if the token has expired.
-					$placebo = json_decode($this->socket("/api/draft15/placebo?access_token={$this->oauth_tokens->access_token}"));
+					$placebo = json_decode($this->socket('/api/draft15/placebo?access_token='.$this->oauth_tokens->access_token));
 
 					// Is the token OK?
-					if ($placebo->status != "success") {
+					if ($placebo->status != 'success') {
 						// Nope, it expired.
 						if ($mode == 0) {
 							echo $this->error('It appears that your token has expired! Let\'s grab a new one.') . LBR;
@@ -282,7 +282,7 @@ class dAmnPHP {
 			$code = trim(fgets(STDIN)); // STDIN for reading input
 
 			// Getting the access token.
-			$tokens = $this->socket("/oauth2/draft15/token?client_id={$this->client_id}&redirect_uri=http://damn.shadowkitsune.net/apicode/&grant_type=authorization_code&client_secret={$this->client_secret}&code={$code}");
+			$tokens = $this->socket('/oauth2/draft15/token?client_id='.$this->client_id.'&redirect_uri=http://damn.shadowkitsune.net/apicode/&grant_type=authorization_code&client_secret='.$this->client_secret.'&code='.$code);
 
 			// Store the token(s)
 			$this->oauth_tokens = json_decode($tokens);
@@ -322,7 +322,7 @@ class dAmnPHP {
 
 	// Function to reuse the curl code.
 	private function socket($url) {
-		$fp = fsockopen("ssl://deviantart.com", 443, $errno, $errstr, 30);
+		$fp = fsockopen('ssl://deviantart.com', 443, $errno, $errstr, 30);
 		if (!$fp) {
 		    echo "$errstr ($errno)<br />\n";
 		} else {
@@ -432,7 +432,7 @@ class dAmnPHP {
 				return '@'.$chat2;
 			}
 		}
-		return (substr($chat,0,1)=='#') ? $chat : (substr($chat, 0, 1)=='@' ? $chat : "#$chat");
+		return (substr($chat,0,1)=='#') ? $chat : (substr($chat, 0, 1)=='@' ? $chat : '#$chat');
 	}
 
 	function format_chat($chat, $chat2=false) {

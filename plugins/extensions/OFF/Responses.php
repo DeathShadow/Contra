@@ -42,14 +42,14 @@ class Responses extends extension {
 					$say.= $ar.' is already stored as an autoresponse.';
 					break;
 				}
-				$ara = explode(" | ", $message, 3);
+				$ara = explode(' | ', $message, 3);
 				$ar = $ara[1];
 				$re = $ara[2];
 				if (empty($re)) {
 					$say.= 'You need to give a response to be used!';
 					break;
 				}
-				if ($channel == "chat:botdom") {
+				if ($channel == 'chat:botdom') {
 					$say.='Responses are not allowed in #Botdom.';
 					break;
 				}
@@ -58,7 +58,7 @@ class Responses extends extension {
 				break;
 			case 'rem':
 			case 'remove':
-				$ara = explode(" | ", $message, 2);
+				$ara = explode(' | ', $message, 2);
 				$ar = $ara[1];
 				if (!isset($this->response[$ar])) {
 					$say.= $ar.' is not an autoresponse.';
@@ -73,7 +73,7 @@ class Responses extends extension {
 					$say.='Responses are already enabled in '.$this->dAmn->deform_chat($target, $this->Bot->username).'.';
 					break;
 				}
-				if ($channel == "chat:botdom") {
+				if ($channel == 'chat:botdom') {
 					$say.='Responses are not allowed in #Botdom.';
 					break;
 				}
@@ -180,7 +180,7 @@ class Responses extends extension {
 	}
 
 	function e_respond($ns, $from, $message) {
-		if (array_search($ns, $this->rooms) !== false || $ns == "chat:Botdom") {
+		if (array_search($ns, $this->rooms) !== false || $ns == 'chat:Botdom') {
 			return;
 		}
 		$trig = args($message, 0, true);
