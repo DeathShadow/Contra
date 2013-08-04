@@ -165,7 +165,7 @@ return '.var_export($this->list, true).';'.chr(10).'?>';
 			if ($class == 100) {
 				return 'can\'t make owner';
 			}
-			array_push($this->list['$class'], $user);						//	Add $user on to the selected privclass.
+			array_push($this->list[$class], $user);						//	Add $user on to the selected privclass.
 			$this->UpdateList();
 			return 'added';													//	Return the string "added".
 		} else {															//ELSE

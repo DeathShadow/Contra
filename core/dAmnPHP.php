@@ -432,7 +432,7 @@ class dAmnPHP {
 				return '@'.$chat2;
 			}
 		}
-		return (substr($chat,0,1)=='#') ? $chat : (substr($chat, 0, 1)=='@' ? $chat : '#$chat');
+		return (substr($chat,0,1)=='#') ? $chat : (substr($chat, 0, 1)=='@' ? $chat : '#'.$chat);
 	}
 
 	function format_chat($chat, $chat2=false) {
