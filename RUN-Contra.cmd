@@ -40,6 +40,7 @@ goto stop
 :loop
 if exist "storage\bat\quit.bcd" (
 	del storage\bat\quit.bcd
+	del storage\lock
 	goto stop
 )
 if exist "storage\bat\restart.bcd" (

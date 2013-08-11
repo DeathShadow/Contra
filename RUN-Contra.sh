@@ -15,6 +15,10 @@ if [ ! -e "$phpbin" ]; then
 	phpbin="$(which php)"
 fi
 
+if [ -e "./storage/lock" ]; then
+	rm -f "./storage/lock"
+fi
+
 if [ ! -e "$phpbin" ]; then
 	echo "error: failed to find a php binary. maybe you don't have it installed."
 else
