@@ -100,6 +100,9 @@ class dAmn_lib extends extension {
 		@stream_socket_shutdown($this->dAmn->socket,STREAM_SHUT_RDWR);
 		$this->dAmn->chat = array();
 		$this->dAmn->connected=false;
+		if (file_exists('./storage/lock')) {
+			unlink('./storage/lock');
+		}
 		if ($this->dAmn->close) {
 			return;
 		}

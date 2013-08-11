@@ -259,6 +259,7 @@ class Bot {
 	}
 
 	function run() {
+		file_put_contents('./storage/lock', getmypid(), LOCK_EX);
 		while ($this->running === true) {
 			$this->Events->trigger('loop');
 			$this->Timer->triggerEvents();
