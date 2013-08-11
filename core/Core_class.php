@@ -260,7 +260,6 @@ class Bot {
 
 	function run() {
 		file_put_contents('./storage/lock', getmypid(), LOCK_EX);
-		chmod('./storage/lock', 0644);
 		while ($this->running === true) {
 			$this->Events->trigger('loop');
 			$this->Timer->triggerEvents();
