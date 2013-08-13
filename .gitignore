@@ -4,6 +4,7 @@
 .directory
 
 # Contra
+storage/lock
 storage/logs
 storage/mod
 storage/config.cf
