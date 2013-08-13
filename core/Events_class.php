@@ -127,6 +127,9 @@ class Event_System {
 		*		they or the module they belong to are switched
 		*		off.
 		*/
+		if ($ns == 'chat:DataShare' || $ns == 'chat:DSGateway') {
+			return;
+		}
 		if (!array_key_exists(strtolower($command), $this->events['cmd'])) {
 			return $this->core->Console->Notice('Received unknown command "'.$command.'" from '.$from.'.');
 		}
