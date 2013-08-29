@@ -69,6 +69,11 @@
 		sleep(1);
 		exit();
 	}
+	// Do a PHP version check. PHP under 5.4.x is no longer supported, but will display warning.
+	if (version_compare(phpversion(), '5.4.0', '<')) {
+		echo '>> WARNING: PHP versions under 5.4.x is no longer supported. You are recommended to upgrade your PHP to the latest version.',chr(10);
+		sleep(1);
+	}
 	// This is just a constant...
 	define('LBR', chr(10)); // LineBReak
 
