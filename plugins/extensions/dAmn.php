@@ -324,7 +324,7 @@ class dAmn_commands extends extension {
 
 	function e_provider($ns) {
 		if ($ns == 'chat:DataShare') {
-			$this->dAmn->npmsg('chat:datashare', 'BDS:PROVIDER:CAPS:BOTCHECK,BOTCHECK-EXT', TRUE);
+			$this->dAmn->npmsg('chat:datashare', 'BDS:PROVIDER:CAPS:BOTCHECK,BOTCHECK-EXT,CLINK', TRUE);
 		}
 	}
 

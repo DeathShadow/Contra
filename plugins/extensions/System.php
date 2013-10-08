@@ -84,6 +84,7 @@ class System_commands extends extension {
 		);
 
 		$this->hook('e_codsnotify', 'login');
+		$this->hook('e_cdsmain', 'recv_msg');
 		$this->hook('e_trigcheck', 'recv_msg');
 		$this->hook('load_switches', 'startup');
 
@@ -827,6 +828,41 @@ class System_commands extends extension {
 			return $this->dAmn->say($ns, 'Code returned false! Make sure your input is correct!');
 		}
 		$this->dAmn->say($ns, 'Code executed.');
+	}
+
+	function e_cdsmain($ns, $from, $message) {
+		if ($ns == 'chat:DataShare' && substr($message, 0, 4) == 'CDS:') {
+			$command = explode(':', $message, 4);
+			switch ($command[1]) {
+				case 'LINK':
+				switch($command[2]) {
+					case 'REQUEST':
+						$info = explode(',', $message);
+						$info2 = explode(':', $info[0], 4);
+						$user = strtolower($info2[3]);
+						if ($user == strtolower($this->Bot->username) && $from != $this->Bot->username) {
+							$bot=strtolower($this->Bot->username);
+							$buser=strtolower($from);
+							$paa=$this->dAmn->format_chat('@'.$bot, $buser);
+							$this->dAmn->join($paa);
+							$this->dAmn->npmsg($ns, "CDS:LINK:ACK:{$from}", TRUE);
+						}
+					break;
+					case 'REJECT':
+						$info = explode(',', $message);
+						$info2 = explode(':', $info[0], 4);
+						$user = strtolower($info2[3]);
+						if ($user == strtolower($this->Bot->username) && $from != $this->Bot->username) {
+							$bot=strtolower($this->Bot->username);
+							$buser=strtolower($from);
+							$paa=$this->dAmn->format_chat('@'.$bot, $buser);
+							$this->dAmn->part($paa);
+						}
+					break;
+				}
+				break;
+			}
+		}
 	}
 
 	function c_restart($ns, $from, $message, $target) {
