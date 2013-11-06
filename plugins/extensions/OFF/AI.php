@@ -21,6 +21,8 @@ class Brain extends extension {
 	function init() {
 		$this->addCmd('ai', 'c_ai', 99);
 		$this->hook('e_msg', 'recv_msg');
+		$this->enabled = $this->Read('ai');
+		$this->enabled = ($this->enabled === false ? array() : $this->enabled);
 	}
 
 	function c_ai($ns, $from, $message, $target) {
@@ -54,6 +56,7 @@ class Brain extends extension {
 						unset($this->enabled[$chan]);
 					}
 				}
+				$this->Write('ai', $this->enabled);
 				break;
 			default:
 				$dAmn->say($ns, $from.': This is Contra\'s AI module!');
