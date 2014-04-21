@@ -344,7 +344,11 @@ class dAmnPHP {
 	}
 
 	private function error($text) {
-		echo " \033[1;33m" . $text . "\033[0m";
+		if (PHP_OS == 'Linux' || PHP_OS == 'Darwin') {
+			echo " \033[1;33m" . $text . "\033[0m";
+		} else {
+			echo $text;
+		}
 	}
 
 	function send_headers($socket, $host, $url, $referer, $post=null, $cookies=array())
