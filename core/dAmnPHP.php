@@ -227,7 +227,9 @@ class dAmnPHP {
 							echo $this->error('Something went wrong while trying to grab a token! Error: ' . $this->oauth_tokens->error_description) . LBR;
 							echo 'Let\'s try and grab a new token...' . LBR;
 						}
-						unlink($oauth_file);
+						if (file_exists($oauth_file) {
+							unlink($oauth_file);
+						}
 						$this->oauth(0, true);
 					} else {
 						// It was OK, let's store it.
@@ -269,7 +271,9 @@ class dAmnPHP {
 				if ($mode == 0) {
 					echo $this->error('Your token file is empty, grabbing new tokens...') . LBR;
 				}
-				unlink($oauth_file);
+				if (file_exists($oauth_file) {
+					unlink($oauth_file);
+				}
 				$this->oauth(0);
 			}
 		} else {
@@ -298,7 +302,9 @@ class dAmnPHP {
 					echo $this->error('Something went wrong while trying to grab a token! Error: ' . $this->oauth_tokens->error_description) . LBR;
 					echo 'Did you log into your bot\'s account and go to the link above?' . LBR;
 				}
-				unlink($oauth_file);
+				if (file_exists($oauth_file) {
+					unlink($oauth_file);
+				}
 				$this->oauth(0);
 			} else {
 				// Woo, got a token!
