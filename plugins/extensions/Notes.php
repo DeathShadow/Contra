@@ -198,7 +198,7 @@ class notes_module extends extension {
 		$note = $this->notes[$user][$id];
 		$this->read[$user][$id] = true;
 		$this->Write('read', $this->read);
-		return '<br/><b>To:</b> '.$user.'<b>; From:</b> '.$note['from'].'<b>; Date received</b>: '.gmdate('r', $note['ts']).'<b>;'.'<br/>Message:</b> '.$note['content'].'<br/><sub>Use "'.$this->Bot->trigger.'note clear" to delete all notes or "'.$this->Bot->trigger.'note delete '.$id.'" to delete this note.</sub>';
+		return '<b>To:</b> '.$user.'<b>; From:</b> '.$note['from'].'<b>; Date received</b>: '.gmdate('r', $note['ts']).'<b>;'.'<br/>Message:</b> '.$note['content'].'<br/><sub>Use "'.$this->Bot->trigger.'note clear" to delete all notes or "'.$this->Bot->trigger.'note delete '.$id.'" to delete this note.</sub>';
 	}
 
 	protected function delNote($user, $id, $ns) {
