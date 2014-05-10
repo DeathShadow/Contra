@@ -249,7 +249,7 @@ class dAmnPHP {
 					}
 
 					// Place a placebo call to check if the token has expired.
-					$placebo = json_decode($this->socket('/api/oauth2/placebo?access_token='.$this->oauth_tokens->access_token));
+					$placebo = json_decode($this->socket('/api/v1/oauth2/placebo?access_token='.$this->oauth_tokens->access_token));
 
 					// Is the token OK?
 					if ($placebo->status != 'success') {
@@ -284,7 +284,7 @@ class dAmnPHP {
 
 			// Request that the user authorize the request.
 			echo 'We need to authorize a new token. Log into your bot\'s account and then open this link in your web browser:' . LBR;
-			echo 'https://bit.ly/WI6u6y' . LBR;
+			echo 'http://bit.ly/1jr2QZY' . LBR;
 
 			// Retreiving the code
 			echo 'Enter the code given by the above link:' . LBR;
@@ -328,7 +328,7 @@ class dAmnPHP {
 		}
 
 		// Grab the damntoken and set it to damntoken variable
-		$this->damntoken = json_decode($this->socket('/api/oauth2/user/damntoken?access_token='.$this->oauth_tokens->access_token));
+		$this->damntoken = json_decode($this->socket('/api/v1/oauth2/user/damntoken?access_token='.$this->oauth_tokens->access_token));
 	}
 
 	// Function to reuse the curl code.
