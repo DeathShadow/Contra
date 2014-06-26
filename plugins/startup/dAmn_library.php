@@ -520,7 +520,8 @@ class dAmn_lib extends extension {
 	}
 
 	function log($chan, $text, $time) {
-		if ($chan != '#DataShare' && $chan != '#DSGateway' && $this->Bot->logging) {
+		if ($chan == '#DataShare' || $chan == '#DSGateway') return;
+		if ($this->Bot->logging) {
 			$fold = date('M-Y', $time);
 			$file = date('d-m-y', $time).'.txt';
 			$text = $this->Console->Clock($time).$text;
@@ -545,7 +546,8 @@ class dAmn_lib extends extension {
 	}
 
 	function logprop($chan, $prop, $ts, $val) {
-		if ($chan != '#DataShare' && $chan != '#DSGateway' && $this->Bot->logging) {
+		if ($chan == '#DataShare' || $chan == '#DSGateway') return;
+		if ($this->Bot->logging) {
 			$dt = date('m-d-Y-hms', $ts);
 			$fn = $prop.'-'.$dt.'.txt';
 			if (!is_dir('./storage')) {
