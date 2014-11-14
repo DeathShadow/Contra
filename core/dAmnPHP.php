@@ -215,7 +215,7 @@ class dAmnPHP {
 					}
 
 					// Grab the JSON data from the server.
-					$tokens = $this->socket('/oauth2/token?client_id='.$this->client_id.'&redirect_uri=http://damn.shadowkitsune.net/apicode/&grant_type=refresh_token&client_secret='.$this->client_secret.'&refresh_token='.$this->oauth_tokens->refresh_token);
+					$tokens = $this->socket('/oauth2/token?client_id='.$this->client_id.'&redirect_uri=https://damn.shadowkitsune.net/apicode/&grant_type=refresh_token&client_secret='.$this->client_secret.'&refresh_token='.$this->oauth_tokens->refresh_token);
 
 					// Decode it and store it.
 					$this->oauth_tokens = json_decode($tokens);
@@ -284,14 +284,14 @@ class dAmnPHP {
 
 			// Request that the user authorize the request.
 			echo 'We need to authorize a new token. Log into your bot\'s account and then open this link in your web browser:' . LBR;
-			echo 'https://bit.ly/1jr2QZY' . LBR;
+			echo 'https://bit.ly/1pYz6ZF' . LBR;
 
 			// Retreiving the code
 			echo 'Enter the code given by the above link:' . LBR;
 			$code = trim(str_replace(' ', '', fgets(STDIN))); // STDIN for reading input
 
 			// Getting the access token.
-			$tokens = $this->socket('/oauth2/token?client_id='.$this->client_id.'&redirect_uri=http://damn.shadowkitsune.net/apicode/&grant_type=authorization_code&client_secret='.$this->client_secret.'&code='.$code);
+			$tokens = $this->socket('/oauth2/token?client_id='.$this->client_id.'&redirect_uri=https://damn.shadowkitsune.net/apicode/&grant_type=authorization_code&client_secret='.$this->client_secret.'&code='.$code);
 
 			// Store the token(s)
 			$this->oauth_tokens = json_decode($tokens);
