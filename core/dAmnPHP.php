@@ -284,7 +284,7 @@ class dAmnPHP {
 
 			// Request that the user authorize the request.
 			echo 'We need to authorize a new token. Log into your bot\'s account and then open this link in your web browser:' . LBR;
-			echo 'https://bit.ly/1pYz6ZF' . LBR;
+			echo 'https://bit.ly/1taqn2C' . LBR;
 
 			// Retreiving the code
 			echo 'Enter the code given by the above link:' . LBR;
