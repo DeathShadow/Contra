@@ -298,10 +298,8 @@ class dAmnPHP {
 
 			// Was it a success?
 			if ($this->oauth_tokens->status != 'success') {
-				if ($mode == 0) {
-					echo $this->error('Something went wrong while trying to grab a token! Error: ' . $this->oauth_tokens->error_description) . LBR;
-					echo 'Did you log into your bot\'s account and go to the link above?' . LBR;
-				}
+				echo $this->error('Something went wrong while trying to grab a token! Error: ' . $this->oauth_tokens->error_description) . LBR;
+				echo 'Did you log into your bot\'s account and go to the link above?' . LBR;
 				if (file_exists($oauth_file)) {
 					unlink($oauth_file);
 				}
