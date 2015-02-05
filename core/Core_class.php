@@ -101,6 +101,7 @@ class Bot {
 		// Some introduction messages! We've already done quite a bit but only introduce things here...
 		$this->Console->Notice('Hey thar!');
 		$this->Console->Notice('Loading '.$this->info['name'].' '.$this->info['version'].' '.$this->info['status'].' by '.$this->info['author']);
+		$this->Console->Notice('Running on PHP '.phpversion().'.');
 		if (DEBUG) {
 			// This is for when we're running in debug mode.
 			$this->Console->Notice('Running in debug mode!');
