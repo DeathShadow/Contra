@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-if [ "`whoami`" = "root" ]; then
-    echo "Don't run Contra on root user!";
+if [[ $EUID == 0 ]]; then
+    echo "Don't run Contra as root user! You shouldn't need to run Contra as root user. If you do, then you're doing it wrong!";
     exit;
 fi
 

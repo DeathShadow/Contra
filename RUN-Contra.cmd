@@ -5,6 +5,13 @@ for %%* in (.) do @title %%~n*
 popd
 endlocal
 
+net session >nul 2>&1
+if %errorLevel% == 0 (
+	echo Don't run Contra as administrator! You shouldn't need to run Contra as administrator. If you do, then you're doing it wrong!
+	pause
+	goto stop
+)
+
 rem		Contra run script v3.0 by photofroggy
 rem		Released under a Creative Commons 3.0 license.
 rem		This is used to launch Contra.
