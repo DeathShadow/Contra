@@ -5,7 +5,7 @@ for %%* in (.) do @title %%~n*
 popd
 endlocal
 
-net session >nul 2>&1
+fsutil dirty query %systemdrive% >nul
 if %errorLevel% == 0 (
 	echo Don't run Contra as administrator! You shouldn't need to run Contra as administrator. If you do, then you're doing it wrong!
 	pause
