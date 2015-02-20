@@ -993,7 +993,7 @@ class System_commands extends extension {
 	}
 
 	function doupdate($requestor, $message) {
-		$json = file_get_contents('http://damn.shadowkitsune.net/contra-latest.php');
+		$json = file_get_contents('https://damn.shadowkitsune.net/contra-latest.php');
 		$result = json_decode($json, true);
 		if (!empty($result)) {
 			if ($this->Bot->autoupdate == true) {
@@ -1027,7 +1027,7 @@ class System_commands extends extension {
 	}
 
 	function e_codsnotify($ns, $parts, $from, $message) {
-		$json = file_get_contents('http://damn.shadowkitsune.net/contra-latest.php');
+		$json = file_get_contents('https://damn.shadowkitsune.net/contra-latest.php');
 		$result = json_decode($json, true);
 		if (!empty($result)) {
 			if ($this->Bot->info['version'] < $result['releaseversion']) {
