@@ -69,7 +69,7 @@
 		sleep(1);
 		exit();
 	}
-	// Do a PHP version check. PHP under 5.4.x is no longer supported, kill the program.
+	// Do a PHP version check. PHP under 5.4.x is no longer supported, kill the program if php is under 5.4.x.
 	if (version_compare(phpversion(), '5.4.0', '<')) {
 		echo '>> WARNING: PHP versions under 5.4.x is no longer supported. You MUST to upgrade your PHP to continue.',chr(10);
 		if (PHP_OS == 'WIN32' || PHP_OS == 'WINNT' || PHP_OS == 'Windows') {
@@ -490,10 +490,7 @@ class dAmnPHP {
 		$this->send('part '.$channel.LBR);
 	}
 	function say($ns, $message, $DATASHARE = FALSE) {
-		if (strtolower($ns) == 'chat:irpg') {
-			return;
-		}
-		if (strtolower($ns) == 'chat:dAmnIdlers') {
+		if (strtolower($ns) == 'chat:irpg' || strtolower($ns) == 'chat:dAmnIdlers') {
 			return;
 		}
 		if (is_array($ns)) {
@@ -514,10 +511,7 @@ class dAmnPHP {
 		}
 	}
 	function action($ns, $message, $DATASHARE = FALSE) {
-		if (strtolower($ns) == 'chat:irpg') {
-			return;
-		}
-		if (strtolower($ns) == 'chat:dAmnIdlers') {
+		if (strtolower($ns) == 'chat:irpg' || strtolower($ns) == 'chat:dAmnIdlers') {
 			return;
 		}
 		if (strtolower($ns) != 'chat:datashare' && strtolower($ns) != 'chat:dsgateway') {
@@ -527,10 +521,7 @@ class dAmnPHP {
 		}
 	}
 	function npmsg($ns, $message, $DATASHARE = FALSE) {
-		if (strtolower($ns) == 'chat:irpg') {
-			return;
-		}
-		if (strtolower($ns) == 'chat:dAmnIdlers') {
+		if (strtolower($ns) == 'chat:irpg' || strtolower($ns) == 'chat:dAmnIdlers') {
 			return;
 		}
 		if (strtolower($ns) != 'chat:datashare' && strtolower($ns) != 'chat:dsgateway') {

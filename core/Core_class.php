@@ -86,8 +86,6 @@ class Bot {
 			$this->sysString = 'Windows XP';
 		} elseif (strstr($this->sysString, 'NT 5.0')) {
 			$this->sysString = 'Windows 2000';
-		} elseif (strstr($this->sysString, 'NT 4.9')) {
-			$this->sysString = 'Windows ME';
 		}
 
 		// Get a new console interface.
@@ -101,7 +99,7 @@ class Bot {
 		// Some introduction messages! We've already done quite a bit but only introduce things here...
 		$this->Console->Notice('Hey thar!');
 		$this->Console->Notice('Loading '.$this->info['name'].' '.$this->info['version'].' '.$this->info['status'].' by '.$this->info['author']);
-		$this->Console->Notice('Running on PHP '.phpversion().'.');
+		$this->Console->Notice($this->info['name'].' running on PHP '.phpversion().'.');
 		if (DEBUG) {
 			// This is for when we're running in debug mode.
 			$this->Console->Notice('Running in debug mode!');
@@ -129,7 +127,7 @@ class Bot {
 		foreach ($this->autojoin as $key => $chan) {
 			$chan = $this->dAmn->deform_chat($chan);
 			if (in_array(strtolower(str_replace('#', 'chat:', $chan)), $this->dAmn->njc)) {
-				$this->Console->Notice('Channel '.$chan.' is not allowed, and has been removed.');
+				$this->Console->Notice('Channel '.$chan.' is not allowed and has been removed.');
 				unset($this->autojoin[$key]);
 			}
 		}
