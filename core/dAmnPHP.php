@@ -69,10 +69,17 @@
 		sleep(1);
 		exit();
 	}
-	// Do a PHP version check. PHP under 5.4.x is no longer supported, but will display warning.
+	// Do a PHP version check. PHP under 5.4.x is no longer supported, kill the program.
 	if (version_compare(phpversion(), '5.4.0', '<')) {
-		echo '>> WARNING: PHP versions under 5.4.x is no longer supported. You are recommended to upgrade your PHP to the latest version. See install guide for latest PHP version.',chr(10);
+		echo '>> WARNING: PHP versions under 5.4.x is no longer supported. You MUST to upgrade your PHP to continue.',chr(10);
+		if (PHP_OS == 'WIN32' || PHP_OS == 'WINNT' || PHP_OS == 'Windows') {
+			echo '>> See install guide for latest PHP version. http://botdom.com/documentation/Install_PHP_on_Windows',chr(10),'>> ';
+		}
+		if (PHP_OS == 'Linux') {
+			echo '>> If you\'re using distro\'s php and it\'s under 5.4.x, you must compile php from source yourself.',chr(10),'>> ';
+		}
 		sleep(1);
+		exit();
 	}
 	// This is just a constant...
 	define('LBR', chr(10)); // LineBReak
