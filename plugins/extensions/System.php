@@ -942,10 +942,16 @@ class System_commands extends extension {
 		}
 		if (strtolower(args($message, 1)) === 'autoupdate') {
 			if (strtolower(args($message, 2)) === 'disable') {
+                                if ($this->Bot->autoupdate == false) {
+                                        return $this->dAmn->say($ns, $requestor.': Auto-update is already disabled.');
+                                }
 				$this->Bot->autoupdate = false;
 				$this->Bot->save_config();
 				return $this->dAmn->say($ns, $requestor.': Auto-update disabled. Use <code>'.$this->Bot->trigger.'update</code> to update your bot.<br /><sub>You can re-enable auto-update by using <code>'.$this->Bot->trigger.'update autoupdate enable</code>.</sub>');
 			} elseif (strtolower(args($message, 2)) === 'enable') {
+                                if ($this->Bot->autoupdate == true) {
+                                        return $this->dAmn->say($ns, $requestor.': Auto-update is already enabled.');
+                                }
 				$this->Bot->autoupdate = true;
 				$this->Bot->save_config();
 				return $this->dAmn->say($ns, $requestor.': Auto-update enabled. Your bot will now auto-update at every new release.<br /><sub>You can disable auto-update by using <code>'.$this->Bot->trigger.'update autoupdate disable</code>.</sub>');

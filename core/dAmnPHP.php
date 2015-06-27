@@ -304,7 +304,7 @@ class dAmnPHP {
 			$this->oauth_tokens = json_decode($tokens);
 
 			// Was it a success?
-			if ($this->oauth_tokens->status != 'success') {
+			if (!isset($this->oauth_tokens->status) || isset($this->oauth_tokens->status) && $this->oauth_tokens->status != 'success') {
 				echo $this->error('Something went wrong while trying to grab a token! Error: ' . $this->oauth_tokens->error_description) . LBR;
 				echo 'Did you log into your bot\'s account and go to the link above?' . LBR;
 				if (file_exists($oauth_file)) {
@@ -346,10 +346,12 @@ class dAmnPHP {
 		    $out .= "Host: www.deviantart.com\r\n";
 		    $out .= "Connection: Close\r\n\r\n";
 		    fwrite($fp, $out);
+		    $tempbuffer = "";
 		    while (!feof($fp)) {
-		        $buffer = fgets($fp, 512);
+		        $tempbuffer .= fgets($fp, 512);
 		    }
 		    fclose($fp);
+		    $buffer = array_pop(explode("\r\n", $tempbuffer));
 		    return $buffer;
 		}
 	}
