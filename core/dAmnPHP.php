@@ -338,12 +338,13 @@ class dAmnPHP {
 
 	// Function to reuse the curl code.
 	private function socket($url) {
-		$fp = fsockopen('ssl://deviantart.com', 443, $errno, $errstr, 30);
+		$fp = fsockopen('ssl://www.deviantart.com', 443, $errno, $errstr, 30);
 		if (!$fp) {
 		    echo "$errstr ($errno)<br />\n";
 		} else {
 		    $out = "GET ".$url." HTTP/1.1\r\n";
 		    $out .= "Host: www.deviantart.com\r\n";
+                    $out .= "User-Agent: ".$this->Agent."\r\n";
 		    $out .= "Connection: Close\r\n\r\n";
 		    fwrite($fp, $out);
 		    $tempbuffer = "";
