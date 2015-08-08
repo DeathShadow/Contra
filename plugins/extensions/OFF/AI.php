@@ -17,6 +17,11 @@ class Brain extends extension {
 	public $author = 'photofroggy';
 
 	private $enabled = array();
+	private $banned = array(
+		'chat:botdom',
+		'chat:datashare',
+		'chat:dsgateway'
+	);
 
 	function init() {
 		$this->addCmd('ai', 'c_ai', 99);
@@ -37,7 +42,7 @@ class Brain extends extension {
 			case 'on':
 			case 'off':
 				$kw = $com == 'on' ? 'hook' : 'unhook';
-				if (in_array($chan, array('chat:botdom', 'chat:dsgateway','chat:datashare'))) {
+				if (in_array(strtolower($chan), $this->banned)) {
 					$dAmn->say($ns, $from.': AI can\'t be turned on in #'.substr($chan, 5).'.');
 					break;
 				}
@@ -70,7 +75,7 @@ class Brain extends extension {
 		$chan = strtolower($c);
 		if (!array_key_exists($chan, $this->enabled) || $this->enabled[$chan] !== true) return;
 		if (strtolower(substr($msg, 0, strlen($name))) == strtolower($name)) {
-			if ($c == 'chat:Botdom' || strtolower($from) == strtolower($name)) {
+			if (in_array(strtolower($chan), $this->banned) || strtolower($from) == strtolower($name)) {
 				return;
 			}
 			$msg = substr($msg, strlen($name.': '));

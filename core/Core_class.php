@@ -74,7 +74,11 @@ class Bot {
 		// System information string.
 		$this->sysString = php_uname('s').' '.php_uname('r').' '.php_uname('v');
 
-		if (strstr($this->sysString, 'NT 6.2')) {
+		if (strstr($this->sysString, 'NT 10.0')) {
+			$this->sysString = 'Windows 10';
+		} elseif (strstr($this->sysString, 'NT 6.3')) {
+			$this->sysString = 'Windows 8.1';
+		} elseif (strstr($this->sysString, 'NT 6.2')) {
 			$this->sysString = 'Windows 8';
 		} elseif (strstr($this->sysString, 'NT 6.1')) {
 			$this->sysString = 'Windows 7';

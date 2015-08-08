@@ -22,6 +22,11 @@ class Welcome extends extension {
 	public $author = 'photofroggy';
 
 	private $welcome = array();
+	private $banned = array(
+		'chat:botdom',
+		'chat:datashare',
+		'chat:dsgateway'
+	);
 
 	function init() {
 		$this->addCmd('welcome', 'c_welcome');
@@ -86,8 +91,8 @@ class Welcome extends extension {
 		$say = $from.': ';
 		switch ($subcom) {
 			case 'all':
-				if ($channel == 'chat:botdom') {
-					$say.='Welcomes are not allowed in #Botdom.';
+				if (in_array(strtolower($channel), $this->banned)) {
+					$say.='Welcomes are not allowed in #'.substr($channel, 5).'.';
 					break;
 				}
 				if (empty($com1s)) {
@@ -103,8 +108,8 @@ class Welcome extends extension {
 				$say.= ' set to "'.$com1s.'"';
 				break;
 			case 'pc':
-				if ($channel == 'chat:botdom') {
-					$say.='Welcomes are not allowed in #Botdom.';
+				if (in_array(strtolower($channel), $this->banned)) {
+					$say.='Welcomes are not allowed in #'.substr($channel, 5).'.';
 					break;
 				}
 				if (empty($com1)) {
@@ -140,8 +145,8 @@ class Welcome extends extension {
 				}
 				break;
 			case 'indv':
-				if ($channel == 'chat:botdom') {
-					$say.='Welcomes are not allowed in #Botdom.';
+				if (in_array(strtolower($channel), $this->banned)) {
+					$say.='Welcomes are not allowed in #'.substr($channel, 5).'.';
 					break;
 				}
 				$this->welcome[$channel] = array(
@@ -153,8 +158,8 @@ class Welcome extends extension {
 				break;
 			case 'on':
 			case 'off':
-				if ($channel == 'chat:botdom') {
-					$say.='Welcomes are not allowed in #Botdom.';
+				if (in_array(strtolower($channel), $this->banned)) {
+					$say.='Welcomes are not allowed in #'.substr($channel, 5).'.';
 					break;
 				}
 				if (!isset($this->welcome[$channel])) {
@@ -233,7 +238,7 @@ class Welcome extends extension {
 	}
 
 	function send_welcome($ns, $from, $msg) {
-                if ($ns == 'chat:Botdom' || $this->dAmn->chat[$ns]['member'][$from]['con'] > 1) {
+		if (in_array(strtolower($ns), $this->banned) || $this->dAmn->chat[$ns]['member'][$from]['con'] > 1) {
 			return;
 		}
 		$msg = str_replace('{channel}', $this->dAmn->deform_chat($ns, $this->Bot->username), $msg);

@@ -21,6 +21,11 @@ class Responses extends extension {
 
 	private $response = array();
 	private $rooms = array();
+	private $banned = array(
+		'chat:botdom',
+		'chat:datashare',
+		'chat:dsgateway'
+	);
 
 	function init() {
 		$ar = array('responses', 'response', 're');
@@ -49,8 +54,8 @@ class Responses extends extension {
 					$say.= 'You need to give a response to be used!';
 					break;
 				}
-				if ($channel == 'chat:botdom') {
-					$say.='Responses are not allowed in #Botdom.';
+				if (in_array(strtolower($channel), $this->banned)) {
+					$say.='Responses are not allowed in #'.substr($chan, 5).'.';
 					break;
 				}
 				$this->response[$ar] = $re;
@@ -73,8 +78,8 @@ class Responses extends extension {
 					$say.='Responses are already enabled in '.$this->dAmn->deform_chat($target, $this->Bot->username).'.';
 					break;
 				}
-				if ($channel == 'chat:botdom') {
-					$say.='Responses are not allowed in #Botdom.';
+				if (in_array(strtolower($channel), $this->banned)) {
+					$say.='Responses are not allowed in #'.substr($chan, 5).'.';
 					break;
 				}
 				$this->rooms[] = $channel;
@@ -180,7 +185,7 @@ class Responses extends extension {
 	}
 
 	function e_respond($ns, $from, $message) {
-		if (array_search($ns, $this->rooms) !== false || $ns == 'chat:Botdom') {
+		if (array_search($ns, $this->rooms) !== false || in_array(strtolower($ns), $this->banned)) {
 			return;
 		}
 		$trig = args($message, 0, true);
