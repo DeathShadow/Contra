@@ -63,7 +63,7 @@ class Event_System {
 						// it's a callback function
 						$data['f']($p0, $p1, $p2, $p3, $p4, $p5, $p6, $p7, $p8, $p9);
 					} else {
-						$this->core->mod[$data['m']]->$data['f']($p0, $p1, $p2, $p3, $p4, $p5, $p6, $p7, $p8, $p9);
+						$this->core->mod[$data['m']]->{$data['f']}($p0, $p1, $p2, $p3, $p4, $p5, $p6, $p7, $p8, $p9);
 					}
 				}
 			}
@@ -91,7 +91,7 @@ class Event_System {
 					// it's a callback function
 					$data['f']($p0, $p1, $p2, $p3, $p4, $p5, $p6, $p7, $p8, $p9);
 				} else {
-					$this->core->mod[$data['m']]->$data['f']($p0, $p1, $p2, $p3, $p4, $p5, $p6, $p7, $p8, $p9);
+					$this->core->mod[$data['m']]->{$data['f']}($p0, $p1, $p2, $p3, $p4, $p5, $p6, $p7, $p8, $p9);
 				}
 			}
 		}
@@ -108,7 +108,7 @@ class Event_System {
 							// it's a callback function
 							$data['f']($parts, $from, $message);
 						} else {
-							$this->core->mod[$data['m']]->$data['f']($ns, $parts, $from, $message);
+							$this->core->mod[$data['m']]->{$data['f']}($ns, $parts, $from, $message);
 						}
 					}
 				}
@@ -155,7 +155,7 @@ class Event_System {
 		}
 		if ($this->core->user->hasCmd($from, $command)) {
 			$this->core->dAmn->last_command[$from] = microtime(true);
-			return $this->core->mod[$cmda['m']]->$cmda['e']($ns, $from, rtrim($message), $tns);
+			return $this->core->mod[$cmda['m']]->{$cmda['e']}($ns, $from, rtrim($message), $tns);
 		}
 		$this->core->Console->Notice(
 			'User "'.$from.'" was denied access to "'.$command.'" in '.$this->core->dAmn->deform_chat($ns,$this->core->username).'.'
