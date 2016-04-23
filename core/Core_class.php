@@ -218,7 +218,7 @@ class Bot {
 			'updatenotes' => $this->updatenotes,
 			'autoupdate' => $this->autoupdate,
 			'timezone' => $this->timezone,
-			'isserver' => $this-isserver,
+			'isserver' => $this->isserver,
 		);
 		save_config('./storage/config.cf', $config);
 	}
