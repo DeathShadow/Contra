@@ -302,38 +302,31 @@ class dAmnPHP {
 				// Non-servers uses new system that uses localhost to get oauth.
 				echo 'http://localhost:8080/' . LBR;
 
-				$sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-				socket_set_option($sock, SOL_SOCKET, SO_REUSEADDR, 1);
-				socket_bind($sock, '0.0.0.0', 8080);
-				socket_listen($sock, 5);
-
-				$host= gethostname();
-				$ip = gethostbyname($host);
-
-				$client = socket_accept($sock);
-				socket_set_nonblock($client);
-				$reply = "HTTP/1.1 302 Found\r\nLocation: https://www.deviantart.com/oauth2/authorize?client_id=".$this->client_id."&redirect_uri=http://localhost:8080&scope=user&response_type=code\r\n\r\n";
-				$send = socket_write($client, $reply, 8192);
-				socket_recv($client, $data, 70, 0);
-				$code = explode(' ', $data, 3);
-				$code = str_replace('/?code=', '', $code[1]);
-				if ($code != false) {
-					$response = socket_accept($sock);
-					socket_set_nonblock($response);
-					socket_write($response, "OK", 1024);
-					socket_shutdown($response, 1);
-					socket_close($response);
+				$sock = stream_socket_server('tcp://localhost:8080', $errno, $errstr);
+				$reply = "HTTP/1.1 307 Temporary Redirect\r\nLocation: https://www.deviantart.com/oauth2/authorize?client_id=".$this->client_id."&redirect_uri=http://localhost:8080/&scope=user&response_type=code\r\n\r\n";
+				if (!$sock) {
+					echo "$errstr ($errno)<br />\n";
 				} else {
-					$response = socket_accept($sock);
-					socket_set_nonblock($response);
-					socket_write($response, "FAILED", 1024);
-					socket_shutdown($response, 1);
-					socket_close($response);
+					$client = stream_socket_accept($sock);
+					fwrite($client, $reply, 8192);
+					$data = fread($client, 70);
+					$code = explode(' ', $data, 3);
+					$code = str_replace('/?code=', '', $code[1]);
+					$code = str_replace('&state=', '', $code);
+					if ($code != false) {
+						$response = stream_socket_accept($sock);
+						fwrite($response, "OK. You can close this page now.", 1024);
+						fread($response, 1024);
+						@stream_socket_shutdown($response, STREAM_SHUT_RDWR);
+					} else {
+						$response = stream_socket_accept($sock);
+						fwrite($response, "FAILED. TRY RELOADING PAGE.", 1024);
+						fread($response, 1024);
+						@stream_socket_shutdown($response, STREAM_SHUT_RDWR);
+					}
+					@stream_socket_shutdown($client, STREAM_SHUT_RDWR);
 				}
-				socket_shutdown($client, 1);
-				socket_close($client);
-				socket_shutdown($sock, 2);
-				socket_close($sock);
+				@stream_socket_shutdown($sock, STREAM_SHUT_RDWR);
 			}
 
 			// Getting the access token.
