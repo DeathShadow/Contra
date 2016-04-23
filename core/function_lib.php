@@ -165,7 +165,8 @@
 		$config = array(
 			'about' => '<b>%N% %V%%S%</b> (%R% release)<br/><sub><b>Author:</b> :dev%A%:<b>; Owner:</b> :dev%O%:<b>;</b><br/><b>%D%</b></sub>',
 			'autojoin' => array(),
-			'enable_logs' => true
+			'enable_logs' => true,
+			'isserver' => false
 		);
 		foreach (array('username' => Null, 'trigger' => Null, 'owner' => Null) as $part => $s) {
 			$config['info'][$part] = cmd_get_args('Bot '.$part, $s, false);
@@ -190,6 +191,7 @@
 		} elseif (ini_get('date.timezone')) {
 			$config['timezone'] = ini_get('date.timezone');
 		}
+		$config['isserver'] = cmd_get_args('Is the bot running on a server? [y/n]', array('y'=>true, 'n'=>false), false);
 		$config = array(
 			'info' => $config['info'],
 			'about' => $config['about'],
@@ -198,6 +200,7 @@
 			'damntoken' => '',
 			'updatenotes' => true,
 			'timezone' => $config['timezone'],
+			'isserver' => $config['isserver'],
 		);
 		save_config('./storage/config.cf', $config);
 		echo '> Configuration saved!'.chr(10);

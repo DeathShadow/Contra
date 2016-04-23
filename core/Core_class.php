@@ -202,6 +202,7 @@ class Bot {
 		$this->updatenotes = empty($config['updatenotes']) ? true : $config['updatenotes'];
 		$this->autoupdate = empty($config['autoupdate']) ? false : $config['autoupdate'];
 		$this->timezone = $config['timezone'];
+		$this->isserver = empty($config['isserver']) ? false : $config['isserver'];
 	}
 
 	function save_config() {

@@ -291,14 +291,57 @@ class dAmnPHP {
 
 			// Request that the user authorize the request.
 			echo 'We need to authorize a new token. Log into your bot\'s account and then open this link in your web browser:' . LBR;
-			echo 'https://bit.ly/1taqn2C' . LBR;
+			$config = include './storage/config.cf'; // crappy code.
+			$isserver = $config['isserver'];
+			unset($config);
+			if ($isserver == true) {
+				// Servers use old system that uses remote website to get oauth.
+				echo 'https://bit.ly/1taqn2C' . LBR;
+				$code = trim(str_replace(' ', '', fgets(STDIN)));
+			} else {
+				// Non-servers uses new system that uses localhost to get oauth.
+				echo 'http://localhost:8080/' . LBR;
 
-			// Retreiving the code
-			echo 'Enter the code given by the above link:' . LBR;
-			$code = trim(str_replace(' ', '', fgets(STDIN))); // STDIN for reading input
+				$sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+				socket_set_option($sock, SOL_SOCKET, SO_REUSEADDR, 1);
+				socket_bind($sock, '0.0.0.0', 8080);
+				socket_listen($sock, 5);
+
+				$host= gethostname();
+				$ip = gethostbyname($host);
+
+				$client = socket_accept($sock);
+				socket_set_nonblock($client);
+				$reply = "HTTP/1.1 302 Found\r\nLocation: https://www.deviantart.com/oauth2/authorize?client_id=".$this->client_id."&redirect_uri=http://localhost:8080&scope=user&response_type=code\r\n\r\n";
+				$send = socket_write($client, $reply, 8192);
+				socket_recv($client, $data, 70, 0);
+				$code = explode(' ', $data, 3);
+				$code = str_replace('/?code=', '', $code[1]);
+				if ($code != false) {
+					$response = socket_accept($sock);
+					socket_set_nonblock($response);
+					socket_write($response, "OK", 1024);
+					socket_shutdown($response, 1);
+					socket_close($response);
+				} else {
+					$response = socket_accept($sock);
+					socket_set_nonblock($response);
+					socket_write($response, "FAILED", 1024);
+					socket_shutdown($response, 1);
+					socket_close($response);
+				}
+				socket_shutdown($client, 1);
+				socket_close($client);
+				socket_shutdown($sock, 2);
+				socket_close($sock);
+			}
 
 			// Getting the access token.
-			$tokens = $this->socket('/oauth2/token?client_id='.$this->client_id.'&redirect_uri=https://damn.shadowkitsune.net/apicode/&grant_type=authorization_code&client_secret='.$this->client_secret.'&code='.$code);
+			if ($isserver == true) {
+				$tokens = $this->socket('/oauth2/token?client_id='.$this->client_id.'&redirect_uri=https://damn.shadowkitsune.net/apicode/&grant_type=authorization_code&client_secret='.$this->client_secret.'&code='.$code);
+			} else {
+				$tokens = $this->socket('/oauth2/token?client_id='.$this->client_id.'&redirect_uri=http://localhost:8080&grant_type=authorization_code&client_secret='.$this->client_secret.'&code='.$code);
+			}
 
 			// Store the token(s)
 			$this->oauth_tokens = json_decode($tokens);
