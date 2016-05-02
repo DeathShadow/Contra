@@ -177,36 +177,47 @@ class Bot {
 		}
 	}
 
-	function load_config() {
-		$config = include './storage/config.cf';
-		$this->username = $config['info']['username'];
-		$this->owner = $config['info']['owner'];
-		if (strlen($config['info']['trigger']) > 1) {
-			$this->trigger = $config['info']['trigger'];
+	function isJSON($string){
+		return is_string($string) && is_array(json_decode($string, true)) && (json_last_error() == JSON_ERROR_NONE) ? true : false;
+	}
 
+	function load_config() {
+		$fp = fopen('./storage/config.cf', 'r') or die('Failed to open the config file for reading.');
+		$config = fread($fp, filesize('./storage/config.cf'));
+		if (!$this->isJSON($config)) {
+			$config = include './storage/config.cf';
+			$config = json_encode($config);
+		}
+		$config = json_decode($config);
+		fclose($fp);
+		$this->username = $config->info->username;
+		$this->owner = $config->info->owner;
+		if (strlen($config->info->trigger) > 1) {
+			$this->trigger = $config->info->trigger;
 		} else {
 			// Fix for issue #14
 			require_once('./core/Extras.php');
-			$this->trigger = hexentity(html_entity_decode($config['info']['trigger']));
+			$this->trigger = hexentity(html_entity_decode($config->info->trigger));
 		}
 		if (!array_key_exists('enable_logs', $config)) {
 			$config['enable_logs'] = true;
 		}
-		$this->logging = $config['enable_logs'];
-		$this->autojoin = $config['autojoin'];
-		if (isset($config['cookie']) && !empty($config['cookie'])) {
-			$this->damntoken = unserialize($config['cookie']);
+		$this->logging = $config->enable_logs;
+		$this->autojoin = $config->autojoin;
+		if (isset($config->cookie) && !empty($config->cookie)) {
+			$this->damntoken = unserialize($config->cookie);
 		} else {
-			$this->damntoken = empty($config['damntoken']) ? '' : unserialize($config['damntoken']);
+			$this->damntoken = empty($config->damntoken) ? '' : unserialize($config->damntoken);
 		}
-		$this->updatenotes = empty($config['updatenotes']) ? true : $config['updatenotes'];
-		$this->autoupdate = empty($config['autoupdate']) ? false : $config['autoupdate'];
-		$this->timezone = $config['timezone'];
-		$this->isserver = empty($config['isserver']) ? false : $config['isserver'];
+		$this->updatenotes = empty($config->updatenotes) ? true : $config->updatenotes;
+		$this->autoupdate = empty($config->autoupdate) ? false : $config->autoupdate;
+		$this->timezone = $config->timezone;
+		$this->isserver = empty($config->isserver) ? false : $config->isserver;	
+		unset($config);
 	}
 
 	function save_config() {
-		$config = array(
+		$config = json_encode(array(
 			'info' => array(
 				'username' => $this->username,
 				'trigger' => $this->trigger,
@@ -219,8 +230,11 @@ class Bot {
 			'autoupdate' => $this->autoupdate,
 			'timezone' => $this->timezone,
 			'isserver' => $this->isserver,
-		);
-		save_config('./storage/config.cf', $config);
+		));
+		$fp = fopen('./storage/config.cf', 'w') or die('Failed to open the config file for writing.');
+		fwrite($fp, $config);
+		fclose($fp);
+		unset($config);
 	}
 
 	function network($sec = false) {

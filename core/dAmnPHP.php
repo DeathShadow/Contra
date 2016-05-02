@@ -291,8 +291,11 @@ class dAmnPHP {
 
 			// Request that the user authorize the request.
 			echo 'We need to authorize a new token. Log into your bot\'s account and then open this link in your web browser:' . LBR;
-			$config = include './storage/config.cf'; // crappy code.
-			$isserver = $config['isserver'];
+			$fp = fopen('./storage/config.cf', 'r') or die('Failed to open the config file for reading.');
+			$config = fread($fp, filesize('./storage/config.cf'));
+			$config = json_decode($config);
+			$isserver = $config->isserver;
+			fclose($fp);
 			unset($config);
 			if ($isserver == true) {
 				// Servers use old system that uses remote website to get oauth.
