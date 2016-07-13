@@ -312,18 +312,20 @@ class dAmnPHP {
 				} else {
 					$client = stream_socket_accept($sock);
 					fwrite($client, $reply, 8192);
-					$data = fread($client, 70);
+					$response = stream_socket_accept($sock);
+					$data = fread($response, 70);
 					$code = explode(' ', $data, 3);
 					$code = str_replace('/?code=', '', $code[1]);
 					$code = str_replace('&state=', '', $code);
-					if ($code != false) {
+					@stream_socket_shutdown($response, STREAM_SHUT_RDWR);
+					if ($code != false && strlen($code) == 40) {
 						$response = stream_socket_accept($sock);
 						fwrite($response, "OK. You can close this page now.", 1024);
 						fread($response, 1024);
 						@stream_socket_shutdown($response, STREAM_SHUT_RDWR);
 					} else {
 						$response = stream_socket_accept($sock);
-						fwrite($response, "FAILED. TRY RELOADING PAGE.", 1024);
+						fwrite($response, "FAILED. TRY AGAIN.", 1024);
 						fread($response, 1024);
 						@stream_socket_shutdown($response, STREAM_SHUT_RDWR);
 					}
@@ -336,7 +338,7 @@ class dAmnPHP {
 			if ($isserver == true) {
 				$tokens = $this->socket('/oauth2/token?client_id='.$this->client_id.'&redirect_uri=https://damn.shadowkitsune.net/apicode/&grant_type=authorization_code&client_secret='.$this->client_secret.'&code='.$code);
 			} else {
-				$tokens = $this->socket('/oauth2/token?client_id='.$this->client_id.'&redirect_uri=http://localhost:8080&grant_type=authorization_code&client_secret='.$this->client_secret.'&code='.$code);
+				$tokens = $this->socket('/oauth2/token?client_id='.$this->client_id.'&redirect_uri=http://localhost:8080/&grant_type=authorization_code&client_secret='.$this->client_secret.'&code='.$code);
 			}
 
 			// Store the token(s)
