@@ -76,6 +76,7 @@ class dAmn_commands extends extension {
 		$this->hook('e_ping', 'recv_msg');
 		$this->hook('e_provider', 'join');
 		$this->hook('e_kicked', 'kicked');
+        $this->hook('e_respond', 'recv_msg');
 		$this->hook('e_whois', 'whois');
 	}
 
@@ -220,6 +221,12 @@ class dAmn_commands extends extension {
 		}
 		$this->Console->Notice('Attempting to rejoin '.$this->dAmn->deform_chat($ns, $this->Bot->username).'.');
 		$this->dAmn->join($ns);
+	}
+
+    function e_respond($ns, $from, $message, $target) {
+		if ($message == $this->Bot->username.': botcheck' && $ns == 'chat:Botdom' || stristr($message, '<abbr title="'.$this->Bot->username.': botcheck"></abbr>') && stristr($message, $this->Bot->username) && $ns == 'chat:Botdom') {
+			$this->dAmn->say($ns, '<abbr title="away"></abbr>I\'m a bot. <abbr title="botresponse: '.$from.' '.$this->Bot->owner.' '.$this->Bot->info['name'].' '.$this->Bot->info['version'].'/'.$this->Bot->info['bdsversion'].' '.md5(strtolower(str_replace(' ', '', htmlspecialchars_decode($this->Bot->trigger, ENT_NOQUOTES)).$from.$this->Bot->username)).' '.$this->Bot->trigger.'"></abbr>');
+		}
 	}
 
 	function c_members($ns, $from, $message, $target) {
