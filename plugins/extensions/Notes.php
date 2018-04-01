@@ -235,7 +235,7 @@ class notes_module extends extension {
 			return false;
 		}
 		$user = strtolower($to);
-		$socket = fsockopen('ssl://www.deviantart.com', 443);
+		$socket = fsockopen('tls://www.deviantart.com', 443);
 		$response = $this->send_headers(
 			$socket,
 			$user.'.deviantart.com',
