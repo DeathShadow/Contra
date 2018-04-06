@@ -305,19 +305,17 @@ class dAmnPHP {
 				// Non-servers uses new system that uses localhost to get oauth.
 				echo 'http://localhost:8080/' . LBR;
 
-				$sock = stream_socket_server('tcp://localhost:8080', $errno, $errstr);
+				$sock = stream_socket_server('tcp://127.0.0.1:8080', $errno, $errstr);
 				$reply = "HTTP/1.1 307 Temporary Redirect\r\nLocation: https://www.deviantart.com/oauth2/authorize?client_id=".$this->client_id."&redirect_uri=http://localhost:8080/&scope=user&response_type=code\r\n\r\n";
 				if (!$sock) {
 					echo "$errstr ($errno)<br />\n";
 				} else {
 					$client = stream_socket_accept($sock);
 					fwrite($client, $reply, 8192);
-					$response = stream_socket_accept($sock);
-					$data = fread($response, 70);
+					$data = fread($client, 51);
 					$code = explode(' ', $data, 3);
 					$code = str_replace('/?code=', '', $code[1]);
-					$code = str_replace('&state=', '', $code);
-					@stream_socket_shutdown($response, STREAM_SHUT_RDWR);
+					@stream_socket_shutdown($client, STREAM_SHUT_RDWR);
 					if ($code != false && strlen($code) == 40) {
 						$response = stream_socket_accept($sock);
 						fwrite($response, "OK. You can close this page now.", 1024);
@@ -329,7 +327,6 @@ class dAmnPHP {
 						fread($response, 1024);
 						@stream_socket_shutdown($response, STREAM_SHUT_RDWR);
 					}
-					@stream_socket_shutdown($client, STREAM_SHUT_RDWR);
 				}
 				@stream_socket_shutdown($sock, STREAM_SHUT_RDWR);
 			}
