@@ -21,7 +21,7 @@ class Bot {
 		'name' => 'Contra',
 		'version' => '5.7.9',
 		'status' => '',
-		'release' => 'dev',
+		'release' => 'stable',
 		'author' => 'photofroggy',
 		'bdsversion' => '0.4',
 	);
